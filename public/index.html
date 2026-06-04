@@ -89,9 +89,16 @@
         }
         .benefits-section h3 {
             font-size: 24px;
-            margin-bottom: 25px;
+            margin-bottom: 10px;
             text-align: center;
             color: #FFD700;
+        }
+        .benefits-section .subtitle {
+            text-align: center;
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 25px;
+            font-style: italic;
         }
         .benefits-grid {
             display: grid;
@@ -119,6 +126,12 @@
             font-size: 15px;
             line-height: 1.5;
         }
+        .benefit-text .en {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-top: 4px;
+            font-style: italic;
+        }
         .benefit-points {
             background: linear-gradient(135deg, #FFD700, #FFA500);
             color: #333;
@@ -145,6 +158,12 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
+        .benefits-footer .slogan-en {
+            font-size: 14px;
+            opacity: 0.8;
+            font-style: italic;
+            margin-top: 5px;
+        }
         .benefits-more {
             text-align: center;
             padding: 20px;
@@ -157,6 +176,12 @@
             color: #FFD700;
             font-size: 16px;
             font-weight: 600;
+        }
+        .benefits-more p.en {
+            font-size: 13px;
+            opacity: 0.8;
+            font-weight: normal;
+            margin-top: 5px;
         }
         
         /* 联系信息 */
@@ -342,6 +367,18 @@
         .gpa-remaining { color: #27ae60; }
         .gpa-notes { color: #f39c12; }
         
+        .pioneer-score {
+            color: #9C27B0;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+        .pioneer-score .icon {
+            font-size: 18px;
+        }
+        
         .rank-badge {
             font-size: 11px;
             padding: 4px 12px;
@@ -424,7 +461,7 @@
     <div class="container">
         <header>
             <h1>🏆 赢在美股—绩点先锋排行榜</h1>
-            <p>实时查看绩点先锋排名情况</p>
+            <p>GPA Pioneer Leaderboard</p>
             <div class="update-time">
                 <span class="live-dot"></span>
                 <span id="updateTime">实时更新中...</span>
@@ -434,46 +471,62 @@
         <!-- 权益说明 -->
         <div class="benefits-section">
             <h3>🏆 赢家绩点权益</h3>
+            <p class="subtitle">Winner GPA Benefits / 赢家绩点权益</p>
             <div class="benefits-grid">
                 <div class="benefit-item">
                     <span class="benefit-icon">🤖</span>
                     <div class="benefit-text">
-                        <span class="benefit-points">5绩点</span>
-                        <span>AI预测大模型5天</span>
+                        <div>
+                            <span class="benefit-points">5绩点</span>
+                            <span>AI预测大模型5天</span>
+                        </div>
+                        <div class="en">AI Prediction Model (5 days)</div>
                     </div>
                 </div>
                 <div class="benefit-item">
                     <span class="benefit-icon">☁️</span>
                     <div class="benefit-text">
-                        <span class="benefit-points">5绩点</span>
-                        <span>超级云脑5天</span>
+                        <div>
+                            <span class="benefit-points">5绩点</span>
+                            <span>超级云脑5天</span>
+                        </div>
+                        <div class="en">Super Cloud Brain (5 days)</div>
                     </div>
                 </div>
                 <div class="benefit-item">
                     <span class="benefit-icon">⚔️</span>
                     <div class="benefit-text">
-                        <span class="benefit-points">5绩点</span>
-                        <span>夺宝利剑5天</span>
+                        <div>
+                            <span class="benefit-points">5绩点</span>
+                            <span>夺宝利剑5天</span>
+                        </div>
+                        <div class="en">Treasure Sword (5 days)</div>
                     </div>
                 </div>
                 <div class="benefit-item">
                     <span class="benefit-icon">📊</span>
                     <div class="benefit-text">
-                        <span class="benefit-points">10绩点</span>
-                        <span>AI赢家K线复盘报告一份</span>
+                        <div>
+                            <span class="benefit-points">10绩点</span>
+                            <span>AI赢家K线复盘报告一份</span>
+                        </div>
+                        <div class="en">AI Winner K-Line Report</div>
                     </div>
                 </div>
             </div>
             <div class="benefits-more">
                 <p>✨ 更多权益敬请期待 ✨</p>
+                <p class="en">More benefits coming soon...</p>
             </div>
             <div class="contact-section">
                 <h4>📞 更多绩点问题，请联系助教老师</h4>
+                <p>For more GPA questions, please contact:</p>
                 <p>Homilylink：赢在美股 90003692 | Jasmine Wang 90010769</p>
                 <p class="whatsapp">WhatsApp：+852 5577 5232</p>
             </div>
             <div class="benefits-footer">
                 <p class="slogan">绩点越高 · 权益越强 · 赢在未来</p>
+                <p class="slogan-en">Higher GPA · Stronger Benefits · Win the Future</p>
                 <p>用AI赋能投资 · 让每一份努力都更有价值</p>
             </div>
         </div>
@@ -483,11 +536,11 @@
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="value" id="statMax">-</div>
-                    <div class="label">最高绩点</div>
+                    <div class="label">最高绩点 / Max GPA</div>
                 </div>
                 <div class="stat-card">
                     <div class="value" id="statTop">-</div>
-                    <div class="label">冠军绩点</div>
+                    <div class="label">冠军绩点 / Champion</div>
                 </div>
             </div>
         </div>
@@ -495,7 +548,7 @@
         <!-- 搜索 -->
         <div class="card">
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="搜索姓名或精网号..." onkeypress="if(event.key==='Enter') search()">
+                <input type="text" id="searchInput" placeholder="搜索姓名或精网号 / Search name or ID..." onkeypress="if(event.key==='Enter') search()">
                 <button onclick="search()">🔍 搜索</button>
                 <button onclick="loadAll()" style="background: linear-gradient(135deg, #27ae60, #2ecc71);">📋 显示全部</button>
             </div>
@@ -505,7 +558,7 @@
         <div class="card">
             <div class="leaderboard-header">
                 <span>排名</span>
-                <span>用户</span>
+                <span>用户 / User</span>
                 <span style="text-align: center;">总绩点</span>
                 <span style="text-align: center;">已使用</span>
                 <span style="text-align: center;">剩余</span>
@@ -513,7 +566,7 @@
                 <span style="text-align: center;">先锋值</span>
             </div>
             <div id="leaderboardList">
-                <div class="loading">加载中...</div>
+                <div class="loading">加载中... / Loading...</div>
             </div>
         </div>
     </div>
@@ -544,7 +597,7 @@
                 minute: '2-digit',
                 second: '2-digit'
             });
-            document.getElementById('updateTime').textContent = `实时更新：${timeStr}`;
+            document.getElementById('updateTime').textContent = `实时更新 / Live: ${timeStr}`;
         }
         
         // 每秒更新时间
@@ -577,7 +630,7 @@
             } catch (err) {
                 console.error('加载失败:', err);
                 document.getElementById('leaderboardList').innerHTML = 
-                    '<div class="empty-state">加载失败，请刷新重试</div>';
+                    '<div class="empty-state">加载失败，请刷新重试<br>Loading failed, please refresh</div>';
             }
         }
         
@@ -598,7 +651,7 @@
             const list = document.getElementById('leaderboardList');
             
             if (data.length === 0) {
-                list.innerHTML = '<div class="empty-state">没有找到匹配的记录</div>';
+                list.innerHTML = '<div class="empty-state">没有找到匹配的记录<br>No matching records found</div>';
                 return;
             }
             
@@ -621,7 +674,10 @@
                         <div class="gpa-value gpa-used" style="text-align: center;">${usedGpa}</div>
                         <div class="gpa-value gpa-remaining" style="text-align: center;">${remainingGpa}</div>
                         <div class="gpa-value gpa-notes" style="text-align: center;">${item.notes || '-'}</div>
-                        <div class="gpa-value" style="text-align: center; color: #9C27B0; font-weight: bold;">${pioneerScore}</div>
+                        <div class="pioneer-score" style="text-align: center;">
+                            <span class="icon">💪</span>
+                            <span>${pioneerScore}</span>
+                        </div>
                     </div>
                 `;
             }).join('');
