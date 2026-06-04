@@ -1,0 +1,15 @@
+{
+  "name": "gpa-tracker",
+  "version": "1.0.0",
+  "description": "绩点排行榜系统",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "csv-parser": "^3.0.0",
+    "express": "^4.18.2",
+    "iconv-lite": "^0.7.2",
+    "xlsx": "^0.18.5"
+  }
+}
