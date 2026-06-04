@@ -129,6 +129,9 @@ function loadCSVData() {
                 // 笔记绩点更新
                 const notesGpa = notesUpdates.notesGpa[id] || 0;
                 
+                // 已使用绩点
+                const usedGpa = notesUpdates.usedGpa[id] || 0;
+                
                 results.push({
                     id: id,
                     idMasked: data['精网号(打码)'] || '',
@@ -136,9 +139,10 @@ function loadCSVData() {
                     historyGpa: historyGpa,
                     newGpa: oldNewGpa + additionalGpa + notesGpa,
                     totalGpa: oldTotal + additionalGpa + notesGpa,
+                    usedGpa: usedGpa,
                     notes: newNotesCount,
                     isGongying: gongyingMembers.has(name.trim()),
-                    updated: additionalGpa > 0 || notesGpa > 0
+                    updated: additionalGpa > 0 || notesGpa > 0 || usedGpa > 0
                 });
             })
             .on('end', () => {
