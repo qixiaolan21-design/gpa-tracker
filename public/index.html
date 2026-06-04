@@ -425,6 +425,17 @@
             font-weight: bold;
         }
         
+        .winner-fan-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 10px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+            color: white;
+            font-size: 11px;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+        
         .loading {
             text-align: center;
             padding: 50px;
@@ -659,6 +670,7 @@
                 const rankClass = index === 0 ? 'rank-1' : index === 1 ? 'rank-2' : index === 2 ? 'rank-3' : 'rank-other';
                 const rankBadge = getRankBadge(index);
                 const gongyingBadge = item.isGongying ? '<span class="gongying-badge">👑共盈会</span>' : '';
+                const winnerFanBadge = item.id && item.id.startsWith('94') ? '<span class="winner-fan-badge">❤️赢家粉</span>' : '';
                 const usedGpa = item.usedGpa || 0;
                 const remainingGpa = item.totalGpa - usedGpa;
                 const pioneerScore = Math.round(item.totalGpa * 0.6 + (item.notes || 0) * 10);
@@ -667,7 +679,7 @@
                     <div class="leaderboard-item">
                         <div class="rank ${rankClass}">${index + 1}</div>
                         <div class="user-info">
-                            <div class="user-name">${item.name}${rankBadge}${gongyingBadge}</div>
+                            <div class="user-name">${item.name}${rankBadge}${gongyingBadge}${winnerFanBadge}</div>
                             <div class="user-id">${item.idMasked}</div>
                         </div>
                         <div class="gpa-value gpa-total" style="text-align: center;">${item.totalGpa}</div>
