@@ -231,6 +231,11 @@ app.get('/api/gpa/stats', (req, res) => {
     });
 });
 
+// 健康检查
+app.get('/health', (req, res) => {
+    res.json({ status: 'ok', dataLoaded: gpaData.length > 0, count: gpaData.length });
+});
+
 // 页面路由
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
