@@ -164,9 +164,17 @@ function loadCSVData() {
 
 // 初始化加载数据
 async function init() {
-    await loadGongyingMembers();
-    await loadUpdateData();
-    gpaData = await loadCSVData();
+    try {
+        console.log('🔄 开始初始化数据...');
+        await loadGongyingMembers();
+        await loadUpdateData();
+        gpaData = await loadCSVData();
+        console.log('✅ 数据初始化完成');
+    } catch (err) {
+        console.error('❌ 初始化失败:', err);
+        // 即使失败也继续启动服务
+        gpaData = [];
+    }
 }
 
 init();
