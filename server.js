@@ -236,7 +236,13 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.listen(PORT, () => {
+// 错误处理中间件
+app.use((err, req, res, next) => {
+    console.error('服务器错误:', err);
+    res.status(500).json({ error: '服务器内部错误' });
+});
+
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 绩点排行榜系统运行在 http://localhost:${PORT}`);
     console.log(`📁 数据目录: ${DATA_DIR}`);
 });
