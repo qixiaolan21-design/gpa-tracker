@@ -577,7 +577,7 @@
             <div class="contact-section">
                 <h4>📞 更多绩点问题，请联系助教老师</h4>
                 <p>For more GPA questions, please contact:</p>
-                <p>Homilylink：赢在美股 90003692 | Jasmine Wang 90010769</p>
+                <p>联系助教老师获取绩点相关帮助</p>
                 <p class="whatsapp">WhatsApp：+852 5577 5232</p>
             </div>
             <div class="benefits-footer">
@@ -596,7 +596,7 @@
                 </div>
                 <div class="stat-card">
                     <div class="value" id="statTop">-</div>
-                    <div class="label">冠军绩点 / Champion</div>
+                    <div class="label">参与人数 / Participants</div>
                 </div>
             </div>
         </div>
@@ -696,7 +696,7 @@
                 const res = await fetch('/api/gpa/stats');
                 const stats = await res.json();
                 document.getElementById('statMax').textContent = stats.maxGpa;
-                document.getElementById('statTop').textContent = stats.maxGpa;
+                document.getElementById('statTop').textContent = stats.total;
             } catch (err) {
                 console.error('加载统计失败:', err);
             }
