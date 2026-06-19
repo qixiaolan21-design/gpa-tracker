@@ -91,6 +91,103 @@
             0%, 100% { transform: translateY(0) rotate(0deg); }
             50% { transform: translateY(-15px) rotate(5deg); }
         }
+        
+        /* 全屏端午节动画 */
+        .festival-animation-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            overflow: hidden;
+            display: none;
+        }
+        .festival-animation-container.show {
+            display: block;
+        }
+        
+        /* 飘落的粽叶 */
+        .falling-leaf {
+            position: absolute;
+            font-size: 24px;
+            animation: fall linear infinite;
+            opacity: 0.6;
+        }
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        /* 龙舟动画 */
+        .dragon-boat {
+            position: absolute;
+            font-size: 60px;
+            animation: boatMove 15s linear infinite;
+            opacity: 0.8;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+        }
+        @keyframes boatMove {
+            0% {
+                transform: translateX(-100px);
+            }
+            100% {
+                transform: translateX(calc(100vw + 100px));
+            }
+        }
+        
+        /* 波浪效果 */
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 100px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%234ade80' fill-opacity='0.2' d='M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") repeat-x;
+            animation: waveMove 10s linear infinite;
+            opacity: 0.3;
+        }
+        @keyframes waveMove {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        
+        /* 闪烁的星星 */
+        .twinkle-star {
+            position: absolute;
+            font-size: 16px;
+            animation: twinkle 2s ease-in-out infinite;
+            opacity: 0;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+        
+        /* 粽子弹跳动画 */
+        .bouncing-zongzi {
+            position: absolute;
+            font-size: 35px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-30px) scale(1.1); }
+        }
+        
         header p { 
             opacity: 0.8; 
             font-size: 18px;
@@ -636,6 +733,46 @@
             <div class="zongzi-decoration zongzi-4">🐲</div>
         </div>
         
+        <!-- 全屏端午节动画容器 -->
+        <div id="festivalAnimation" class="festival-animation-container">
+            <!-- 飘落的粽叶 -->
+            <div class="falling-leaf" style="left: 5%; animation-duration: 8s; animation-delay: 0s;">🍃</div>
+            <div class="falling-leaf" style="left: 15%; animation-duration: 10s; animation-delay: 2s;">🌿</div>
+            <div class="falling-leaf" style="left: 25%; animation-duration: 9s; animation-delay: 1s;">🍃</div>
+            <div class="falling-leaf" style="left: 35%; animation-duration: 11s; animation-delay: 3s;">🎋</div>
+            <div class="falling-leaf" style="left: 45%; animation-duration: 8s; animation-delay: 0.5s;">🍃</div>
+            <div class="falling-leaf" style="left: 55%; animation-duration: 10s; animation-delay: 2.5s;">🌿</div>
+            <div class="falling-leaf" style="left: 65%; animation-duration: 9s; animation-delay: 1.5s;">🍃</div>
+            <div class="falling-leaf" style="left: 75%; animation-duration: 11s; animation-delay: 3.5s;">🎋</div>
+            <div class="falling-leaf" style="left: 85%; animation-duration: 8s; animation-delay: 0.8s;">🍃</div>
+            <div class="falling-leaf" style="left: 95%; animation-duration: 10s; animation-delay: 2.8s;">🌿</div>
+            
+            <!-- 龙舟 -->
+            <div class="dragon-boat" style="top: 15%; animation-delay: 0s;">🐲</div>
+            <div class="dragon-boat" style="top: 45%; animation-delay: 8s; font-size: 50px; animation-duration: 18s;">🚣</div>
+            <div class="dragon-boat" style="top: 75%; animation-delay: 4s; animation-duration: 12s;">🐉</div>
+            
+            <!-- 波浪 -->
+            <div class="wave" style="bottom: 0; animation-delay: 0s;"></div>
+            <div class="wave" style="bottom: 20px; animation-delay: -5s; opacity: 0.2;"></div>
+            
+            <!-- 闪烁的星星 -->
+            <div class="twinkle-star" style="top: 10%; left: 10%; animation-delay: 0s;">✨</div>
+            <div class="twinkle-star" style="top: 20%; left: 30%; animation-delay: 0.5s;">⭐</div>
+            <div class="twinkle-star" style="top: 15%; left: 50%; animation-delay: 1s;">✨</div>
+            <div class="twinkle-star" style="top: 25%; left: 70%; animation-delay: 1.5s;">⭐</div>
+            <div class="twinkle-star" style="top: 10%; left: 90%; animation-delay: 0.3s;">✨</div>
+            <div class="twinkle-star" style="top: 35%; left: 20%; animation-delay: 0.8s;">⭐</div>
+            <div class="twinkle-star" style="top: 40%; left: 80%; animation-delay: 1.2s;">✨</div>
+            
+            <!-- 弹跳的粽子 -->
+            <div class="bouncing-zongzi" style="bottom: 15%; left: 8%; animation-delay: 0s;">🥮</div>
+            <div class="bouncing-zongzi" style="bottom: 20%; left: 25%; animation-delay: 0.7s; animation-duration: 2.5s;">🍙</div>
+            <div class="bouncing-zongzi" style="bottom: 12%; left: 45%; animation-delay: 1.2s;">🥮</div>
+            <div class="bouncing-zongzi" style="bottom: 18%; left: 65%; animation-delay: 0.4s; animation-duration: 1.8s;">🍙</div>
+            <div class="bouncing-zongzi" style="bottom: 15%; left: 85%; animation-delay: 0.9s;">🥮</div>
+        </div>
+        
         <!-- 排行榜 -->
         <div class="card">
             <div class="leaderboard-header">
@@ -787,16 +924,19 @@
             
             const banner = document.getElementById('festivalBanner');
             const decorations = document.querySelectorAll('.zongzi-decoration');
+            const animationContainer = document.getElementById('festivalAnimation');
             
             if (now >= festivalStart && now <= festivalEnd) {
                 // 显示节日装饰
                 if (banner) banner.classList.add('show');
                 decorations.forEach(d => d.classList.add('show'));
-                console.log('🎋 端午节装饰已显示');
+                if (animationContainer) animationContainer.classList.add('show');
+                console.log('🎋 端午节全屏动画已显示');
             } else {
                 // 隐藏节日装饰
                 if (banner) banner.classList.remove('show');
                 decorations.forEach(d => d.classList.remove('show'));
+                if (animationContainer) animationContainer.classList.remove('show');
             }
         }
         
