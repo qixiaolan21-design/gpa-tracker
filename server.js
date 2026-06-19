@@ -41,7 +41,7 @@ function loadGongyingMembers() {
                 // 检查是否是CSV格式（包含逗号或换行分隔的纯文本）
                 if (GONGYING_FILE.endsWith('.csv') && !content.includes('PK\x03\x04')) {
                     // CSV格式：按行分割，第一行可能是表头
-                    const lines = content.split('\n').map(line => line.trim()).filter(line => line);
+                    const lines = content.split(/\r?\n/).map(line => line.trim()).filter(line => line);
                     lines.forEach((line, index) => {
                         // 跳过表头（如果第一行是"姓名"）
                         if (index === 0 && (line === '姓名' || line === 'name')) return;
