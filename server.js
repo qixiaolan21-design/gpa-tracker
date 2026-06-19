@@ -36,17 +36,33 @@ function loadGongyingMembers() {
     return new Promise((resolve) => {
         try {
             if (fs.existsSync(GONGYING_FILE)) {
-                const workbook = XLSX.readFile(GONGYING_FILE);
-                const sheetName = workbook.SheetNames[0];
-                const worksheet = workbook.Sheets[sheetName];
-                const data = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                const content = fs.readFileSync(GONGYING_FILE, 'utf-8');
                 
-                data.forEach((row, index) => {
-                    if (index > 0 && row[0]) {
-                        const name = String(row[0]).trim();
+                // 检查是否是CSV格式（包含逗号或换行分隔的纯文本）
+                if (GONGYING_FILE.endsWith('.csv') && !content.includes('PK\x03\x04')) {
+                    // CSV格式：按行分割，第一行可能是表头
+                    const lines = content.split('\n').map(line => line.trim()).filter(line => line);
+                    lines.forEach((line, index) => {
+                        // 跳过表头（如果第一行是"姓名"）
+                        if (index === 0 && (line === '姓名' || line === 'name')) return;
+                        // 处理CSV格式（可能有逗号分隔）
+                        const name = line.split(',')[0].trim();
                         if (name) gongyingMembers.add(name);
-                    }
-                });
+                    });
+                } else {
+                    // Excel格式
+                    const workbook = XLSX.readFile(GONGYING_FILE);
+                    const sheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[sheetName];
+                    const data = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                    
+                    data.forEach((row, index) => {
+                        if (index > 0 && row[0]) {
+                            const name = String(row[0]).trim();
+                            if (name) gongyingMembers.add(name);
+                        }
+                    });
+                }
                 
                 console.log(`📋 加载了 ${gongyingMembers.size} 位共盈会成员`);
             }
