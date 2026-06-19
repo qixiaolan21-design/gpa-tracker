@@ -36,6 +36,61 @@
             background-clip: text;
             text-shadow: 0 2px 10px rgba(255,215,0,0.3);
         }
+        
+        /* 端午节节日装饰 */
+        .festival-banner {
+            background: linear-gradient(135deg, #2d5016 0%, #3d6b1f 50%, #2d5016 100%);
+            color: #FFD700;
+            padding: 15px 25px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+            border: 2px solid #FFD700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            display: none;
+        }
+        .festival-banner.show {
+            display: block;
+            animation: festivalGlow 2s ease-in-out infinite alternate;
+        }
+        @keyframes festivalGlow {
+            from { box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
+            to { box-shadow: 0 0 30px rgba(255, 215, 0, 0.6); }
+        }
+        .festival-banner .festival-icon {
+            font-size: 28px;
+            margin: 0 10px;
+        }
+        .festival-banner .festival-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .festival-banner .festival-wish {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        /* 粽子装饰 */
+        .zongzi-decoration {
+            position: fixed;
+            font-size: 30px;
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 0;
+            display: none;
+        }
+        .zongzi-decoration.show {
+            display: block;
+        }
+        .zongzi-1 { top: 10%; left: 5%; animation: float 3s ease-in-out infinite; }
+        .zongzi-2 { top: 20%; right: 8%; animation: float 3.5s ease-in-out infinite 0.5s; }
+        .zongzi-3 { top: 60%; left: 3%; animation: float 4s ease-in-out infinite 1s; }
+        .zongzi-4 { top: 70%; right: 5%; animation: float 3.2s ease-in-out infinite 1.5s; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
         header p { 
             opacity: 0.8; 
             font-size: 18px;
@@ -567,6 +622,20 @@
             </div>
         </div>
         
+        <!-- 端午节节日横幅 -->
+        <div id="festivalBanner" class="festival-banner">
+            <div class="festival-title"><span class="festival-icon">🎋</span>端午节快乐<span class="festival-icon">🐲</span></div>
+            <div class="festival-wish">粽叶飘香，龙舟竞渡，祝您端午安康！</div>
+        </div>
+        
+        <!-- 粽子装饰 -->
+        <div id="zongziDecorations">
+            <div class="zongzi-decoration zongzi-1">🍃</div>
+            <div class="zongzi-decoration zongzi-2">🎋</div>
+            <div class="zongzi-decoration zongzi-3">🥮</div>
+            <div class="zongzi-decoration zongzi-4">🐲</div>
+        </div>
+        
         <!-- 排行榜 -->
         <div class="card">
             <div class="leaderboard-header">
@@ -708,8 +777,32 @@
             }).join('');
         }
         
+        // 检查并显示节日装饰（端午节：6月19日-6月21日）
+        function checkFestival() {
+            const now = new Date();
+            const year = now.getFullYear();
+            // 端午节期间：2026年6月19日 - 6月21日
+            const festivalStart = new Date(year, 5, 19); // 6月19日
+            const festivalEnd = new Date(year, 5, 21, 23, 59, 59); // 6月21日 23:59:59
+            
+            const banner = document.getElementById('festivalBanner');
+            const decorations = document.querySelectorAll('.zongzi-decoration');
+            
+            if (now >= festivalStart && now <= festivalEnd) {
+                // 显示节日装饰
+                if (banner) banner.classList.add('show');
+                decorations.forEach(d => d.classList.add('show'));
+                console.log('🎋 端午节装饰已显示');
+            } else {
+                // 隐藏节日装饰
+                if (banner) banner.classList.remove('show');
+                decorations.forEach(d => d.classList.remove('show'));
+            }
+        }
+        
         // 初始化
         async function init() {
+            checkFestival(); // 检查节日装饰
             await loadAll();
             await loadStats();
         }
