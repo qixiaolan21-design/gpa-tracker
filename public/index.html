@@ -1123,11 +1123,11 @@
                 <p>请输入您的HomilyLink精网号登录</p>
             </div>
             <div class="login-form">
-                <input type="text" id="loginId" placeholder="请输入900开头的精网号" maxlength="11">
+                <input type="text" id="loginId" placeholder="请输入精网号(900开头)或姓名">
                 <button onclick="doLogin()">🔓 登录查询</button>
             </div>
             <div class="login-hint">
-                💡 无需密码，输入精网号即可查看您的绩点排名
+                💡 无需密码，输入精网号或姓名即可查看您的绩点排名
             </div>
         </div>
     </div>
@@ -1682,25 +1682,41 @@
         
         // 执行登录
         async function doLogin() {
-            const userId = document.getElementById('loginId').value.trim();
+            const loginInput = document.getElementById('loginId').value.trim();
             
-            if (!userId || !userId.match(/^9\d{7,}$/)) {
-                alert('请输入正确的精网号（900开头）');
+            if (!loginInput) {
+                alert('请输入精网号或姓名');
                 return;
             }
             
             try {
-                // 尝试获取用户信息，如果不存在则使用ID作为名称
-                let userName = userId;
+                // 尝试获取用户信息
+                let userId = loginInput;
+                let userName = loginInput;
+                
+                // 判断输入的是ID还是姓名
+                const isId = loginInput.match(/^9\d{7,}$/);
+                
                 try {
                     const res = await fetch('/api/gpa');
                     const allData = await res.json();
-                    const user = allData.find(u => u.id === userId);
-                    if (user) {
-                        userName = user.name;
+                    
+                    if (isId) {
+                        // 输入的是ID，查找对应姓名
+                        const user = allData.find(u => u.id === loginInput);
+                        if (user) {
+                            userName = user.name;
+                        }
+                    } else {
+                        // 输入的是姓名，查找对应ID
+                        const user = allData.find(u => u.name.toLowerCase() === loginInput.toLowerCase());
+                        if (user) {
+                            userId = user.id;
+                            userName = user.name;
+                        }
                     }
                 } catch (e) {
-                    // 忽略错误，使用ID作为名称
+                    // 忽略错误
                 }
                 
                 // 保存登录信息
