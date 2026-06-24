@@ -437,6 +437,15 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0.7; }
         }
+        .badge-sleeping {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            color: white;
+            animation: badgeSleeping 2s ease-in-out infinite;
+        }
+        @keyframes badgeSleeping {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
         .warning-alert strong {
             font-weight: bold;
         }
@@ -1246,7 +1255,7 @@
                     <div class="warning-item">
                         <div class="warning-rank">${globalIndex + 1}</div>
                         <div class="warning-info">
-                            <div class="warning-name">${item.name}</div>
+                            <div class="warning-name">${item.name} <span class="achievement-badge badge-sleeping">😴 沉睡中</span></div>
                             <div class="warning-id">${item.idMasked}</div>
                         </div>
                         <div class="warning-gpa">${item.totalGpa}</div>
