@@ -766,37 +766,25 @@
             </div>
         </div>
         
-        <!-- 父亲节节日横幅 -->
-        <div id="festivalBanner" class="festival-banner">
-            <div class="festival-title"><span class="festival-icon">👔</span>父亲节快乐<span class="festival-icon">🎁</span></div>
-            <div class="festival-wish">致敬每一位伟大的父亲！愿您的投资之路如父爱般稳健长远，收益满满，家庭幸福！📈</div>
+        <!-- 快速统计卡片 -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 25px;">
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 16px; text-align: center; color: white;">
+                <div style="font-size: 28px; font-weight: bold;" id="totalUsers">-</div>
+                <div style="font-size: 13px; opacity: 0.9; margin-top: 5px;">总用户</div>
+            </div>
+            <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 20px; border-radius: 16px; text-align: center; color: white;">
+                <div style="font-size: 28px; font-weight: bold;" id="avgGpa">-</div>
+                <div style="font-size: 13px; opacity: 0.9; margin-top: 5px;">平均绩点</div>
+            </div>
+            <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 20px; border-radius: 16px; text-align: center; color: white;">
+                <div style="font-size: 28px; font-weight: bold;">30+</div>
+                <div style="font-size: 13px; opacity: 0.9; margin-top: 5px;">分钟听课</div>
+            </div>
+            <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); padding: 20px; border-radius: 16px; text-align: center; color: white;">
+                <div style="font-size: 28px; font-weight: bold;">+1</div>
+                <div style="font-size: 13px; opacity: 0.9; margin-top: 5px;">每日签到</div>
+            </div>
         </div>
-        
-        <!-- 父亲节装饰 -->
-        <div id="fatherDecorations">
-            <div class="father-decoration father-1">👔</div>
-            <div class="father-decoration father-2">🎁</div>
-            <div class="father-decoration father-3">👨‍👧‍👦</div>
-            <div class="father-decoration father-4">💙</div>
-        </div>
-        
-        <!-- 全屏父亲节动画容器 -->
-        <div id="festivalAnimation" class="festival-animation-container">
-            <!-- 飘落的爱心 -->
-            <div class="falling-heart" style="left: 5%; animation-duration: 8s; animation-delay: 0s;">❤️</div>
-            <div class="falling-heart" style="left: 15%; animation-duration: 10s; animation-delay: 2s;">💙</div>
-            <div class="falling-heart" style="left: 25%; animation-duration: 9s; animation-delay: 1s;">❤️</div>
-            <div class="falling-heart" style="left: 35%; animation-duration: 11s; animation-delay: 3s;">💙</div>
-            <div class="falling-heart" style="left: 45%; animation-duration: 8s; animation-delay: 0.5s;">❤️</div>
-            <div class="falling-heart" style="left: 55%; animation-duration: 10s; animation-delay: 2.5s;">💙</div>
-            <div class="falling-heart" style="left: 65%; animation-duration: 9s; animation-delay: 1.5s;">❤️</div>
-            <div class="falling-heart" style="left: 75%; animation-duration: 11s; animation-delay: 3.5s;">💙</div>
-            <div class="falling-heart" style="left: 85%; animation-duration: 8s; animation-delay: 0.8s;">❤️</div>
-            <div class="falling-heart" style="left: 95%; animation-duration: 10s; animation-delay: 2.8s;">💙</div>
-            
-            <!-- 领带 -->
-            <div class="floating-tie" style="top: 15%; left: 10%; animation-delay: 0s;">👔</div>
-            <div class="floating-tie" style="top: 35%; right: 15%; animation-delay: 3s; font-size: 40px;">👔</div>
             <div class="floating-tie" style="top: 65%; left: 20%; animation-delay: 1.5s; animation-duration: 10s;">👔</div>
             
             <!-- 闪烁的星星 -->
@@ -1122,10 +1110,21 @@
             list.innerHTML = `<div class="warning-grid">${html}</div>${batchInfo}`;
         }
         
+        // 加载统计数据
+        async function loadStats() {
+            try {
+                const res = await fetch('/api/gpa/stats');
+                const data = await res.json();
+                document.getElementById('totalUsers').textContent = data.total;
+                document.getElementById('avgGpa').textContent = data.avgGpa;
+            } catch (err) {
+                console.error('加载统计数据失败:', err);
+            }
+        }
+        
         // 初始化
         async function init() {
-            checkFestival(); // 检查节日装饰
-            await Promise.all([loadAll(), loadRisingStars(), loadWarningList()]);
+            await Promise.all([loadAll(), loadRisingStars(), loadWarningList(), loadStats()]);
         }
         
         init();
