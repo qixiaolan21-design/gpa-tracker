@@ -318,15 +318,15 @@ app.get('/api/gpa/rising-stars', (req, res) => {
     res.json(growthData.slice(0, limit));
 });
 
-// 获取预警榜单（近2周没有增加绩点的用户）
-// 基于"本次新增"字段判断：如果本次新增为0，说明近期没有增加绩点
+// 获取预警榜单（近一周没有增加绩点的用户）
+// 基于"本次新增"字段判断：如果本次新增为0，说明近一周没有增加绩点
 app.get('/api/gpa/warning', (req, res) => {
     const warningData = [];
     
     gpaData.forEach(user => {
-        // 如果本次新增为0，说明近期没有增加绩点
-        // 历史绩点 > 0 表示是老用户（有历史记录），新用户不加入预警
-        if (user.newGpa === 0 && user.historyGpa > 0) {
+        // 如果本次新增为0，说明近一周没有增加绩点
+        // 排除示例用户和特定账号
+        if (user.newGpa === 0 && !user.id.startsWith('900000') && user.id !== '90003692') {
             warningData.push({
                 id: user.id,
                 idMasked: user.idMasked,
