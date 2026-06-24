@@ -799,17 +799,36 @@
             }, 100);
         }
         
+        // 沉睡用户数据缓存
+        let sleepingUsersData = [];
+        
+        // 加载沉睡用户数据
+        async function loadSleepingUsers() {
+            try {
+                const res = await fetch('/api/gpa/sleeping');
+                sleepingUsersData = await res.json();
+            } catch (err) {
+                console.error('加载沉睡用户失败:', err);
+            }
+        }
+        
         // 筛选用户
-        function filterUsers(type) {
+        async function filterUsers(type) {
             currentFilter = type;
             let filtered = allUsers;
             
             if (type === 'active') {
-                filtered = allUsers.filter(u => u.newGpa > 0);
+                // 活跃用户 = 不在沉睡名单中的用户
+                const sleepingIds = new Set(sleepingUsersData.map(u => u.id));
+                filtered = allUsers.filter(u => !sleepingIds.has(u.id));
                 document.getElementById('tableTitle').textContent = '活跃客户列表';
             } else if (type === 'sleeping') {
-                filtered = allUsers.filter(u => u.newGpa === 0);
-                document.getElementById('tableTitle').textContent = '沉睡客户列表';
+                // 沉睡用户 = 从沉睡名单API获取
+                const sleepingIds = new Set(sleepingUsersData.map(u => u.id));
+                filtered = allUsers.filter(u => sleepingIds.has(u.id));
+                // 按绩点排序
+                filtered.sort((a, b) => b.totalGpa - a.totalGpa);
+                document.getElementById('tableTitle').textContent = '沉睡客户列表（近一周未听课）';
             } else {
                 document.getElementById('tableTitle').textContent = '全部客户列表';
             }
@@ -852,10 +871,14 @@
                 return;
             }
             
+            // 获取沉睡用户ID集合
+            const sleepingIds = new Set(sleepingUsersData.map(u => u.id));
+            
             const html = data.map((user, index) => {
-                const isActive = user.newGpa > 0;
-                const statusClass = isActive ? 'status-active' : 'status-sleeping';
-                const statusText = isActive ? '活跃' : '沉睡';
+                const isSleeping = sleepingIds.has(user.id);
+                const isActive = !isSleeping && user.newGpa > 0;
+                const statusClass = isActive ? 'status-active' : (isSleeping ? 'status-sleeping' : 'status-active');
+                const statusText = isActive ? '📈 活跃' : (isSleeping ? '😴 沉睡' : '📈 活跃');
                 const gpaClass = user.totalGpa >= 100 ? 'gpa-high' : 'gpa-low';
                 const remainingGpa = user.totalGpa - (user.usedGpa || 0);
                 
@@ -1261,7 +1284,7 @@
         }
         
         // 初始化
-        loadData();
+        loadData().then(() => loadSleepingUsers());
         loadAccessLogs();
         loadLoginLogs();
         
