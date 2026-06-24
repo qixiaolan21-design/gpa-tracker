@@ -609,6 +609,37 @@
             color: #e74c3c;
             text-align: right;
         }
+        .warning-danger-badge {
+            font-size: 11px;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 12px;
+            white-space: nowrap;
+            animation: dangerPulse 1.5s ease-in-out infinite;
+        }
+        .warning-danger-badge.warning-critical {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.5);
+        }
+        .warning-danger-badge.warning-high {
+            background: linear-gradient(135deg, #e67e22, #d35400);
+            color: white;
+            box-shadow: 0 2px 8px rgba(230, 126, 34, 0.4);
+        }
+        .warning-danger-badge.warning-medium {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            box-shadow: 0 2px 8px rgba(243, 156, 18, 0.3);
+        }
+        .warning-danger-badge.warning-low {
+            background: linear-gradient(135deg, #f1c40f, #f39c12);
+            color: #333;
+        }
+        @keyframes dangerPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
         @media (max-width: 600px) {
             .warning-grid {
                 grid-template-columns: 1fr;
@@ -1383,6 +1414,8 @@
             
             const html = batchData.map((item, index) => {
                 const globalIndex = startIndex + index;
+                const dangerTag = item.dangerTag || '⚠️ 注意';
+                const dangerClass = item.dangerClass || 'warning-low';
                 return `
                     <div class="warning-item">
                         <div class="warning-rank">${globalIndex + 1}</div>
@@ -1391,6 +1424,7 @@
                             <div class="warning-id">${item.idMasked}</div>
                         </div>
                         <div class="warning-gpa">${item.totalGpa}</div>
+                        <div class="warning-danger-badge ${dangerClass}">${dangerTag}</div>
                     </div>
                 `;
             }).join('');
