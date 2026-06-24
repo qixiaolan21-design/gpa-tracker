@@ -238,18 +238,30 @@ function calculateWeeklyGrowth() {
         const growth = user.newGpa || 0;
         
         if (growth > 0) {
-            // 计算飞跃原因
-            let reason = '';
             const notesCount = user.notes || 0;
             
-            if (notesCount >= 5) {
-                reason = `提交作业${notesCount}次，学习超积极！`;
-            } else if (notesCount >= 2) {
-                reason = `提交作业${notesCount}次，保持学习！`;
+            // 判断是作业之星还是学习之星
+            // 笔记次数 >= 3 认为是作业之星，否则是学习之星
+            let starType = 'study'; // study 或 homework
+            let starTitle = '📚 学习之星';
+            let reason = '';
+            
+            if (notesCount >= 3) {
+                starType = 'homework';
+                starTitle = '📝 作业之星';
+                if (notesCount >= 10) {
+                    reason = `提交笔记${notesCount}次，作业达人！`;
+                } else if (notesCount >= 5) {
+                    reason = `提交笔记${notesCount}次，学习超积极！`;
+                } else {
+                    reason = `提交笔记${notesCount}次，保持学习！`;
+                }
             } else if (notesCount > 0) {
-                reason = `提交作业${notesCount}次`;
+                starType = 'homework';
+                starTitle = '📝 作业之星';
+                reason = `提交笔记${notesCount}次`;
             } else {
-                reason = '坚持听课学习';
+                reason = '坚持听课学习，积极参与！';
             }
             
             growthData.push({
@@ -259,6 +271,8 @@ function calculateWeeklyGrowth() {
                 totalGpa: user.totalGpa,
                 growth: growth,
                 notes: notesCount,
+                starType: starType,
+                starTitle: starTitle,
                 reason: reason,
                 isGongying: user.isGongying
             });

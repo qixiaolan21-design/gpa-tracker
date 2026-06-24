@@ -347,6 +347,49 @@
             margin-bottom: 20px;
         }
         
+        /* 粉丝灯牌 */
+        .fan-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: 6px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            animation: fanBadgeGlow 2s ease-in-out infinite;
+        }
+        .fan-badge:hover {
+            transform: scale(1.1);
+        }
+        @keyframes fanBadgeGlow {
+            0%, 100% { box-shadow: 0 0 5px rgba(255,255,255,0.3); }
+            50% { box-shadow: 0 0 15px rgba(255,255,255,0.6); }
+        }
+        .fan-badge.homework {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        .fan-badge.study {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        /* 大星星 */
+        .big-star {
+            font-size: 20px;
+            cursor: help;
+            transition: transform 0.3s;
+            display: inline-block;
+        }
+        .big-star:hover {
+            transform: scale(1.3) rotate(15deg);
+        }
+        
         /* 预警榜单 - 双列紧凑版 */
         .warning-section {
             background: linear-gradient(135deg, rgba(231, 76, 60, 0.12) 0%, rgba(192, 57, 43, 0.12) 100%);
@@ -1223,18 +1266,21 @@
                 const rankClass = index === 0 ? 'rising-star-rank-1' : index === 1 ? 'rising-star-rank-2' : index === 2 ? 'rising-star-rank-3' : 'rising-star-rank-other';
                 const rankIcon = index === 0 ? '1' : index === 1 ? '2' : index === 2 ? '3' : `${index + 1}`;
                 const tooltipText = item.reason || '积极学习，绩点飙升！';
+                const starBadgeClass = item.starType === 'homework' ? 'homework' : 'study';
+                const starTitle = item.starTitle || '📚 学习之星';
                 
                 return `
                     <div class="rising-star-item">
                         <div class="rising-star-rank ${rankClass}">${rankIcon}</div>
                         <div class="rising-star-info">
                             <div class="rising-star-name">
-                                <span class="rising-star-badge" title="${tooltipText}" style="cursor:help;">⭐</span>
+                                <span class="big-star" title="${tooltipText}">⭐</span>
                                 ${item.name}
+                                <span class="fan-badge ${starBadgeClass}" title="${tooltipText}">${starTitle}</span>
                             </div>
                             <div class="rising-star-id">${item.idMasked}</div>
                         </div>
-                        <div class="growth-value" title="${tooltipText}">+${item.growth}</div>
+                        <div class="growth-value">+${item.growth}</div>
                     </div>
                 `;
             }).join('');
