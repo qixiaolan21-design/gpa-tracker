@@ -1177,8 +1177,9 @@
             try {
                 const res = await fetch(url);
                 const data = await res.json();
-                allData = data;
-                renderLeaderboard(data);
+                // 只展示20绩点以上的用户
+                allData = data.filter(u => u.totalGpa >= 20);
+                renderLeaderboard(allData);
             } catch (err) {
                 console.error('加载失败:', err);
                 document.getElementById('leaderboardList').innerHTML = 
