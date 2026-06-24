@@ -1356,17 +1356,36 @@
             }
         }
         
+        // 沉睡用户数据缓存
+        let sleepingUsersCache = new Set();
+
+        // 加载沉睡用户数据
+        async function loadSleepingUsers() {
+            try {
+                const res = await fetch('/api/gpa/sleeping');
+                const data = await res.json();
+                sleepingUsersCache = new Set(data.map(u => u.id));
+            } catch (err) {
+                console.error('加载沉睡用户失败:', err);
+            }
+        }
+
         // 获取成就徽章（只显示活跃状态，排名徽章由getRankBadge处理）
         function getAchievementBadges(item, index) {
             let badges = '';
-            
-            // 活跃徽章
-            if (item.newGpa > 0) {
+
+            // 检查是否是沉睡用户（基于听课记录）
+            const isSleeping = sleepingUsersCache.has(item.id);
+
+            // 活跃/沉睡徽章
+            if (isSleeping) {
+                badges += '<span class="achievement-badge badge-sleeping">😴 沉睡中</span>';
+            } else if (item.newGpa > 0) {
                 badges += '<span class="achievement-badge badge-active">📈 活跃</span>';
             } else {
-                badges += '<span class="achievement-badge badge-sleeping">😴 沉睡中</span>';
+                badges += '<span class="achievement-badge badge-active">📈 活跃</span>';
             }
-            
+
             return badges;
         }
         
@@ -1646,7 +1665,7 @@
         
         // 初始化
         async function init() {
-            await Promise.all([loadAll(), loadRisingStars(), loadWarningList(), loadStats()]);
+            await Promise.all([loadAll(), loadRisingStars(), loadWarningList(), loadStats(), loadSleepingUsers()]);
         }
         
         // 登录功能
@@ -1671,20 +1690,23 @@
             }
             
             try {
-                // 验证用户ID是否存在
-                const res = await fetch('/api/gpa');
-                const allData = await res.json();
-                const user = allData.find(u => u.id === userId);
-                
-                if (!user) {
-                    alert('未找到该精网号，请确认后重试');
-                    return;
+                // 尝试获取用户信息，如果不存在则使用ID作为名称
+                let userName = userId;
+                try {
+                    const res = await fetch('/api/gpa');
+                    const allData = await res.json();
+                    const user = allData.find(u => u.id === userId);
+                    if (user) {
+                        userName = user.name;
+                    }
+                } catch (e) {
+                    // 忽略错误，使用ID作为名称
                 }
                 
                 // 保存登录信息
                 currentUser = {
-                    id: user.id,
-                    name: user.name,
+                    id: userId,
+                    name: userName,
                     loginTime: new Date().toISOString()
                 };
                 localStorage.setItem('gpaUser', JSON.stringify(currentUser));
@@ -1694,8 +1716,8 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        userId: user.id,
-                        userName: user.name,
+                        userId: userId,
+                        userName: userName,
                         timestamp: new Date().toISOString()
                     })
                 });

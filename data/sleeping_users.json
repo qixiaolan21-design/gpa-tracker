@@ -1,0 +1,2864 @@
+[
+  {
+    "id": "90047921",
+    "idMasked": "900****21",
+    "name": "黄怀亮",
+    "totalGpa": 60,
+    "historyGpa": 60,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94627921",
+    "idMasked": "946****21",
+    "name": "3951",
+    "totalGpa": 60,
+    "historyGpa": 60,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90046673",
+    "idMasked": "900****73",
+    "name": "KevinGao",
+    "totalGpa": 56,
+    "historyGpa": 56,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90044655",
+    "idMasked": "900****55",
+    "name": "4655A",
+    "totalGpa": 41,
+    "historyGpa": 41,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90048227",
+    "idMasked": "900****27",
+    "name": "Chen Qian",
+    "totalGpa": 41,
+    "historyGpa": 41,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90023675",
+    "idMasked": "900****75",
+    "name": "何韋錡",
+    "totalGpa": 38,
+    "historyGpa": 38,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94584347",
+    "idMasked": "945****47",
+    "name": "3957",
+    "totalGpa": 36,
+    "historyGpa": 36,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94584918",
+    "idMasked": "945****18",
+    "name": "3858",
+    "totalGpa": 36,
+    "historyGpa": 36,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94609594",
+    "idMasked": "946****94",
+    "name": "Shasha",
+    "totalGpa": 36,
+    "historyGpa": 36,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94584208",
+    "idMasked": "945****08",
+    "name": "J XingMei",
+    "totalGpa": 32,
+    "historyGpa": 32,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94632921",
+    "idMasked": "946****21",
+    "name": "2883",
+    "totalGpa": 30,
+    "historyGpa": 30,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90040224",
+    "idMasked": "900****24",
+    "name": "Leslie",
+    "totalGpa": 30,
+    "historyGpa": 30,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90004313",
+    "idMasked": "900****13",
+    "name": "KOH AIK YEOW",
+    "totalGpa": 29,
+    "historyGpa": 29,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94633872",
+    "idMasked": "946****72",
+    "name": "8117",
+    "totalGpa": 28,
+    "historyGpa": 28,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90026852",
+    "idMasked": "900****52",
+    "name": "伍婉芬",
+    "totalGpa": 26,
+    "historyGpa": 26,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90039939",
+    "idMasked": "900****39",
+    "name": "Huainan Ma",
+    "totalGpa": 24,
+    "historyGpa": 24,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94591835",
+    "idMasked": "945****35",
+    "name": "2991",
+    "totalGpa": 24,
+    "historyGpa": 24,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90039557",
+    "idMasked": "900****57",
+    "name": "Tina233",
+    "totalGpa": 24,
+    "historyGpa": 24,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90044686",
+    "idMasked": "900****86",
+    "name": "Victoria E",
+    "totalGpa": 22,
+    "historyGpa": 22,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94629856",
+    "idMasked": "946****56",
+    "name": "Riek",
+    "totalGpa": 22,
+    "historyGpa": 22,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90043902",
+    "idMasked": "900****02",
+    "name": "譚清薇 TamChingMei",
+    "totalGpa": 22,
+    "historyGpa": 22,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90025320",
+    "idMasked": "900****20",
+    "name": "Choong Soon Kheong",
+    "totalGpa": 21,
+    "historyGpa": 21,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90045654",
+    "idMasked": "900****54",
+    "name": "Nana",
+    "totalGpa": 18,
+    "historyGpa": 18,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90048239",
+    "idMasked": "900****39",
+    "name": "小阳",
+    "totalGpa": 16,
+    "historyGpa": 16,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94599745",
+    "idMasked": "945****45",
+    "name": "Muson",
+    "totalGpa": 16,
+    "historyGpa": 16,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90048096",
+    "idMasked": "900****96",
+    "name": "霞",
+    "totalGpa": 15,
+    "historyGpa": 15,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90044388",
+    "idMasked": "900****88",
+    "name": "Jenny chen",
+    "totalGpa": 15,
+    "historyGpa": 15,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90008866",
+    "idMasked": "900****66",
+    "name": "MingHo",
+    "totalGpa": 15,
+    "historyGpa": 15,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90040065",
+    "idMasked": "900****65",
+    "name": "ChinYun Wu",
+    "totalGpa": 14,
+    "historyGpa": 14,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90014779",
+    "idMasked": "900****79",
+    "name": "Nig Sc",
+    "totalGpa": 14,
+    "historyGpa": 14,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90033114",
+    "idMasked": "900****14",
+    "name": "Ng Hui Koon",
+    "totalGpa": 13,
+    "historyGpa": 13,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90048190",
+    "idMasked": "900****90",
+    "name": "Christina Ma",
+    "totalGpa": 12,
+    "historyGpa": 12,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90044042",
+    "idMasked": "900****42",
+    "name": "Helena Siu",
+    "totalGpa": 11,
+    "historyGpa": 11,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90003810",
+    "idMasked": "900****10",
+    "name": "Chang Kok Hau",
+    "totalGpa": 11,
+    "historyGpa": 11,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90027387",
+    "idMasked": "900****87",
+    "name": "劉惠玲",
+    "totalGpa": 10,
+    "historyGpa": 10,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90044419",
+    "idMasked": "900****19",
+    "name": "SS",
+    "totalGpa": 10,
+    "historyGpa": 10,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90028688",
+    "idMasked": "900****88",
+    "name": "Janice Chong",
+    "totalGpa": 10,
+    "historyGpa": 10,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90036991",
+    "idMasked": "900****91",
+    "name": "WAY",
+    "totalGpa": 10,
+    "historyGpa": 10,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90039226",
+    "idMasked": "900****26",
+    "name": "Chun",
+    "totalGpa": 10,
+    "historyGpa": 10,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90040226",
+    "idMasked": "900****26",
+    "name": "李克志 KC Lee",
+    "totalGpa": 10,
+    "historyGpa": 10,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90003195",
+    "idMasked": "900****95",
+    "name": "Pamela Tan",
+    "totalGpa": 10,
+    "historyGpa": 10,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90018529",
+    "idMasked": "900****29",
+    "name": "Olive Chng",
+    "totalGpa": 10,
+    "historyGpa": 10,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90048373",
+    "idMasked": "900****73",
+    "name": "Careo",
+    "totalGpa": 9,
+    "historyGpa": 9,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90024188",
+    "idMasked": "900****88",
+    "name": "火先生",
+    "totalGpa": 9,
+    "historyGpa": 9,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90008297",
+    "idMasked": "900****97",
+    "name": "Dannychu",
+    "totalGpa": 9,
+    "historyGpa": 9,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90026662",
+    "idMasked": "900****62",
+    "name": "John Law Sie Giong",
+    "totalGpa": 9,
+    "historyGpa": 9,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90023564",
+    "idMasked": "900****64",
+    "name": "李志鈞",
+    "totalGpa": 8,
+    "historyGpa": 8,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90040026",
+    "idMasked": "900****26",
+    "name": "Kathy",
+    "totalGpa": 8,
+    "historyGpa": 8,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90041851",
+    "idMasked": "900****51",
+    "name": "Jerry",
+    "totalGpa": 8,
+    "historyGpa": 8,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94622436",
+    "idMasked": "946****36",
+    "name": "3917",
+    "totalGpa": 8,
+    "historyGpa": 8,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94633405",
+    "idMasked": "946****05",
+    "name": "5862",
+    "totalGpa": 8,
+    "historyGpa": 8,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90044445",
+    "idMasked": "900****45",
+    "name": "颖宝",
+    "totalGpa": 8,
+    "historyGpa": 8,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90031997",
+    "idMasked": "900****97",
+    "name": "❄️I CY ❄️",
+    "totalGpa": 8,
+    "historyGpa": 8,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90035147",
+    "idMasked": "900****47",
+    "name": "Tan Tek Wah",
+    "totalGpa": 8,
+    "historyGpa": 8,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90003484",
+    "idMasked": "900****84",
+    "name": "S L Ng",
+    "totalGpa": 7,
+    "historyGpa": 7,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90008513",
+    "idMasked": "900****13",
+    "name": "YC WANG",
+    "totalGpa": 7,
+    "historyGpa": 7,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90022562",
+    "idMasked": "900****62",
+    "name": "Kwan CW",
+    "totalGpa": 7,
+    "historyGpa": 7,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90033920",
+    "idMasked": "900****20",
+    "name": "Ng SK",
+    "totalGpa": 7,
+    "historyGpa": 7,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90038115",
+    "idMasked": "900****15",
+    "name": "Elun Ong",
+    "totalGpa": 7,
+    "historyGpa": 7,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90006243",
+    "idMasked": "900****43",
+    "name": "Jordan**",
+    "totalGpa": 6,
+    "historyGpa": 6,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90038631",
+    "idMasked": "900****31",
+    "name": "M YIP",
+    "totalGpa": 6,
+    "historyGpa": 6,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90040298",
+    "idMasked": "900****98",
+    "name": "Phelix Poon",
+    "totalGpa": 6,
+    "historyGpa": 6,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90044352",
+    "idMasked": "900****52",
+    "name": "Mei",
+    "totalGpa": 6,
+    "historyGpa": 6,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90044562",
+    "idMasked": "900****62",
+    "name": "Mingquan Li",
+    "totalGpa": 6,
+    "historyGpa": 6,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90047895",
+    "idMasked": "900****95",
+    "name": "Mei Koh",
+    "totalGpa": 6,
+    "historyGpa": 6,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90047906",
+    "idMasked": "900****06",
+    "name": "黄健",
+    "totalGpa": 6,
+    "historyGpa": 6,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90048276",
+    "idMasked": "900****76",
+    "name": "Jing wang",
+    "totalGpa": 6,
+    "historyGpa": 6,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94623935",
+    "idMasked": "946****35",
+    "name": "cenpu",
+    "totalGpa": 6,
+    "historyGpa": 6,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90038578",
+    "idMasked": "900****78",
+    "name": "唐月娟 TONG YUET KUEN",
+    "totalGpa": 6,
+    "historyGpa": 6,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90026523",
+    "idMasked": "900****23",
+    "name": "黃中平",
+    "totalGpa": 6,
+    "historyGpa": 6,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90038573",
+    "idMasked": "900****73",
+    "name": "Mia",
+    "totalGpa": 6,
+    "historyGpa": 6,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90026286",
+    "idMasked": "900****86",
+    "name": "OCH",
+    "totalGpa": 6,
+    "historyGpa": 6,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90025526",
+    "idMasked": "900****26",
+    "name": "Mu Shaw Ming",
+    "totalGpa": 6,
+    "historyGpa": 6,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90005258",
+    "idMasked": "900****58",
+    "name": "Lsim",
+    "totalGpa": 6,
+    "historyGpa": 6,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90030398",
+    "idMasked": "900****98",
+    "name": "瑩瑩",
+    "totalGpa": 6,
+    "historyGpa": 6,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90002181",
+    "idMasked": "900****81",
+    "name": "Zhao Rong Hui",
+    "totalGpa": 6,
+    "historyGpa": 6,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90029237",
+    "idMasked": "900****37",
+    "name": "Ginny Y",
+    "totalGpa": 6,
+    "historyGpa": 6,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90044460",
+    "idMasked": "900****60",
+    "name": "柴胜军",
+    "totalGpa": 6,
+    "historyGpa": 6,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94629154",
+    "idMasked": "946****54",
+    "name": "6822",
+    "totalGpa": 5,
+    "historyGpa": 5,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90046693",
+    "idMasked": "900****93",
+    "name": "Jiang",
+    "totalGpa": 5,
+    "historyGpa": 5,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90039243",
+    "idMasked": "900****43",
+    "name": "Winnie譚",
+    "totalGpa": 5,
+    "historyGpa": 5,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90043884",
+    "idMasked": "900****84",
+    "name": "CCL",
+    "totalGpa": 5,
+    "historyGpa": 5,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90033900",
+    "idMasked": "900****00",
+    "name": "林麗容Linlirong",
+    "totalGpa": 5,
+    "historyGpa": 5,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90005965",
+    "idMasked": "900****65",
+    "name": "Fiona",
+    "totalGpa": 5,
+    "historyGpa": 5,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94626192",
+    "idMasked": "946****92",
+    "name": "8879",
+    "totalGpa": 5,
+    "historyGpa": 5,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90009731",
+    "idMasked": "900****31",
+    "name": "IreneLim",
+    "totalGpa": 5,
+    "historyGpa": 5,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90006021",
+    "idMasked": "900****21",
+    "name": "麥谷",
+    "totalGpa": 5,
+    "historyGpa": 5,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90030299",
+    "idMasked": "900****99",
+    "name": "Ong yew kim",
+    "totalGpa": 5,
+    "historyGpa": 5,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90039897",
+    "idMasked": "900****97",
+    "name": "Kerry Jin",
+    "totalGpa": 5,
+    "historyGpa": 5,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90044078",
+    "idMasked": "900****78",
+    "name": "Jack",
+    "totalGpa": 4,
+    "historyGpa": 4,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90047837",
+    "idMasked": "900****37",
+    "name": "Song(松）",
+    "totalGpa": 4,
+    "historyGpa": 4,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90048141",
+    "idMasked": "900****41",
+    "name": "Flora",
+    "totalGpa": 4,
+    "historyGpa": 4,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90001479",
+    "idMasked": "900****79",
+    "name": "LIOU WOO ING",
+    "totalGpa": 4,
+    "historyGpa": 4,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90040103",
+    "idMasked": "900****03",
+    "name": "Lee Lui Hiong",
+    "totalGpa": 4,
+    "historyGpa": 4,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90040233",
+    "idMasked": "900****33",
+    "name": "JENQ CHEN",
+    "totalGpa": 4,
+    "historyGpa": 4,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90040310",
+    "idMasked": "900****10",
+    "name": "Larry Xing",
+    "totalGpa": 4,
+    "historyGpa": 4,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94620338",
+    "idMasked": "946****38",
+    "name": "4772",
+    "totalGpa": 4,
+    "historyGpa": 4,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90028825",
+    "idMasked": "900****25",
+    "name": "Koay Boon Bioh 郭文謀",
+    "totalGpa": 4,
+    "historyGpa": 4,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94619515",
+    "idMasked": "946****15",
+    "name": "8958",
+    "totalGpa": 4,
+    "historyGpa": 4,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90010233",
+    "idMasked": "900****33",
+    "name": "凯文 ™",
+    "totalGpa": 4,
+    "historyGpa": 4,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90005440",
+    "idMasked": "900****40",
+    "name": "Tan Jok Tin",
+    "totalGpa": 4,
+    "historyGpa": 4,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90004005",
+    "idMasked": "900****05",
+    "name": "ONG GEOK KWEE",
+    "totalGpa": 4,
+    "historyGpa": 4,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90020794",
+    "idMasked": "900****94",
+    "name": "董鈴",
+    "totalGpa": 4,
+    "historyGpa": 4,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90028219",
+    "idMasked": "900****19",
+    "name": "Judy Sim",
+    "totalGpa": 4,
+    "historyGpa": 4,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90003498",
+    "idMasked": "900****98",
+    "name": "韓偉倫（HON WAI LUN）",
+    "totalGpa": 4,
+    "historyGpa": 4,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90044459",
+    "idMasked": "900****59",
+    "name": "Jacky138",
+    "totalGpa": 4,
+    "historyGpa": 4,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90000779",
+    "idMasked": "900****79",
+    "name": "Soo Kia Hua",
+    "totalGpa": 4,
+    "historyGpa": 4,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90000825",
+    "idMasked": "900****25",
+    "name": "Pang Gim Siang",
+    "totalGpa": 4,
+    "historyGpa": 4,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90002301",
+    "idMasked": "900****01",
+    "name": "Liew ny",
+    "totalGpa": 4,
+    "historyGpa": 4,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90041947",
+    "idMasked": "900****47",
+    "name": "Kathy Wang",
+    "totalGpa": 4,
+    "historyGpa": 4,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90002292",
+    "idMasked": "900****92",
+    "name": "Kian Wei Shen",
+    "totalGpa": 4,
+    "historyGpa": 4,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90025840",
+    "idMasked": "900****40",
+    "name": "Steven Tan 陈昫成",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90040350",
+    "idMasked": "900****50",
+    "name": "Wey Jong Chen",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90044425",
+    "idMasked": "900****25",
+    "name": "Caroline Li",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90046742",
+    "idMasked": "900****42",
+    "name": "nukky",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90010226",
+    "idMasked": "900****26",
+    "name": "Tan Joo Kim",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90023292",
+    "idMasked": "900****92",
+    "name": "吳棟樑",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90027131",
+    "idMasked": "900****31",
+    "name": "Ann Ma",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90039789",
+    "idMasked": "900****89",
+    "name": "東尼",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90039942",
+    "idMasked": "900****42",
+    "name": "Thomas Pung",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90044075",
+    "idMasked": "900****75",
+    "name": "LULU",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90047827",
+    "idMasked": "900****27",
+    "name": "Wenying Zheng",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90048106",
+    "idMasked": "900****06",
+    "name": "Chen Sim Hoe",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90001511",
+    "idMasked": "900****11",
+    "name": "Arthur Teo",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90044474",
+    "idMasked": "900****74",
+    "name": "Lynn",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90029102",
+    "idMasked": "900****02",
+    "name": "LO YOON SUN",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90022742",
+    "idMasked": "900****42",
+    "name": "Foo Siang Hoe",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90026705",
+    "idMasked": "900****05",
+    "name": "蕭柔濟",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90010181",
+    "idMasked": "900****81",
+    "name": "Dennis Yee",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90023803",
+    "idMasked": "900****03",
+    "name": "陳宛珊",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90040008",
+    "idMasked": "900****08",
+    "name": "Diana",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90037052",
+    "idMasked": "900****52",
+    "name": "Wendy",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90000581",
+    "idMasked": "900****81",
+    "name": "Esther SIEW PATT YUH",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90041893",
+    "idMasked": "900****93",
+    "name": "Rose Rongqi Wang",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90020585",
+    "idMasked": "900****85",
+    "name": "Richard",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90021686",
+    "idMasked": "900****86",
+    "name": "An son",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90020448",
+    "idMasked": "900****48",
+    "name": "Lim**",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90027114",
+    "idMasked": "900****14",
+    "name": "LING**",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94579888",
+    "idMasked": "945****88",
+    "name": "4868",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90026394",
+    "idMasked": "900****94",
+    "name": "Teh Kok Ping",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90022427",
+    "idMasked": "900****27",
+    "name": "Loh Mei Oon",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90000337",
+    "idMasked": "900****37",
+    "name": "\" k c Heng\"",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90036932",
+    "idMasked": "900****32",
+    "name": "Loh Kwee Hin ( 罗桂兴）",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90022495",
+    "idMasked": "900****95",
+    "name": "LAW AH LEONG",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90006659",
+    "idMasked": "900****59",
+    "name": "Cher Ah Mui",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90007520",
+    "idMasked": "900****20",
+    "name": "Goh Peng Kim",
+    "totalGpa": 3,
+    "historyGpa": 3,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90001002",
+    "idMasked": "900****02",
+    "name": "John Lu",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90003603",
+    "idMasked": "900****03",
+    "name": "AJ. Larmy",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90006104",
+    "idMasked": "900****04",
+    "name": "LTL",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90006540",
+    "idMasked": "900****40",
+    "name": "Lane Lo",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90010216",
+    "idMasked": "900****16",
+    "name": "Danny Yam Chun Loong",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90028653",
+    "idMasked": "900****53",
+    "name": "Rachel Ng",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90036928",
+    "idMasked": "900****28",
+    "name": "羅Ben漢",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90039328",
+    "idMasked": "900****28",
+    "name": "周偉文 Chow Wai Man",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90039606",
+    "idMasked": "900****06",
+    "name": "Li Ying Donchez",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90039913",
+    "idMasked": "900****13",
+    "name": "Song",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90040141",
+    "idMasked": "900****41",
+    "name": "Mary",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90042039",
+    "idMasked": "900****39",
+    "name": "Hui Zeng",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90044049",
+    "idMasked": "900****49",
+    "name": "羅華",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90044418",
+    "idMasked": "900****18",
+    "name": "Yonghui Zhang",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90044448",
+    "idMasked": "900****48",
+    "name": "Andrew",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90044577",
+    "idMasked": "900****77",
+    "name": "Susanna",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90047755",
+    "idMasked": "900****55",
+    "name": "Vivian",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90047927",
+    "idMasked": "900****27",
+    "name": "Yolanda",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90048066",
+    "idMasked": "900****66",
+    "name": "Victoria",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90048196",
+    "idMasked": "900****96",
+    "name": "Max Jiang",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90048203",
+    "idMasked": "900****03",
+    "name": "Sean Zhang",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90048269",
+    "idMasked": "900****69",
+    "name": "Jessica",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94585197",
+    "idMasked": "945****97",
+    "name": "5269",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94597123",
+    "idMasked": "945****23",
+    "name": "S Stella",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94599975",
+    "idMasked": "945****75",
+    "name": "Yan",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94603361",
+    "idMasked": "946****61",
+    "name": "3390",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94613366",
+    "idMasked": "946****66",
+    "name": "Cheng",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94629419",
+    "idMasked": "946****19",
+    "name": "Raymond",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90026464",
+    "idMasked": "900****64",
+    "name": "Ryan",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90040124",
+    "idMasked": "900****24",
+    "name": "Hao Wang",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94619329",
+    "idMasked": "946****29",
+    "name": "5259",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90029915",
+    "idMasked": "900****15",
+    "name": "Ch Ng",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90009527",
+    "idMasked": "900****27",
+    "name": "Simon",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90002823",
+    "idMasked": "900****23",
+    "name": "Wong Ching Lam",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94605149",
+    "idMasked": "946****49",
+    "name": "6861",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90025550",
+    "idMasked": "900****50",
+    "name": "Tay Guat Meng",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90026482",
+    "idMasked": "900****82",
+    "name": "Liew Yew Chin",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90000205",
+    "idMasked": "900****05",
+    "name": "Chua Meow Tiang",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90000643",
+    "idMasked": "900****43",
+    "name": "Jane Lee",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90021654",
+    "idMasked": "900****54",
+    "name": "SEAH GEOK YIM",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90029139",
+    "idMasked": "900****39",
+    "name": "Chan C C",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90045650",
+    "idMasked": "900****50",
+    "name": "袁鳳姬YUEN FUNG KEI",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90024101",
+    "idMasked": "900****01",
+    "name": "Wilson Chan",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90028732",
+    "idMasked": "900****32",
+    "name": "Lim Kong Yow",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90006898",
+    "idMasked": "900****98",
+    "name": "Phua**",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90007286",
+    "idMasked": "900****86",
+    "name": "Wei Jie Zhang",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90048254",
+    "idMasked": "900****54",
+    "name": "YANG  AIQUN",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90040349",
+    "idMasked": "900****49",
+    "name": "Carlson Tan kah sen 陈家生",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90044701",
+    "idMasked": "900****01",
+    "name": "WQ",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90043941",
+    "idMasked": "900****41",
+    "name": "Angela**",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90018468",
+    "idMasked": "900****68",
+    "name": "Daniel Yang",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90038195",
+    "idMasked": "900****95",
+    "name": "Colin 乾",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90026676",
+    "idMasked": "900****76",
+    "name": "Jennifer",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90042024",
+    "idMasked": "900****24",
+    "name": "Gwo Lin",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94629032",
+    "idMasked": "946****32",
+    "name": "0551",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90019996",
+    "idMasked": "900****96",
+    "name": "Law Tek Kim",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90005720",
+    "idMasked": "900****20",
+    "name": "Tan Tiang Chay",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94586881",
+    "idMasked": "945****81",
+    "name": "叶6637",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90001230",
+    "idMasked": "900****30",
+    "name": "scl",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90009585",
+    "idMasked": "900****85",
+    "name": "SK Jaw",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90049104",
+    "idMasked": "900****04",
+    "name": "Helen",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90000937",
+    "idMasked": "900****37",
+    "name": "Goh Chee Chain",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90019663",
+    "idMasked": "900****63",
+    "name": "葉惠蓮",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90024087",
+    "idMasked": "900****87",
+    "name": "Ben K.",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90000229",
+    "idMasked": "900****29",
+    "name": "LK Wong",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90021218",
+    "idMasked": "900****18",
+    "name": "CW",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90002968",
+    "idMasked": "900****68",
+    "name": "Chiew Man Wei",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90039024",
+    "idMasked": "900****24",
+    "name": "Susan",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90034010",
+    "idMasked": "900****10",
+    "name": "Song Quek Khian",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90039899",
+    "idMasked": "900****99",
+    "name": "Wei Bin Fang",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90029037",
+    "idMasked": "900****37",
+    "name": "Wong Kwee Hiong",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90029290",
+    "idMasked": "900****90",
+    "name": "Zac",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90019773",
+    "idMasked": "900****73",
+    "name": "TEY MENG KUAN",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90009503",
+    "idMasked": "900****03",
+    "name": "Tan Jui Chin",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90003027",
+    "idMasked": "900****27",
+    "name": "kho soon kheng",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90022190",
+    "idMasked": "900****90",
+    "name": "Loo Kiat Hin (爸爸LOO PENG YONG)",
+    "totalGpa": 2,
+    "historyGpa": 2,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90002969",
+    "idMasked": "900****69",
+    "name": "Yuen kit Ming",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90003866",
+    "idMasked": "900****66",
+    "name": "Sophia Chong",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90039888",
+    "idMasked": "900****88",
+    "name": "Rida Wang",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90040335",
+    "idMasked": "900****35",
+    "name": "大牛🐮",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90048073",
+    "idMasked": "900****73",
+    "name": "李智慧",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90048271",
+    "idMasked": "900****71",
+    "name": "Carrie Li",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90048354",
+    "idMasked": "900****54",
+    "name": "Xiaomei",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94617216",
+    "idMasked": "946****16",
+    "name": "HolyMolly",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90041820",
+    "idMasked": "900****20",
+    "name": "唐华",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90001639",
+    "idMasked": "900****39",
+    "name": "Pair",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90007619",
+    "idMasked": "900****19",
+    "name": "TH Ong",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90041815",
+    "idMasked": "900****15",
+    "name": "SAM ZHANG",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90006757",
+    "idMasked": "900****57",
+    "name": "Melody",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90028700",
+    "idMasked": "900****00",
+    "name": "Wan",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90039637",
+    "idMasked": "900****37",
+    "name": "陈作榮",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90007024",
+    "idMasked": "900****24",
+    "name": "Seow T F",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90026582",
+    "idMasked": "900****82",
+    "name": "Kung",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90025814",
+    "idMasked": "900****14",
+    "name": "YN",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90019937",
+    "idMasked": "900****37",
+    "name": "Lily Lee",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90041969",
+    "idMasked": "900****69",
+    "name": "Henry Hoo See Poo",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90026634",
+    "idMasked": "900****34",
+    "name": "Lye kim poh",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90009305",
+    "idMasked": "900****05",
+    "name": "MAH SWEE HOCK",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90028851",
+    "idMasked": "900****51",
+    "name": "K S Tan",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90012515",
+    "idMasked": "900****15",
+    "name": "SOON YEOK WAN",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90045656",
+    "idMasked": "900****56",
+    "name": "Rebecca WANG",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90040207",
+    "idMasked": "900****07",
+    "name": "Ai Lin",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90006690",
+    "idMasked": "900****90",
+    "name": "Dong",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90044240",
+    "idMasked": "900****40",
+    "name": "Steven Lee",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90003876",
+    "idMasked": "900****76",
+    "name": "Eric Poh",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90009630",
+    "idMasked": "900****30",
+    "name": "Ho Yuet  Kheng",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90047868",
+    "idMasked": "900****68",
+    "name": "叶先生",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90039346",
+    "idMasked": "900****46",
+    "name": "KS Wong",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90027861",
+    "idMasked": "900****61",
+    "name": "Jing Song (Jane）",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90029283",
+    "idMasked": "900****83",
+    "name": "Teresa",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90048896",
+    "idMasked": "900****96",
+    "name": "Lillian",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90048979",
+    "idMasked": "900****79",
+    "name": "Tanglin",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94604187",
+    "idMasked": "946****87",
+    "name": "Ah Tai",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90039205",
+    "idMasked": "900****05",
+    "name": "Joan Tan Gaik Sim 忆心",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90000583",
+    "idMasked": "900****83",
+    "name": "Mok S B",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90044486",
+    "idMasked": "900****86",
+    "name": "SHARON**",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90044002",
+    "idMasked": "900****02",
+    "name": "Jinning",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90034888",
+    "idMasked": "900****88",
+    "name": "XIE CAI LI RACHEL",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90006587",
+    "idMasked": "900****87",
+    "name": "PEH CHIN LOO",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90002157",
+    "idMasked": "900****57",
+    "name": "Ng Monica",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90044662",
+    "idMasked": "900****62",
+    "name": "何兴刚 harry",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94628894",
+    "idMasked": "946****94",
+    "name": "9876",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94628953",
+    "idMasked": "946****53",
+    "name": "1218",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90008397",
+    "idMasked": "900****97",
+    "name": "CHIA BOCK SIM",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90028830",
+    "idMasked": "900****30",
+    "name": "Ryan",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90041944",
+    "idMasked": "900****44",
+    "name": "Lei PJ",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90026141",
+    "idMasked": "900****41",
+    "name": "艾莉茜亞",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90033192",
+    "idMasked": "900****92",
+    "name": "Yuan LOONG",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90001418",
+    "idMasked": "900****18",
+    "name": "Fok Chee Chiong",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90009856",
+    "idMasked": "900****56",
+    "name": "Chai Boon Tong",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90033465",
+    "idMasked": "900****65",
+    "name": "Teng Chee Keong",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90048702",
+    "idMasked": "900****02",
+    "name": "Sophia",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90009314",
+    "idMasked": "900****14",
+    "name": "赖?儿",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90034964",
+    "idMasked": "900****64",
+    "name": "Anca",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90005639",
+    "idMasked": "900****39",
+    "name": "Tan Khoon Chye",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90007491",
+    "idMasked": "900****91",
+    "name": "Koh Lai Peng",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90006368",
+    "idMasked": "900****68",
+    "name": "Tai Mun Wai",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90049200",
+    "idMasked": "900****00",
+    "name": "谢婉琴",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90000109",
+    "idMasked": "900****09",
+    "name": "WONG TOK HENG",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90042007",
+    "idMasked": "900****07",
+    "name": "DeZ稚霖",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90041787",
+    "idMasked": "900****87",
+    "name": "David Xu",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "94634882",
+    "idMasked": "946****82",
+    "name": "michael",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90002566",
+    "idMasked": "900****66",
+    "name": "Yeoh Lai Num",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90035247",
+    "idMasked": "900****47",
+    "name": "HFC",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90049107",
+    "idMasked": "900****07",
+    "name": "KEVIN",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90043930",
+    "idMasked": "900****30",
+    "name": "Phoon Soon Huat",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90042845",
+    "idMasked": "900****45",
+    "name": "Xing Geng",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90034097",
+    "idMasked": "900****97",
+    "name": "HenryH",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90043951",
+    "idMasked": "900****51",
+    "name": "雨静",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90028665",
+    "idMasked": "900****65",
+    "name": "Goh Chee Ming",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90021559",
+    "idMasked": "900****59",
+    "name": "Yeoh",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90003398",
+    "idMasked": "900****98",
+    "name": "蔡宇輝(Tsoi  Yu  Fai)",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90027752",
+    "idMasked": "900****52",
+    "name": "Lam Hon Chin",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90004646",
+    "idMasked": "900****46",
+    "name": "LENG CHEE HONG",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90023957",
+    "idMasked": "900****57",
+    "name": "Alice Szeto",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90047920",
+    "idMasked": "900****20",
+    "name": "Nancy li",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90003702",
+    "idMasked": "900****02",
+    "name": "Gan",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90016049",
+    "idMasked": "900****49",
+    "name": "\" JennyTam\"",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90008767",
+    "idMasked": "900****67",
+    "name": "Blueman",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90026945",
+    "idMasked": "900****45",
+    "name": "sandykam",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90042838",
+    "idMasked": "900****38",
+    "name": "Connie",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90021195",
+    "idMasked": "900****95",
+    "name": "HK Sam",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90000666",
+    "idMasked": "900****66",
+    "name": "Goh Kit Bah",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90039994",
+    "idMasked": "900****94",
+    "name": "TAN SWEE NGOH",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90005550",
+    "idMasked": "900****50",
+    "name": "NG SOW YING",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90039625",
+    "idMasked": "900****25",
+    "name": "Amy",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90039609",
+    "idMasked": "900****09",
+    "name": "ZZ",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90021723",
+    "idMasked": "900****23",
+    "name": "Wendy He",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90004249",
+    "idMasked": "900****49",
+    "name": "Patricia Tan Siew Ling",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90000185",
+    "idMasked": "900****85",
+    "name": "Lee Heng Wah",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90044328",
+    "idMasked": "900****28",
+    "name": "Wang Yong",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  },
+  {
+    "id": "90008137",
+    "idMasked": "900****37",
+    "name": "CKC",
+    "totalGpa": 1,
+    "historyGpa": 1,
+    "isGongying": false,
+    "isSleeping": true
+  }
+]

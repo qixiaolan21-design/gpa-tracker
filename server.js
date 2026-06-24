@@ -402,6 +402,75 @@ app.get('/api/gpa/warning', (req, res) => {
     }
 });
 
+// 获取沉睡用户名单
+app.get('/api/gpa/sleeping', (req, res) => {
+    try {
+        const sleepingFile = path.join(__dirname, 'data', 'sleeping_users.json');
+        if (fs.existsSync(sleepingFile)) {
+            const sleepingData = JSON.parse(fs.readFileSync(sleepingFile, 'utf-8'));
+            res.json(sleepingData);
+        } else {
+            res.json([]);
+        }
+    } catch (err) {
+        console.error('读取沉睡用户名单失败:', err);
+        res.json([]);
+    }
+});
+
+// 后台管理API - 删除预警用户
+app.delete('/api/admin/warning/:userId', (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const warningFile = path.join(__dirname, 'data', 'warning_list.json');
+        
+        if (fs.existsSync(warningFile)) {
+            let warningData = JSON.parse(fs.readFileSync(warningFile, 'utf-8'));
+            warningData = warningData.filter(u => u.id !== userId);
+            fs.writeFileSync(warningFile, JSON.stringify(warningData, null, 2));
+            console.log(`🗑️ 删除预警用户: ${userId}`);
+        }
+        
+        res.json({ success: true });
+    } catch (err) {
+        console.error('删除预警用户失败:', err);
+        res.status(500).json({ error: '删除失败' });
+    }
+});
+
+// 后台管理API - 添加预警用户
+app.post('/api/admin/warning', express.json(), (req, res) => {
+    try {
+        const { userId, name, totalGpa, reason } = req.body;
+        const warningFile = path.join(__dirname, 'data', 'warning_list.json');
+        
+        let warningData = [];
+        if (fs.existsSync(warningFile)) {
+            warningData = JSON.parse(fs.readFileSync(warningFile, 'utf-8'));
+        }
+        
+        // 检查是否已存在
+        if (!warningData.find(u => u.id === userId)) {
+            warningData.push({
+                id: userId,
+                idMasked: userId.slice(0, 3) + '****' + userId.slice(-2),
+                name: name || '未知用户',
+                totalGpa: totalGpa || 0,
+                reason: reason || '手动添加',
+                addedAt: new Date().toISOString()
+            });
+            
+            fs.writeFileSync(warningFile, JSON.stringify(warningData, null, 2));
+            console.log(`➕ 添加预警用户: ${name} (${userId})`);
+        }
+        
+        res.json({ success: true });
+    } catch (err) {
+        console.error('添加预警用户失败:', err);
+        res.status(500).json({ error: '添加失败' });
+    }
+});
+
 // 获取统计信息
 app.get('/api/gpa/stats', (req, res) => {
     if (gpaData.length === 0) {
@@ -434,6 +503,32 @@ app.get('/health', (req, res) => {
 // 登录日志存储
 let loginLogs = [];
 const LOGIN_LOG_FILE = path.join(__dirname, 'data', 'login_logs.json');
+
+// 简单的IP地理位置映射（常用IP段）
+const ipLocationMap = {
+    '127.': '本地',
+    '192.168.': '局域网',
+    '10.': '局域网',
+    '172.': '局域网'
+};
+
+// 获取IP地理位置（简化版）
+function getIPLocation(ip) {
+    if (!ip || ip === 'unknown') return '未知';
+    
+    // 检查本地/局域网
+    for (const [prefix, location] of Object.entries(ipLocationMap)) {
+        if (ip.startsWith(prefix)) return location;
+    }
+    
+    // 根据IP段简单判断（实际项目中建议使用IP数据库）
+    // 这里返回IP的前两段作为标识
+    const parts = ip.split('.');
+    if (parts.length >= 2) {
+        return `${parts[0]}.${parts[1]}.*.*`;
+    }
+    return ip;
+}
 
 // 记录登录API
 app.post('/api/login', express.json(), (req, res) => {
@@ -471,7 +566,13 @@ app.post('/api/login', express.json(), (req, res) => {
 app.get('/api/admin/access-logs', (req, res) => {
     try {
         const limit = parseInt(req.query.limit) || 100;
-        const logs = accessLogs.slice(-limit).reverse(); // 最新的在前
+        let logs = accessLogs.slice(-limit).reverse(); // 最新的在前
+        
+        // 添加地理位置信息
+        logs = logs.map(log => ({
+            ...log,
+            location: getIPLocation(log.ip)
+        }));
         
         // 统计信息
         const uniqueIPs = new Set(accessLogs.map(l => l.ip)).size;

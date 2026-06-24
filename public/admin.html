@@ -354,6 +354,31 @@
             white-space: nowrap;
         }
         
+        /* 预警用户危险标签 */
+        .warning-danger-badge {
+            font-size: 11px;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 12px;
+            white-space: nowrap;
+        }
+        .warning-danger-badge.warning-critical {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        .warning-danger-badge.warning-high {
+            background: linear-gradient(135deg, #e67e22, #d35400);
+            color: white;
+        }
+        .warning-danger-badge.warning-medium {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+        }
+        .warning-danger-badge.warning-low {
+            background: linear-gradient(135deg, #f1c40f, #f39c12);
+            color: #333;
+        }
+        
         @media (max-width: 768px) {
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
             th, td { padding: 8px; font-size: 12px; }
@@ -374,6 +399,7 @@
             <div class="action-buttons">
                 <button class="action-btn redeem" onclick="openRedeemModal()">🎁 兑换绩点</button>
                 <button class="action-btn add" onclick="openAddModal()">➕ 添加用户</button>
+                <button class="action-btn" style="background: linear-gradient(135deg, #e74c3c, #c0392b); color: white;" onclick="openWarningModal()">⚠️ 管理预警用户</button>
             </div>
         </div>
         
@@ -522,8 +548,8 @@
                         <tr>
                             <th>时间</th>
                             <th>IP地址</th>
+                            <th>地区</th>
                             <th>来源</th>
-                            <th>设备信息</th>
                         </tr>
                     </thead>
                     <tbody id="accessLogTable">
@@ -674,6 +700,41 @@
             <div class="form-actions">
                 <button class="btn-primary" onclick="updateUser()">保存修改</button>
                 <button class="btn-secondary" onclick="closeModal('editModal')">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 预警用户管理弹窗 -->
+    <div id="warningModal" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <div class="modal-title">⚠️ 管理预警用户</div>
+                <span class="modal-close" onclick="closeModal('warningModal')">&times;</span>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <input type="text" id="warningUserId" placeholder="精网号" style="flex: 1; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px;">
+                    <input type="text" id="warningUserName" placeholder="姓名" style="flex: 1; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px;">
+                    <input type="number" id="warningUserGpa" placeholder="绩点" style="width: 80px; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px;">
+                    <button class="btn-primary" onclick="addWarningUser()" style="flex: none; padding: 10px 20px;">➕ 添加</button>
+                </div>
+            </div>
+            <div style="max-height: 400px; overflow-y: auto;">
+                <table style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>排名</th>
+                            <th>精网号</th>
+                            <th>姓名</th>
+                            <th>绩点</th>
+                            <th>危险等级</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="warningTable">
+                        <tr><td colspan="6" class="loading">加载中...</td></tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -1045,14 +1106,14 @@
                     tbody.innerHTML = data.logs.map(log => {
                         const time = new Date(log.timestamp).toLocaleString('zh-CN');
                         const ip = log.ip || 'unknown';
+                        const location = log.location || '未知';
                         const referer = log.referer === 'direct' ? '直接访问' : '外部链接';
-                        const userAgent = log.userAgent ? log.userAgent.substring(0, 50) + '...' : 'unknown';
                         return `
                             <tr>
                                 <td class="time-cell">${time}</td>
                                 <td class="ip-cell">${ip}</td>
+                                <td>${location}</td>
                                 <td>${referer}</td>
-                                <td title="${log.userAgent || ''}">${userAgent}</td>
                             </tr>
                         `;
                     }).join('');
@@ -1101,6 +1162,101 @@
                 console.error('加载登录日志失败:', err);
                 document.getElementById('loginLogTable').innerHTML = 
                     '<tr><td colspan="4" style="text-align:center;padding:20px;color:#e74c3c;">加载失败</td></tr>';
+            }
+        }
+        
+        // 预警用户管理
+        async function openWarningModal() {
+            document.getElementById('warningModal').classList.add('show');
+            await loadWarningUsers();
+        }
+        
+        async function loadWarningUsers() {
+            try {
+                const res = await fetch('/api/gpa/warning');
+                const data = await res.json();
+                
+                const tbody = document.getElementById('warningTable');
+                if (data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:#999;">暂无预警用户</td></tr>';
+                    return;
+                }
+                
+                tbody.innerHTML = data.map((user, index) => {
+                    const dangerTag = user.dangerTag || '⚠️ 注意';
+                    const dangerClass = user.dangerClass || 'warning-low';
+                    return `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${user.idMasked}</td>
+                            <td>${user.name}</td>
+                            <td>${user.totalGpa}</td>
+                            <td><span class="warning-danger-badge ${dangerClass}">${dangerTag}</span></td>
+                            <td>
+                                <button onclick="deleteWarningUser('${user.id}')" style="padding: 5px 10px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer;">删除</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) {
+                console.error('加载预警用户失败:', err);
+                document.getElementById('warningTable').innerHTML = 
+                    '<tr><td colspan="6" style="text-align:center;padding:20px;color:#e74c3c;">加载失败</td></tr>';
+            }
+        }
+        
+        async function addWarningUser() {
+            const userId = document.getElementById('warningUserId').value.trim();
+            const userName = document.getElementById('warningUserName').value.trim();
+            const userGpa = parseInt(document.getElementById('warningUserGpa').value) || 0;
+            
+            if (!userId || !userName) {
+                alert('请填写精网号和姓名');
+                return;
+            }
+            
+            try {
+                const res = await fetch('/api/admin/warning', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: userId,
+                        name: userName,
+                        totalGpa: userGpa,
+                        reason: '手动添加'
+                    })
+                });
+                
+                if (res.ok) {
+                    alert('添加成功！');
+                    document.getElementById('warningUserId').value = '';
+                    document.getElementById('warningUserName').value = '';
+                    document.getElementById('warningUserGpa').value = '';
+                    await loadWarningUsers();
+                } else {
+                    alert('添加失败');
+                }
+            } catch (err) {
+                alert('网络错误，请重试');
+            }
+        }
+        
+        async function deleteWarningUser(userId) {
+            if (!confirm('确定要删除该预警用户吗？')) return;
+            
+            try {
+                const res = await fetch('/api/admin/warning/' + userId, {
+                    method: 'DELETE'
+                });
+                
+                if (res.ok) {
+                    alert('删除成功！');
+                    await loadWarningUsers();
+                } else {
+                    alert('删除失败');
+                }
+            } catch (err) {
+                alert('网络错误，请重试');
             }
         }
         
