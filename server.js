@@ -381,6 +381,156 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// 后台管理API - 兑换绩点
+app.post('/api/admin/redeem', express.json(), (req, res) => {
+    const { userId, points, note } = req.body;
+    
+    if (!userId || !points || points <= 0) {
+        return res.status(400).json({ error: '参数错误' });
+    }
+    
+    const userIndex = gpaData.findIndex(u => u.id === userId);
+    if (userIndex === -1) {
+        return res.status(404).json({ error: '用户不存在' });
+    }
+    
+    const user = gpaData[userIndex];
+    const remainingGpa = user.totalGpa - (user.usedGpa || 0);
+    
+    if (remainingGpa < points) {
+        return res.status(400).json({ error: '绩点不足' });
+    }
+    
+    // 更新已使用绩点
+    user.usedGpa = (user.usedGpa || 0) + points;
+    
+    // 记录使用详情
+    const usedDetails = user.usedGpaDetails || '';
+    const newDetail = note || `兑换${points}绩点`;
+    user.usedGpaDetails = usedDetails ? `${usedDetails}; ${newDetail}` : newDetail;
+    
+    // 保存到CSV文件
+    saveGpaData();
+    
+    res.json({ success: true, message: '兑换成功' });
+});
+
+// 后台管理API - 添加用户
+app.post('/api/admin/users', express.json(), (req, res) => {
+    const { id, name, historyGpa, newGpa, notes } = req.body;
+    
+    if (!id || !name) {
+        return res.status(400).json({ error: '精网号和姓名不能为空' });
+    }
+    
+    // 检查用户是否已存在
+    if (gpaData.find(u => u.id === id)) {
+        return res.status(409).json({ error: '用户已存在' });
+    }
+    
+    const hGpa = parseInt(historyGpa) || 0;
+    const nGpa = parseInt(newGpa) || 0;
+    const nNotes = parseInt(notes) || 0;
+    
+    const newUser = {
+        id: id,
+        idMasked: id.substring(0, 2) + '****' + id.substring(id.length - 2),
+        name: name,
+        historyGpa: hGpa,
+        newGpa: nGpa,
+        totalGpa: hGpa + nGpa,
+        usedGpa: 0,
+        usedGpaDetails: '',
+        notes: nNotes,
+        isGongying: false,
+        updated: true
+    };
+    
+    gpaData.push(newUser);
+    
+    // 重新排序
+    gpaData.sort((a, b) => b.totalGpa - a.totalGpa);
+    
+    // 保存到CSV文件
+    saveGpaData();
+    
+    res.json({ success: true, message: '添加成功' });
+});
+
+// 后台管理API - 更新用户
+app.put('/api/admin/users/:id', express.json(), (req, res) => {
+    const userId = req.params.id;
+    const { name, historyGpa, newGpa, usedGpa, notes } = req.body;
+    
+    const userIndex = gpaData.findIndex(u => u.id === userId);
+    if (userIndex === -1) {
+        return res.status(404).json({ error: '用户不存在' });
+    }
+    
+    const user = gpaData[userIndex];
+    
+    if (name) user.name = name;
+    if (historyGpa !== undefined) user.historyGpa = parseInt(historyGpa) || 0;
+    if (newGpa !== undefined) user.newGpa = parseInt(newGpa) || 0;
+    if (usedGpa !== undefined) user.usedGpa = parseInt(usedGpa) || 0;
+    if (notes !== undefined) user.notes = parseInt(notes) || 0;
+    
+    // 重新计算总绩点
+    user.totalGpa = user.historyGpa + user.newGpa;
+    user.updated = true;
+    
+    // 重新排序
+    gpaData.sort((a, b) => b.totalGpa - a.totalGpa);
+    
+    // 保存到CSV文件
+    saveGpaData();
+    
+    res.json({ success: true, message: '更新成功' });
+});
+
+// 后台管理API - 删除用户
+app.delete('/api/admin/users/:id', (req, res) => {
+    const userId = req.params.id;
+    
+    const userIndex = gpaData.findIndex(u => u.id === userId);
+    if (userIndex === -1) {
+        return res.status(404).json({ error: '用户不存在' });
+    }
+    
+    gpaData.splice(userIndex, 1);
+    
+    // 保存到CSV文件
+    saveGpaData();
+    
+    res.json({ success: true, message: '删除成功' });
+});
+
+// 保存数据到CSV文件
+function saveGpaData() {
+    try {
+        const headers = ['精网号', '精网号(打码)', '姓名', '历史绩点', '本次新增', '总绩点', '笔记次数'];
+        let csvContent = '\uFEFF' + headers.join(',') + '\n';
+        
+        gpaData.forEach(user => {
+            const row = [
+                user.id,
+                user.idMasked,
+                user.name,
+                user.historyGpa,
+                user.newGpa,
+                user.totalGpa,
+                user.notes || 0
+            ];
+            csvContent += row.join(',') + '\n';
+        });
+        
+        fs.writeFileSync(CSV_FILE, csvContent, 'utf-8');
+        console.log('💾 数据已保存到CSV文件');
+    } catch (err) {
+        console.error('保存数据失败:', err);
+    }
+}
+
 // 错误处理中间件
 app.use((err, req, res, next) => {
     console.error('服务器错误:', err);

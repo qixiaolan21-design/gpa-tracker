@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏆 绩点管理系统 - 后台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* 头部 */
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+        header h1 { 
+            font-size: 32px; 
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* 操作按钮区 */
+        .action-section {
+            background: rgba(255,255,255,0.95);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        .action-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .action-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .action-btn.redeem {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+        }
+        .action-btn.add {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+        }
+        .action-btn.edit {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+        .action-btn.delete {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        /* 弹窗 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.show {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .modal-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+        .modal-close {
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+        .modal-close:hover {
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .btn-primary {
+            flex: 1;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-secondary {
+            flex: 1;
+            padding: 12px;
+            background: #e0e0e0;
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        /* 统计卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        .stat-card.active { border-top: 4px solid #27ae60; }
+        .stat-card.sleeping { border-top: 4px solid #e74c3c; }
+        .stat-card.total { border-top: 4px solid #667eea; }
+        .stat-card.avg { border-top: 4px solid #f39c12; }
+        .stat-icon { font-size: 40px; margin-bottom: 10px; }
+        .stat-value { font-size: 36px; font-weight: bold; color: #333; }
+        .stat-label { font-size: 14px; color: #666; margin-top: 5px; }
+        
+        /* 筛选区域 */
+        .filter-section {
+            background: rgba(255,255,255,0.95);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        .filter-title { font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #333; }
+        .filter-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+        .filter-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .filter-btn.active-users { background: linear-gradient(135deg, #27ae60, #2ecc71); color: white; }
+        .filter-btn.sleeping-users { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; }
+        .filter-btn.all-users { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+        .filter-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .search-box { display: flex; gap: 10px; margin-top: 15px; }
+        .search-box input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+        .search-box input:focus { outline: none; border-color: #667eea; }
+        .search-box button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        /* 数据表格 */
+        .data-section {
+            background: rgba(255,255,255,0.95);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        .data-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .data-title { font-size: 18px; font-weight: bold; color: #333; }
+        .data-count { font-size: 14px; color: #666; }
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f8f9fa; font-weight: 600; color: #333; font-size: 13px; }
+        td { font-size: 14px; }
+        tr:hover { background: #f8f9fa; }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status-active { background: #d4edda; color: #155724; }
+        .status-sleeping { background: #f8d7da; color: #721c24; }
+        .gpa-high { color: #27ae60; font-weight: bold; }
+        .gpa-low { color: #e74c3c; }
+        .action-icons { display: flex; gap: 8px; }
+        .action-icon { cursor: pointer; font-size: 18px; padding: 4px; border-radius: 4px; transition: background 0.2s; }
+        .action-icon:hover { background: #f0f0f0; }
+        .action-icon.edit { color: #3498db; }
+        .action-icon.delete { color: #e74c3c; }
+        .action-icon.redeem { color: #f39c12; }
+        
+        /* 导出按钮 */
+        .export-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+        .export-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3); }
+        
+        .loading { text-align: center; padding: 50px; color: #666; }
+        
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            th, td { padding: 8px; font-size: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏆 绩点管理系统</h1>
+            <p style="opacity: 0.8;">工作人员后台 - 客户数据查询与管理</p>
+        </header>
+        
+        <!-- 操作按钮区 -->
+        <div class="action-section">
+            <div class="action-title">⚡ 快捷操作</div>
+            <div class="action-buttons">
+                <button class="action-btn redeem" onclick="openRedeemModal()">🎁 兑换绩点</button>
+                <button class="action-btn add" onclick="openAddModal()">➕ 添加用户</button>
+            </div>
+        </div>
+        
+        <!-- 统计卡片 -->
+        <div class="stats-grid">
+            <div class="stat-card total">
+                <div class="stat-icon">👥</div>
+                <div class="stat-value" id="totalUsers">-</div>
+                <div class="stat-label">总客户数</div>
+            </div>
+            <div class="stat-card active">
+                <div class="stat-icon">📈</div>
+                <div class="stat-value" id="activeUsers">-</div>
+                <div class="stat-label">活跃客户</div>
+            </div>
+            <div class="stat-card sleeping">
+                <div class="stat-icon">😴</div>
+                <div class="stat-value" id="sleepingUsers">-</div>
+                <div class="stat-label">沉睡客户</div>
+            </div>
+            <div class="stat-card avg">
+                <div class="stat-icon">📊</div>
+                <div class="stat-value" id="avgGpa">-</div>
+                <div class="stat-label">平均绩点</div>
+            </div>
+        </div>
+        
+        <!-- 筛选区域 -->
+        <div class="filter-section">
+            <div class="filter-title">🔍 筛选客户</div>
+            <div class="filter-buttons">
+                <button class="filter-btn all-users" onclick="filterUsers('all')">全部客户</button>
+                <button class="filter-btn active-users" onclick="filterUsers('active')">活跃客户</button>
+                <button class="filter-btn sleeping-users" onclick="filterUsers('sleeping')">沉睡客户</button>
+            </div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="搜索姓名或精网号..." onkeypress="if(event.key==='Enter') searchUsers()">
+                <button onclick="searchUsers()">搜索</button>
+            </div>
+        </div>
+        
+        <!-- 数据表格 -->
+        <div class="data-section">
+            <div class="data-header">
+                <div class="data-title" id="tableTitle">客户列表</div>
+                <div class="data-count" id="tableCount">共 0 人</div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>排名</th>
+                            <th>精网号</th>
+                            <th>姓名</th>
+                            <th>总绩点</th>
+                            <th>已使用</th>
+                            <th>剩余</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTable">
+                        <tr><td colspan="8" class="loading">加载中...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <button class="export-btn" onclick="exportData()">📥 导出数据</button>
+        </div>
+    </div>
+
+    <!-- 兑换绩点弹窗 -->
+    <div id="redeemModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">🎁 兑换绩点</div>
+                <span class="modal-close" onclick="closeModal('redeemModal')">&times;</span>
+            </div>
+            <div class="form-group">
+                <label>用户ID</label>
+                <input type="text" id="redeemUserId" placeholder="输入精网号">
+            </div>
+            <div class="form-group">
+                <label>兑换项目</label>
+                <select id="redeemItem">
+                    <option value="10">AI赢家K线复盘报告 - 10绩点</option>
+                    <option value="5">AI预测大模型/云脑/利剑 - 5绩点</option>
+                    <option value="custom">自定义</option>
+                </select>
+            </div>
+            <div class="form-group" id="customPointsGroup" style="display:none;">
+                <label>自定义绩点</label>
+                <input type="number" id="customPoints" placeholder="输入绩点数量">
+            </div>
+            <div class="form-group">
+                <label>备注说明</label>
+                <input type="text" id="redeemNote" placeholder="例如：兑换AI赢家K线复盘报告">
+            </div>
+            <div class="form-actions">
+                <button class="btn-primary" onclick="redeemPoints()">确认兑换</button>
+                <button class="btn-secondary" onclick="closeModal('redeemModal')">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加用户弹窗 -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">➕ 添加用户</div>
+                <span class="modal-close" onclick="closeModal('addModal')">&times;</span>
+            </div>
+            <div class="form-group">
+                <label>精网号 *</label>
+                <input type="text" id="addUserId" placeholder="例如：90047959">
+            </div>
+            <div class="form-group">
+                <label>姓名 *</label>
+                <input type="text" id="addUserName" placeholder="例如：张三">
+            </div>
+            <div class="form-group">
+                <label>历史绩点</label>
+                <input type="number" id="addHistoryGpa" value="0" placeholder="0">
+            </div>
+            <div class="form-group">
+                <label>本次新增</label>
+                <input type="number" id="addNewGpa" value="0" placeholder="0">
+            </div>
+            <div class="form-group">
+                <label>笔记次数</label>
+                <input type="number" id="addNotes" value="0" placeholder="0">
+            </div>
+            <div class="form-actions">
+                <button class="btn-primary" onclick="addUser()">确认添加</button>
+                <button class="btn-secondary" onclick="closeModal('addModal')">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑用户弹窗 -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">✏️ 编辑用户</div>
+                <span class="modal-close" onclick="closeModal('editModal')">&times;</span>
+            </div>
+            <input type="hidden" id="editUserId">
+            <div class="form-group">
+                <label>精网号</label>
+                <input type="text" id="editUserIdDisplay" disabled>
+            </div>
+            <div class="form-group">
+                <label>姓名</label>
+                <input type="text" id="editUserName">
+            </div>
+            <div class="form-group">
+                <label>历史绩点</label>
+                <input type="number" id="editHistoryGpa">
+            </div>
+            <div class="form-group">
+                <label>本次新增</label>
+                <input type="number" id="editNewGpa">
+            </div>
+            <div class="form-group">
+                <label>已使用绩点</label>
+                <input type="number" id="editUsedGpa">
+            </div>
+            <div class="form-group">
+                <label>笔记次数</label>
+                <input type="number" id="editNotes">
+            </div>
+            <div class="form-actions">
+                <button class="btn-primary" onclick="updateUser()">保存修改</button>
+                <button class="btn-secondary" onclick="closeModal('editModal')">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allUsers = [];
+        let currentFilter = 'all';
+        
+        // 加载数据
+        async function loadData() {
+            try {
+                const res = await fetch('/api/gpa');
+                allUsers = await res.json();
+                updateStats();
+                renderTable(allUsers);
+            } catch (err) {
+                console.error('加载失败:', err);
+                document.getElementById('userTable').innerHTML = 
+                    '<tr><td colspan="8" style="text-align:center;padding:50px;color:#e74c3c;">加载失败，请刷新重试</td></tr>';
+            }
+        }
+        
+        // 更新统计数据
+        function updateStats() {
+            const total = allUsers.length;
+            const active = allUsers.filter(u => u.newGpa > 0).length;
+            const sleeping = total - active;
+            const avgGpa = total > 0 ? Math.round(allUsers.reduce((sum, u) => sum + u.totalGpa, 0) / total) : 0;
+            
+            document.getElementById('totalUsers').textContent = total;
+            document.getElementById('activeUsers').textContent = active;
+            document.getElementById('sleepingUsers').textContent = sleeping;
+            document.getElementById('avgGpa').textContent = avgGpa;
+        }
+        
+        // 筛选用户
+        function filterUsers(type) {
+            currentFilter = type;
+            let filtered = allUsers;
+            
+            if (type === 'active') {
+                filtered = allUsers.filter(u => u.newGpa > 0);
+                document.getElementById('tableTitle').textContent = '活跃客户列表';
+            } else if (type === 'sleeping') {
+                filtered = allUsers.filter(u => u.newGpa === 0);
+                document.getElementById('tableTitle').textContent = '沉睡客户列表';
+            } else {
+                document.getElementById('tableTitle').textContent = '全部客户列表';
+            }
+            
+            renderTable(filtered);
+        }
+        
+        // 搜索用户
+        function searchUsers() {
+            const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+            if (!keyword) {
+                filterUsers(currentFilter);
+                return;
+            }
+            
+            let filtered = allUsers;
+            if (currentFilter === 'active') {
+                filtered = allUsers.filter(u => u.newGpa > 0);
+            } else if (currentFilter === 'sleeping') {
+                filtered = allUsers.filter(u => u.newGpa === 0);
+            }
+            
+            filtered = filtered.filter(u => 
+                u.name.toLowerCase().includes(keyword) ||
+                u.id.includes(keyword) ||
+                u.idMasked.includes(keyword)
+            );
+            
+            document.getElementById('tableTitle').textContent = `搜索结果: "${keyword}"`;
+            renderTable(filtered);
+        }
+        
+        // 渲染表格
+        function renderTable(data) {
+            document.getElementById('tableCount').textContent = `共 ${data.length} 人`;
+            
+            if (data.length === 0) {
+                document.getElementById('userTable').innerHTML = 
+                    '<tr><td colspan="8" style="text-align:center;padding:50px;color:#666;">暂无数据</td></tr>';
+                return;
+            }
+            
+            const html = data.map((user, index) => {
+                const isActive = user.newGpa > 0;
+                const statusClass = isActive ? 'status-active' : 'status-sleeping';
+                const statusText = isActive ? '活跃' : '沉睡';
+                const gpaClass = user.totalGpa >= 100 ? 'gpa-high' : 'gpa-low';
+                const remainingGpa = user.totalGpa - (user.usedGpa || 0);
+                
+                return `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${user.idMasked}</td>
+                        <td>${user.name}</td>
+                        <td class="${gpaClass}">${user.totalGpa}</td>
+                        <td>${user.usedGpa || 0}</td>
+                        <td>${remainingGpa}</td>
+                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                        <td>
+                            <div class="action-icons">
+                                <span class="action-icon redeem" onclick="quickRedeem('${user.id}', '${user.name}')" title="兑换">🎁</span>
+                                <span class="action-icon edit" onclick="openEditModal('${user.id}')" title="编辑">✏️</span>
+                                <span class="action-icon delete" onclick="deleteUser('${user.id}', '${user.name}')" title="删除">🗑️</span>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            
+            document.getElementById('userTable').innerHTML = html;
+        }
+        
+        // 弹窗控制
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('show');
+        }
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+        
+        // 打开兑换弹窗
+        function openRedeemModal() {
+            document.getElementById('redeemUserId').value = '';
+            document.getElementById('redeemNote').value = '';
+            openModal('redeemModal');
+        }
+        
+        // 快速兑换
+        function quickRedeem(userId, userName) {
+            document.getElementById('redeemUserId').value = userId;
+            document.getElementById('redeemNote').value = `为 ${userName} 兑换`;
+            openModal('redeemModal');
+        }
+        
+        // 兑换绩点
+        async function redeemPoints() {
+            const userId = document.getElementById('redeemUserId').value.trim();
+            const item = document.getElementById('redeemItem').value;
+            const customPoints = document.getElementById('customPoints').value;
+            const note = document.getElementById('redeemNote').value.trim();
+            
+            if (!userId) {
+                alert('请输入用户ID');
+                return;
+            }
+            
+            const points = item === 'custom' ? parseInt(customPoints) : parseInt(item);
+            if (!points || points <= 0) {
+                alert('请输入有效的绩点数量');
+                return;
+            }
+            
+            try {
+                const res = await fetch('/api/admin/redeem', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, points, note })
+                });
+                
+                if (res.ok) {
+                    alert('兑换成功！');
+                    closeModal('redeemModal');
+                    loadData();
+                } else {
+                    alert('兑换失败，请检查用户ID');
+                }
+            } catch (err) {
+                alert('网络错误，请重试');
+            }
+        }
+        
+        // 打开添加弹窗
+        function openAddModal() {
+            document.getElementById('addUserId').value = '';
+            document.getElementById('addUserName').value = '';
+            document.getElementById('addHistoryGpa').value = '0';
+            document.getElementById('addNewGpa').value = '0';
+            document.getElementById('addNotes').value = '0';
+            openModal('addModal');
+        }
+        
+        // 添加用户
+        async function addUser() {
+            const id = document.getElementById('addUserId').value.trim();
+            const name = document.getElementById('addUserName').value.trim();
+            const historyGpa = parseInt(document.getElementById('addHistoryGpa').value) || 0;
+            const newGpa = parseInt(document.getElementById('addNewGpa').value) || 0;
+            const notes = parseInt(document.getElementById('addNotes').value) || 0;
+            
+            if (!id || !name) {
+                alert('请填写精网号和姓名');
+                return;
+            }
+            
+            try {
+                const res = await fetch('/api/admin/users', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id, name, historyGpa, newGpa, notes })
+                });
+                
+                if (res.ok) {
+                    alert('添加成功！');
+                    closeModal('addModal');
+                    loadData();
+                } else {
+                    alert('添加失败，用户ID可能已存在');
+                }
+            } catch (err) {
+                alert('网络错误，请重试');
+            }
+        }
+        
+        // 打开编辑弹窗
+        function openEditModal(userId) {
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) return;
+            
+            document.getElementById('editUserId').value = user.id;
+            document.getElementById('editUserIdDisplay').value = user.idMasked;
+            document.getElementById('editUserName').value = user.name;
+            document.getElementById('editHistoryGpa').value = user.historyGpa;
+            document.getElementById('editNewGpa').value = user.newGpa;
+            document.getElementById('editUsedGpa').value = user.usedGpa || 0;
+            document.getElementById('editNotes').value = user.notes || 0;
+            openModal('editModal');
+        }
+        
+        // 更新用户
+        async function updateUser() {
+            const id = document.getElementById('editUserId').value;
+            const name = document.getElementById('editUserName').value.trim();
+            const historyGpa = parseInt(document.getElementById('editHistoryGpa').value) || 0;
+            const newGpa = parseInt(document.getElementById('editNewGpa').value) || 0;
+            const usedGpa = parseInt(document.getElementById('editUsedGpa').value) || 0;
+            const notes = parseInt(document.getElementById('editNotes').value) || 0;
+            
+            if (!name) {
+                alert('请填写姓名');
+                return;
+            }
+            
+            try {
+                const res = await fetch('/api/admin/users/' + id, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, historyGpa, newGpa, usedGpa, notes })
+                });
+                
+                if (res.ok) {
+                    alert('修改成功！');
+                    closeModal('editModal');
+                    loadData();
+                } else {
+                    alert('修改失败');
+                }
+            } catch (err) {
+                alert('网络错误，请重试');
+            }
+        }
+        
+        // 删除用户
+        async function deleteUser(userId, userName) {
+            if (!confirm(`确定要删除用户 "${userName}" 吗？此操作不可恢复！`)) {
+                return;
+            }
+            
+            try {
+                const res = await fetch('/api/admin/users/' + userId, {
+                    method: 'DELETE'
+                });
+                
+                if (res.ok) {
+                    alert('删除成功！');
+                    loadData();
+                } else {
+                    alert('删除失败');
+                }
+            } catch (err) {
+                alert('网络错误，请重试');
+            }
+        }
+        
+        // 导出数据
+        function exportData() {
+            let filtered = allUsers;
+            if (currentFilter === 'active') {
+                filtered = allUsers.filter(u => u.newGpa > 0);
+            } else if (currentFilter === 'sleeping') {
+                filtered = allUsers.filter(u => u.newGpa === 0);
+            }
+            
+            const csvContent = [
+                ['排名', '精网号', '姓名', '总绩点', '已使用', '剩余', '状态'],
+                ...filtered.map((u, i) => [
+                    i + 1,
+                    u.idMasked,
+                    u.name,
+                    u.totalGpa,
+                    u.usedGpa || 0,
+                    u.totalGpa - (u.usedGpa || 0),
+                    u.newGpa > 0 ? '活跃' : '沉睡'
+                ])
+            ].map(row => row.join(',')).join('\n');
+            
+            const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `绩点数据_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+        }
+        
+        // 监听兑换项目选择
+        document.getElementById('redeemItem').addEventListener('change', function() {
+            document.getElementById('customPointsGroup').style.display = 
+                this.value === 'custom' ? 'block' : 'none';
+        });
+        
+        // 初始化
+        loadData();
+    </script>
+</body>
+</html>
