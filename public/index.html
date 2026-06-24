@@ -1062,17 +1062,16 @@
             }
         }
         
-        // 获取成就徽章
+        // 获取成就徽章（只显示活跃状态，排名徽章由getRankBadge处理）
         function getAchievementBadges(item, index) {
             let badges = '';
-            // 排名徽章
-            if (index === 0) badges += '<span class="achievement-badge badge-champion">👑 冠军</span>';
-            else if (index < 3) badges += '<span class="achievement-badge badge-top10">🥉 前三</span>';
-            else if (index < 10) badges += '<span class="achievement-badge badge-top10">🔥 前十</span>';
-            else if (index < 50) badges += '<span class="achievement-badge badge-top50">💫 前五十</span>';
             
             // 活跃徽章
-            if (item.newGpa > 0) badges += '<span class="achievement-badge badge-active">📈 活跃</span>';
+            if (item.newGpa > 0) {
+                badges += '<span class="achievement-badge badge-active">📈 活跃</span>';
+            } else {
+                badges += '<span class="achievement-badge badge-sleeping">😴 沉睡中</span>';
+            }
             
             return badges;
         }
@@ -1255,7 +1254,7 @@
                     <div class="warning-item">
                         <div class="warning-rank">${globalIndex + 1}</div>
                         <div class="warning-info">
-                            <div class="warning-name">${item.name} <span class="achievement-badge badge-sleeping">😴 沉睡中</span></div>
+                            <div class="warning-name">${item.name}</div>
                             <div class="warning-id">${item.idMasked}</div>
                         </div>
                         <div class="warning-gpa">${item.totalGpa}</div>
