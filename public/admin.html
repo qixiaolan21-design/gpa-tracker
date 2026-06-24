@@ -293,9 +293,71 @@
         
         .loading { text-align: center; padding: 50px; color: #666; }
         
+        /* 访问日志 */
+        .access-log-section {
+            background: rgba(255,255,255,0.95);
+            border-radius: 16px;
+            padding: 25px;
+            margin-top: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        .access-log-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .access-log-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+        .access-log-stats {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .access-log-stat {
+            text-align: center;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 12px;
+        }
+        .access-log-stat-value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .access-log-stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+        .access-log-table {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .access-log-table th {
+            position: sticky;
+            top: 0;
+            background: #f8f9fa;
+            z-index: 1;
+        }
+        .ip-cell {
+            font-family: monospace;
+            font-size: 12px;
+            color: #666;
+        }
+        .time-cell {
+            font-size: 12px;
+            color: #666;
+            white-space: nowrap;
+        }
+        
         @media (max-width: 768px) {
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
             th, td { padding: 8px; font-size: 12px; }
+            .access-log-stats { flex-wrap: wrap; }
         }
     </style>
 </head>
@@ -428,6 +490,47 @@
                 </table>
             </div>
             <button class="export-btn" onclick="exportData()">📥 导出数据</button>
+        </div>
+        
+        <!-- 访问日志 -->
+        <div class="access-log-section">
+            <div class="access-log-header">
+                <div class="access-log-title">📊 网页访问统计</div>
+                <button class="filter-btn all-users" onclick="loadAccessLogs()">🔄 刷新</button>
+            </div>
+            <div class="access-log-stats">
+                <div class="access-log-stat">
+                    <div class="access-log-stat-value" id="totalVisits">-</div>
+                    <div class="access-log-stat-label">总访问次数</div>
+                </div>
+                <div class="access-log-stat">
+                    <div class="access-log-stat-value" id="uniqueVisitors">-</div>
+                    <div class="access-log-stat-label">独立访客</div>
+                </div>
+                <div class="access-log-stat">
+                    <div class="access-log-stat-value" id="todayVisits">-</div>
+                    <div class="access-log-stat-label">今日访问</div>
+                </div>
+                <div class="access-log-stat">
+                    <div class="access-log-stat-value" id="todayUnique">-</div>
+                    <div class="access-log-stat-label">今日独立访客</div>
+                </div>
+            </div>
+            <div class="access-log-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>时间</th>
+                            <th>IP地址</th>
+                            <th>来源</th>
+                            <th>设备信息</th>
+                        </tr>
+                    </thead>
+                    <tbody id="accessLogTable">
+                        <tr><td colspan="4" class="loading">加载中...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -887,8 +990,51 @@
                 this.value === 'custom' ? 'block' : 'none';
         });
         
+        // 加载访问日志
+        async function loadAccessLogs() {
+            try {
+                const res = await fetch('/api/admin/access-logs?limit=50');
+                const data = await res.json();
+                
+                // 更新统计数据
+                document.getElementById('totalVisits').textContent = data.total || 0;
+                document.getElementById('uniqueVisitors').textContent = data.uniqueIPs || 0;
+                document.getElementById('todayVisits').textContent = data.todayVisits || 0;
+                document.getElementById('todayUnique').textContent = data.todayUniqueIPs || 0;
+                
+                // 渲染日志表格
+                const tbody = document.getElementById('accessLogTable');
+                if (data.logs && data.logs.length > 0) {
+                    tbody.innerHTML = data.logs.map(log => {
+                        const time = new Date(log.timestamp).toLocaleString('zh-CN');
+                        const ip = log.ip || 'unknown';
+                        const referer = log.referer === 'direct' ? '直接访问' : '外部链接';
+                        const userAgent = log.userAgent ? log.userAgent.substring(0, 50) + '...' : 'unknown';
+                        return `
+                            <tr>
+                                <td class="time-cell">${time}</td>
+                                <td class="ip-cell">${ip}</td>
+                                <td>${referer}</td>
+                                <td title="${log.userAgent || ''}">${userAgent}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:#999;">暂无访问记录</td></tr>';
+                }
+            } catch (err) {
+                console.error('加载访问日志失败:', err);
+                document.getElementById('accessLogTable').innerHTML = 
+                    '<tr><td colspan="4" style="text-align:center;padding:20px;color:#e74c3c;">加载失败</td></tr>';
+            }
+        }
+        
         // 初始化
         loadData();
+        loadAccessLogs();
+        
+        // 每30秒自动刷新访问日志
+        setInterval(loadAccessLogs, 30000);
     </script>
 </body>
 </html>

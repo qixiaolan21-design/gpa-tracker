@@ -9,6 +9,12 @@ const notesUpdates = require('./notes_update.js');
 // 历史数据文件路径（用于计算周增长）
 const HISTORY_FILE = path.join(__dirname, 'data', 'gpa_history.json');
 
+// 访问日志文件路径
+const ACCESS_LOG_FILE = path.join(__dirname, 'data', 'access_log.json');
+
+// 存储访问日志
+let accessLogs = [];
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -313,6 +319,37 @@ setInterval(async () => {
 }, 5 * 60 * 1000);
 
 app.use(express.json());
+
+// 访问日志中间件
+app.use((req, res, next) => {
+    // 只记录页面访问，不记录API请求
+    if (req.path === '/' || req.path === '/index.html' || req.path.endsWith('.html')) {
+        const logEntry = {
+            timestamp: new Date().toISOString(),
+            ip: req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.connection.remoteAddress || 'unknown',
+            userAgent: req.headers['user-agent'] || 'unknown',
+            path: req.path,
+            referer: req.headers['referer'] || 'direct'
+        };
+        
+        // 添加到日志数组
+        accessLogs.push(logEntry);
+        
+        // 只保留最近1000条记录
+        if (accessLogs.length > 1000) {
+            accessLogs = accessLogs.slice(-1000);
+        }
+        
+        // 异步保存到文件
+        try {
+            fs.writeFileSync(ACCESS_LOG_FILE, JSON.stringify(accessLogs, null, 2));
+        } catch (err) {
+            console.error('保存访问日志失败:', err.message);
+        }
+    }
+    next();
+});
+
 app.use(express.static('public'));
 
 // 获取所有绩点数据
@@ -392,6 +429,31 @@ app.get('/api/gpa/stats', (req, res) => {
 // 健康检查
 app.get('/health', (req, res) => {
     res.json({ status: 'ok', dataLoaded: gpaData.length > 0, count: gpaData.length });
+});
+
+// 后台管理API - 获取访问日志
+app.get('/api/admin/access-logs', (req, res) => {
+    try {
+        const limit = parseInt(req.query.limit) || 100;
+        const logs = accessLogs.slice(-limit).reverse(); // 最新的在前
+        
+        // 统计信息
+        const uniqueIPs = new Set(accessLogs.map(l => l.ip)).size;
+        const today = new Date().toISOString().split('T')[0];
+        const todayLogs = accessLogs.filter(l => l.timestamp.startsWith(today));
+        const todayUniqueIPs = new Set(todayLogs.map(l => l.ip)).size;
+        
+        res.json({
+            total: accessLogs.length,
+            uniqueIPs: uniqueIPs,
+            todayVisits: todayLogs.length,
+            todayUniqueIPs: todayUniqueIPs,
+            logs: logs
+        });
+    } catch (err) {
+        console.error('获取访问日志失败:', err);
+        res.status(500).json({ error: '获取失败' });
+    }
 });
 
 // 页面路由
