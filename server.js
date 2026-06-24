@@ -229,51 +229,20 @@ function saveHistoryData() {
     }
 }
 
-// 计算近一周绩点增长
+// 计算近一周绩点增长（使用本次新增字段）
 function calculateWeeklyGrowth() {
-    const today = new Date();
-    const oneWeekAgo = new Date(today);
-    oneWeekAgo.setDate(today.getDate() - 7);
-    
-    const todayStr = today.toISOString().split('T')[0];
-    const weekAgoStr = oneWeekAgo.toISOString().split('T')[0];
-    
     const growthData = [];
     
     gpaData.forEach(user => {
-        const userHistory = gpaHistory[user.id] || {};
-        const currentGpa = user.totalGpa;
-        
-        // 找7天前的绩点（如果没有精确7天的，找最近的历史记录）
-        let weekAgoGpa = null;
-        const dates = Object.keys(userHistory).sort();
-        
-        // 找7天前的记录
-        for (const date of dates) {
-            if (date <= weekAgoStr) {
-                weekAgoGpa = userHistory[date];
-            }
-        }
-        
-        // 如果找不到7天前的记录，使用最早的历史记录
-        if (weekAgoGpa === null && dates.length > 0) {
-            weekAgoGpa = userHistory[dates[0]];
-        }
-        
-        // 如果还是没有历史记录，假设从0开始
-        if (weekAgoGpa === null) {
-            weekAgoGpa = 0;
-        }
-        
-        const growth = currentGpa - weekAgoGpa;
+        // 使用本次新增作为本周增长
+        const growth = user.newGpa || 0;
         
         if (growth > 0) {
             growthData.push({
                 id: user.id,
                 idMasked: user.idMasked,
                 name: user.name,
-                totalGpa: currentGpa,
-                weekAgoGpa: weekAgoGpa,
+                totalGpa: user.totalGpa,
                 growth: growth,
                 isGongying: user.isGongying
             });
