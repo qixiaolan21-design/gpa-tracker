@@ -348,10 +348,21 @@ app.get('/api/gpa/rising-stars', (req, res) => {
     res.json(growthData.slice(0, limit));
 });
 
-// 获取预警榜单（暂时返回空数组，等待新的听课数据）
+// 获取预警榜单（读取预计算的预警名单）
 app.get('/api/gpa/warning', (req, res) => {
-    // 暂时返回空数组，等待用户提供近一周的听课数据
-    res.json([]);
+    try {
+        const warningFile = path.join(__dirname, 'data', 'warning_list.json');
+        if (fs.existsSync(warningFile)) {
+            const warningData = JSON.parse(fs.readFileSync(warningFile, 'utf-8'));
+            res.json(warningData);
+        } else {
+            // 如果文件不存在，返回空数组
+            res.json([]);
+        }
+    } catch (err) {
+        console.error('读取预警名单失败:', err);
+        res.json([]);
+    }
 });
 
 // 获取统计信息
