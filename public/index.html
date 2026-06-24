@@ -1177,8 +1177,11 @@
             try {
                 const res = await fetch(url);
                 const data = await res.json();
-                // 只展示20绩点以上的用户
-                allData = data.filter(u => u.totalGpa >= 20);
+                // 普通用户20绩点以上展示，共盈会成员10绩点以上展示
+                allData = data.filter(u => {
+                    const threshold = u.isGongying ? 10 : 20;
+                    return u.totalGpa >= threshold;
+                });
                 renderLeaderboard(allData);
             } catch (err) {
                 console.error('加载失败:', err);
