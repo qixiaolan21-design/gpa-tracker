@@ -339,6 +339,55 @@
             </div>
         </div>
         
+        <!-- 图表统计 -->
+        <div class="filter-section">
+            <div class="filter-title">📊 数据可视化</div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px;">
+                    <div style="font-weight: bold; margin-bottom: 15px;">活跃 vs 沉睡客户</div>
+                    <div id="statusChart" style="display: flex; align-items: center; gap: 20px;">
+                        <div style="flex: 1;">
+                            <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                                <div style="width: 20px; height: 20px; background: #27ae60; border-radius: 4px; margin-right: 10px;"></div>
+                                <span>活跃: <strong id="chartActive">-</strong></span>
+                            </div>
+                            <div style="display: flex; align-items: center;">
+                                <div style="width: 20px; height: 20px; background: #e74c3c; border-radius: 4px; margin-right: 10px;"></div>
+                                <span>沉睡: <strong id="chartSleeping">-</strong></span>
+                            </div>
+                        </div>
+                        <div id="pieChart" style="width: 100px; height: 100px; border-radius: 50%; background: conic-gradient(#27ae60 0% 50%, #e74c3c 50% 100%);"></div>
+                    </div>
+                </div>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px;">
+                    <div style="font-weight: bold; margin-bottom: 15px;">绩点分布</div>
+                    <div id="gpaDistribution">
+                        <div style="margin-bottom: 8px;">
+                            <span style="display: inline-block; width: 80px;">200+ 绩点:</span>
+                            <div style="display: inline-block; width: 150px; height: 20px; background: #eee; border-radius: 10px; overflow: hidden;">
+                                <div id="barHigh" style="height: 100%; background: linear-gradient(90deg, #f39c12, #e67e22); width: 0%; transition: width 0.5s;"></div>
+                            </div>
+                            <span id="countHigh" style="margin-left: 10px;">-</span>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="display: inline-block; width: 80px;">100-200:</span>
+                            <div style="display: inline-block; width: 150px; height: 20px; background: #eee; border-radius: 10px; overflow: hidden;">
+                                <div id="barMid" style="height: 100%; background: linear-gradient(90deg, #3498db, #2980b9); width: 0%; transition: width 0.5s;"></div>
+                            </div>
+                            <span id="countMid" style="margin-left: 10px;">-</span>
+                        </div>
+                        <div>
+                            <span style="display: inline-block; width: 80px;"><100:</span>
+                            <div style="display: inline-block; width: 150px; height: 20px; background: #eee; border-radius: 10px; overflow: hidden;">
+                                <div id="barLow" style="height: 100%; background: linear-gradient(90deg, #95a5a6, #7f8c8d); width: 0%; transition: width 0.5s;"></div>
+                            </div>
+                            <span id="countLow" style="margin-left: 10px;">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <!-- 筛选区域 -->
         <div class="filter-section">
             <div class="filter-title">🔍 筛选客户</div>
@@ -518,6 +567,35 @@
             document.getElementById('activeUsers').textContent = active;
             document.getElementById('sleepingUsers').textContent = sleeping;
             document.getElementById('avgGpa').textContent = avgGpa;
+            
+            // 更新图表
+            updateCharts(active, sleeping, total);
+        }
+        
+        // 更新图表
+        function updateCharts(active, sleeping, total) {
+            // 饼图数据
+            document.getElementById('chartActive').textContent = active + ' (' + Math.round(active/total*100) + '%)';
+            document.getElementById('chartSleeping').textContent = sleeping + ' (' + Math.round(sleeping/total*100) + '%)';
+            
+            const activePercent = total > 0 ? (active / total * 100) : 50;
+            document.getElementById('pieChart').style.background = 
+                `conic-gradient(#27ae60 0% ${activePercent}%, #e74c3c ${activePercent}% 100%)`;
+            
+            // 绩点分布
+            const highGpa = allUsers.filter(u => u.totalGpa >= 200).length;
+            const midGpa = allUsers.filter(u => u.totalGpa >= 100 && u.totalGpa < 200).length;
+            const lowGpa = allUsers.filter(u => u.totalGpa < 100).length;
+            
+            document.getElementById('countHigh').textContent = highGpa + '人';
+            document.getElementById('countMid').textContent = midGpa + '人';
+            document.getElementById('countLow').textContent = lowGpa + '人';
+            
+            setTimeout(() => {
+                document.getElementById('barHigh').style.width = total > 0 ? (highGpa/total*100) + '%' : '0%';
+                document.getElementById('barMid').style.width = total > 0 ? (midGpa/total*100) + '%' : '0%';
+                document.getElementById('barLow').style.width = total > 0 ? (lowGpa/total*100) + '%' : '0%';
+            }, 100);
         }
         
         // 筛选用户
