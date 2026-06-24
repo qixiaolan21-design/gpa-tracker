@@ -338,56 +338,92 @@
             transform: translateY(-2px);
         }
         
-        /* 飞跃之星榜单 - 双列紧凑版 */
+        /* 飞跃大王榜单 - 双列紧凑版 */
         .rising-stars-section {
-            background: linear-gradient(135deg, rgba(255, 107, 107, 0.1) 0%, rgba(238, 90, 90, 0.1) 100%);
-            border: 2px solid rgba(255, 107, 107, 0.3);
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 140, 0, 0.15) 100%);
+            border: 3px solid rgba(255, 215, 0, 0.5);
             border-radius: 20px;
             padding: 20px;
             margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .rising-stars-section::before {
+            content: '👑';
+            position: absolute;
+            font-size: 100px;
+            opacity: 0.05;
+            top: -20px;
+            right: -20px;
+            animation: floatCrown 3s ease-in-out infinite;
+        }
+        @keyframes floatCrown {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
         }
         
-        /* 粉丝灯牌 */
-        .fan-badge {
+        /* 大王标签 */
+        .king-badge {
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 11px;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
             font-weight: bold;
             margin-left: 6px;
             cursor: pointer;
-            transition: transform 0.2s;
-            animation: fanBadgeGlow 2s ease-in-out infinite;
+            transition: all 0.3s;
+            animation: kingBadgeShine 2s ease-in-out infinite;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
-        .fan-badge:hover {
-            transform: scale(1.1);
+        .king-badge:hover {
+            transform: scale(1.15) rotate(-3deg);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
-        @keyframes fanBadgeGlow {
-            0%, 100% { box-shadow: 0 0 5px rgba(255,255,255,0.3); }
-            50% { box-shadow: 0 0 15px rgba(255,255,255,0.6); }
+        @keyframes kingBadgeShine {
+            0%, 100% { box-shadow: 0 0 5px rgba(255,215,0,0.5); }
+            50% { box-shadow: 0 0 20px rgba(255,215,0,0.8), 0 0 30px rgba(255,215,0,0.4); }
         }
-        .fan-badge.homework {
+        .king-badge.notes {
             background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
             color: white;
-            border: 1px solid rgba(255,255,255,0.3);
+            border: 2px solid #ffd700;
         }
-        .fan-badge.study {
+        .king-badge.study {
             background: linear-gradient(135deg, #4ecdc4, #44a08d);
             color: white;
-            border: 1px solid rgba(255,255,255,0.3);
+            border: 2px solid #ffd700;
         }
         
-        /* 大星星 */
-        .big-star {
-            font-size: 20px;
+        /* 大王皇冠 */
+        .crown-icon {
+            font-size: 24px;
             cursor: help;
-            transition: transform 0.3s;
+            transition: all 0.3s;
             display: inline-block;
+            animation: crownBounce 1s ease-in-out infinite;
         }
-        .big-star:hover {
-            transform: scale(1.3) rotate(15deg);
+        .crown-icon:hover {
+            transform: scale(1.4) rotate(10deg);
+        }
+        @keyframes crownBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        /* 拜见大王文字 */
+        .king-greeting {
+            text-align: center;
+            font-size: 14px;
+            color: #FFD700;
+            margin-top: 10px;
+            font-style: italic;
+            animation: greetingPulse 2s ease-in-out infinite;
+        }
+        @keyframes greetingPulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
         }
         
         /* 预警榜单 - 双列紧凑版 */
@@ -1034,16 +1070,17 @@
             <div class="bouncing-gift" style="bottom: 15%; left: 85%; animation-delay: 0.9s;">🎁</div>
         </div>
         
-        <!-- 飞跃之星 -->
+        <!-- 飞跃大王 -->
         <div class="rising-stars-section">
             <div class="rising-stars-header">
-                <span class="rising-stars-icon">🚀</span>
-                <span class="rising-stars-title">飞跃之星 ⭐</span>
+                <span class="rising-stars-icon">👑</span>
+                <span class="rising-stars-title">飞跃大王</span>
                 <span style="font-size: 14px; color: #666; margin-left: 10px;">近一周绩点飙升榜</span>
             </div>
             <div id="risingStarsList">
                 <div class="loading">加载中... / Loading...</div>
             </div>
+            <div class="king-greeting">🙇‍♂️ 拜见各位大王 🙇‍♀️</div>
         </div>
         
         <!-- 预警榜单 -->
@@ -1253,7 +1290,7 @@
             }
         }
         
-        // 渲染飞跃之星
+        // 渲染飞跃大王
         function renderRisingStars(data) {
             const list = document.getElementById('risingStarsList');
             
@@ -1264,19 +1301,19 @@
             
             const html = data.map((item, index) => {
                 const rankClass = index === 0 ? 'rising-star-rank-1' : index === 1 ? 'rising-star-rank-2' : index === 2 ? 'rising-star-rank-3' : 'rising-star-rank-other';
-                const rankIcon = index === 0 ? '1' : index === 1 ? '2' : index === 2 ? '3' : `${index + 1}`;
+                const rankIcon = index === 0 ? '👑' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}`;
                 const tooltipText = item.reason || '积极学习，绩点飙升！';
-                const starBadgeClass = item.starType === 'homework' ? 'homework' : 'study';
-                const starTitle = item.starTitle || '📚 学习之星';
+                const kingBadgeClass = item.starType === 'homework' ? 'notes' : 'study';
+                const kingTitle = item.starType === 'homework' ? '📝 笔记大王' : '📚 学习大王';
                 
                 return `
                     <div class="rising-star-item">
                         <div class="rising-star-rank ${rankClass}">${rankIcon}</div>
                         <div class="rising-star-info">
                             <div class="rising-star-name">
-                                <span class="big-star" title="${tooltipText}">⭐</span>
+                                <span class="crown-icon" title="${tooltipText}">👑</span>
                                 ${item.name}
-                                <span class="fan-badge ${starBadgeClass}" title="${tooltipText}">${starTitle}</span>
+                                <span class="king-badge ${kingBadgeClass}" title="${tooltipText}">${kingTitle}</span>
                             </div>
                             <div class="rising-star-id">${item.idMasked}</div>
                         </div>

@@ -240,17 +240,17 @@ function calculateWeeklyGrowth() {
         if (growth > 0) {
             const notesCount = user.notes || 0;
             
-            // 判断是作业之星还是学习之星
-            // 笔记次数 >= 3 认为是作业之星，否则是学习之星
+            // 判断是笔记大王还是学习大王
+            // 笔记次数 >= 3 认为是笔记大王，否则是学习大王
             let starType = 'study'; // study 或 homework
-            let starTitle = '📚 学习之星';
+            let starTitle = '📚 学习大王';
             let reason = '';
             
             if (notesCount >= 3) {
                 starType = 'homework';
-                starTitle = '📝 作业之星';
+                starTitle = '📝 笔记大王';
                 if (notesCount >= 10) {
-                    reason = `提交笔记${notesCount}次，作业达人！`;
+                    reason = `提交笔记${notesCount}次，笔记达人！`;
                 } else if (notesCount >= 5) {
                     reason = `提交笔记${notesCount}次，学习超积极！`;
                 } else {
@@ -258,7 +258,7 @@ function calculateWeeklyGrowth() {
                 }
             } else if (notesCount > 0) {
                 starType = 'homework';
-                starTitle = '📝 作业之星';
+                starTitle = '📝 笔记大王';
                 reason = `提交笔记${notesCount}次`;
             } else {
                 reason = '坚持听课学习，积极参与！';
@@ -348,15 +348,55 @@ app.get('/api/gpa/rising-stars', (req, res) => {
     res.json(growthData.slice(0, limit));
 });
 
-// 获取预警榜单（近一周没有增加绩点的用户）
-// 基于"本次新增"字段判断：如果本次新增为0，说明近一周没有增加绩点
+// 获取预警榜单（近一周没有出现在听课记录中的用户）
 app.get('/api/gpa/warning', (req, res) => {
     const warningData = [];
     
+    // 读取最近一周的听课记录
+    const recentUsers = new Set();
+    const today = new Date();
+    
+    // 检查最近7天的CSV文件
+    for (let i = 0; i < 7; i++) {
+        const date = new Date(today);
+        date.setDate(today.getDate() - i);
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        
+        // 尝试不同的文件名格式
+        const possibleFiles = [
+            path.join(DATA_DIR, `${month}.${day}.csv`),
+            path.join(DATA_DIR, `${month}.${day}1.csv`),
+            path.join(DATA_DIR, `${month}.${day}2.csv`)
+        ];
+        
+        possibleFiles.forEach(file => {
+            if (fs.existsSync(file)) {
+                try {
+                    const content = fs.readFileSync(file, 'utf-8');
+                    const lines = content.split('\n');
+                    lines.forEach(line => {
+                        const parts = line.split(',');
+                        if (parts.length >= 3) {
+                            const userId = parts[2] ? parts[2].trim() : '';
+                            if (userId && userId.startsWith('9')) {
+                                recentUsers.add(userId);
+                            }
+                        }
+                    });
+                } catch (err) {
+                    console.error('读取听课记录失败:', file, err.message);
+                }
+            }
+        });
+    }
+    
+    console.log(`📊 最近一周活跃用户数: ${recentUsers.size}`);
+    
     gpaData.forEach(user => {
-        // 如果本次新增为0，说明近一周没有增加绩点
+        // 如果用户最近一周没有出现在听课记录中，加入预警
         // 排除示例用户和特定账号
-        if (user.newGpa === 0 && !user.id.startsWith('900000') && user.id !== '90003692') {
+        if (!recentUsers.has(user.id) && !user.id.startsWith('900000') && user.id !== '90003692') {
             warningData.push({
                 id: user.id,
                 idMasked: user.idMasked,
@@ -370,6 +410,8 @@ app.get('/api/gpa/warning', (req, res) => {
     
     // 按总绩点排序（从低到高，优先显示绩点低的）
     warningData.sort((a, b) => a.totalGpa - b.totalGpa);
+    
+    console.log(`⚠️ 预警用户数: ${warningData.length}`);
     
     res.json(warningData);
 });
