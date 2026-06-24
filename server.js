@@ -319,50 +319,20 @@ app.get('/api/gpa/rising-stars', (req, res) => {
 });
 
 // 获取预警榜单（近2周没有增加绩点的用户）
+// 基于"本次新增"字段判断：如果本次新增为0，说明近期没有增加绩点
 app.get('/api/gpa/warning', (req, res) => {
     const warningData = [];
-    const today = new Date();
-    const twoWeeksAgo = new Date(today);
-    twoWeeksAgo.setDate(today.getDate() - 14);
-    const twoWeeksAgoStr = twoWeeksAgo.toISOString().split('T')[0];
     
     gpaData.forEach(user => {
-        const userHistory = gpaHistory[user.id] || {};
-        const currentGpa = user.totalGpa;
-        
-        // 找2周前的绩点
-        let twoWeeksAgoGpa = null;
-        const dates = Object.keys(userHistory).sort();
-        
-        // 找2周前的记录
-        for (const date of dates) {
-            if (date <= twoWeeksAgoStr) {
-                twoWeeksAgoGpa = userHistory[date];
-            }
-        }
-        
-        // 如果找不到2周前的记录，使用最早的历史记录
-        if (twoWeeksAgoGpa === null && dates.length > 0) {
-            twoWeeksAgoGpa = userHistory[dates[0]];
-        }
-        
-        // 如果还是没有历史记录，假设从0开始
-        if (twoWeeksAgoGpa === null) {
-            twoWeeksAgoGpa = 0;
-        }
-        
-        // 计算近2周增长
-        const growth = currentGpa - twoWeeksAgoGpa;
-        
-        // 如果近2周没有增长，加入预警榜单
-        if (growth === 0) {
+        // 如果本次新增为0，说明近期没有增加绩点
+        // 历史绩点 > 0 表示是老用户（有历史记录），新用户不加入预警
+        if (user.newGpa === 0 && user.historyGpa > 0) {
             warningData.push({
                 id: user.id,
                 idMasked: user.idMasked,
                 name: user.name,
-                totalGpa: currentGpa,
-                twoWeeksAgoGpa: twoWeeksAgoGpa,
-                growth: growth,
+                totalGpa: user.totalGpa,
+                historyGpa: user.historyGpa,
                 isGongying: user.isGongying
             });
         }
