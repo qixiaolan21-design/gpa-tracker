@@ -264,6 +264,100 @@
             transform: translateY(-2px);
         }
         
+        /* 飞跃之星榜单 */
+        .rising-stars-section {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.1) 0%, rgba(238, 90, 90, 0.1) 100%);
+            border: 2px solid rgba(255, 107, 107, 0.3);
+            border-radius: 24px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        .rising-stars-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px dashed rgba(255, 107, 107, 0.3);
+        }
+        .rising-stars-title {
+            font-size: 26px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .rising-stars-icon {
+            font-size: 32px;
+            animation: rocketFloat 2s ease-in-out infinite;
+        }
+        @keyframes rocketFloat {
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(-8px) rotate(5deg); }
+        }
+        .rising-star-item {
+            display: grid;
+            grid-template-columns: 60px 1fr 100px 100px;
+            gap: 10px;
+            padding: 14px 18px;
+            background: white;
+            border-radius: 14px;
+            margin-bottom: 10px;
+            align-items: center;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255, 107, 107, 0.15);
+        }
+        .rising-star-item:hover {
+            transform: translateX(8px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.15);
+            border-color: rgba(255, 107, 107, 0.4);
+        }
+        .rising-star-rank {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .rising-star-rank-1 { 
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a); 
+            color: white; 
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+        .rising-star-rank-2 { 
+            background: linear-gradient(135deg, #ffa502, #ff7f50); 
+            color: white; 
+            box-shadow: 0 4px 15px rgba(255, 165, 2, 0.4);
+        }
+        .rising-star-rank-3 { 
+            background: linear-gradient(135deg, #2ed573, #7bed9f); 
+            color: white; 
+            box-shadow: 0 4px 15px rgba(46, 213, 115, 0.4);
+        }
+        .rising-star-rank-other { 
+            background: linear-gradient(135deg, #e9ecef, #dee2e6); 
+            color: #666; 
+        }
+        .growth-value {
+            font-weight: bold;
+            font-size: 18px;
+            color: #ff6b6b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+        .growth-value::before {
+            content: '📈';
+            font-size: 16px;
+        }
+        
         /* 排行榜 */
         .leaderboard-header {
             display: grid;
@@ -585,6 +679,18 @@
             <div class="bouncing-gift" style="bottom: 15%; left: 85%; animation-delay: 0.9s;">🎁</div>
         </div>
         
+        <!-- 飞跃之星 -->
+        <div class="rising-stars-section">
+            <div class="rising-stars-header">
+                <span class="rising-stars-icon">🚀</span>
+                <span class="rising-stars-title">飞跃之星</span>
+                <span style="font-size: 14px; color: #666; margin-left: 10px;">近一周绩点飙升榜</span>
+            </div>
+            <div id="risingStarsList">
+                <div class="loading">加载中... / Loading...</div>
+            </div>
+        </div>
+        
         <!-- 搜索 -->
         <div class="card">
             <div class="search-box">
@@ -749,10 +855,52 @@
             }
         }
         
+        // 加载飞跃之星
+        async function loadRisingStars() {
+            try {
+                const res = await fetch('/api/gpa/rising-stars?limit=10');
+                const data = await res.json();
+                renderRisingStars(data);
+            } catch (err) {
+                console.error('加载飞跃之星失败:', err);
+                document.getElementById('risingStarsList').innerHTML = 
+                    '<div class="empty-state">加载失败</div>';
+            }
+        }
+        
+        // 渲染飞跃之星
+        function renderRisingStars(data) {
+            const list = document.getElementById('risingStarsList');
+            
+            if (data.length === 0) {
+                list.innerHTML = '<div class="empty-state">暂无数据</div>';
+                return;
+            }
+            
+            list.innerHTML = data.map((item, index) => {
+                const rankClass = index === 0 ? 'rising-star-rank-1' : index === 1 ? 'rising-star-rank-2' : index === 2 ? 'rising-star-rank-3' : 'rising-star-rank-other';
+                const rankIcon = index === 0 ? '👑' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}`;
+                const gongyingBadge = item.isGongying ? '<span class="gongying-badge">👑共盈会</span>' : '';
+                const winnerFanBadge = item.id && item.id.startsWith('94') ? '<span class="winner-fan-badge">❤️赢家粉</span>' : '';
+                
+                return `
+                    <div class="rising-star-item">
+                        <div class="rising-star-rank ${rankClass}">${rankIcon}</div>
+                        <div class="user-info">
+                            <div class="user-name">${item.name}${gongyingBadge}${winnerFanBadge}</div>
+                            <div class="user-id">${item.idMasked}</div>
+                        </div>
+                        <div class="gpa-value gpa-total" style="text-align: center; font-size: 15px;">${item.totalGpa}</div>
+                        <div class="growth-value">+${item.growth}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
         // 初始化
         async function init() {
             checkFestival(); // 检查节日装饰
-            await loadAll();
+            await Promise.all([loadAll(), loadRisingStars()]);
         }
         
         init();

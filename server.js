@@ -6,6 +6,9 @@ const XLSX = require('xlsx');
 const iconv = require('iconv-lite');
 const notesUpdates = require('./notes_update.js');
 
+// 历史数据文件路径（用于计算周增长）
+const HISTORY_FILE = path.join(__dirname, 'data', 'gpa_history.json');
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -20,6 +23,7 @@ const UPDATE_FILE = 'C:\\Users\\嗷呜\\Desktop\\gpa_update_6.3-6.4_2026-06-04.c
 let gpaData = [];
 let gongyingMembers = new Set();
 let gpaUpdates = {};
+let gpaHistory = {}; // 历史绩点数据 { userId: { date: totalGpa } }
 
 // 排除用户列表
 const excludedUsers = new Set([
@@ -183,13 +187,114 @@ function loadCSVData() {
     });
 }
 
+// 加载历史数据
+function loadHistoryData() {
+    try {
+        if (fs.existsSync(HISTORY_FILE)) {
+            const content = fs.readFileSync(HISTORY_FILE, 'utf-8');
+            gpaHistory = JSON.parse(content);
+            console.log(`📚 加载了历史数据，共 ${Object.keys(gpaHistory).length} 位用户记录`);
+        }
+    } catch (err) {
+        console.error('读取历史数据失败:', err);
+        gpaHistory = {};
+    }
+}
+
+// 保存历史数据
+function saveHistoryData() {
+    try {
+        const today = new Date().toISOString().split('T')[0];
+        
+        // 更新今天的绩点数据
+        gpaData.forEach(user => {
+            if (!gpaHistory[user.id]) {
+                gpaHistory[user.id] = {};
+            }
+            gpaHistory[user.id][today] = user.totalGpa;
+            
+            // 只保留最近30天的数据
+            const dates = Object.keys(gpaHistory[user.id]).sort();
+            if (dates.length > 30) {
+                dates.slice(0, dates.length - 30).forEach(d => {
+                    delete gpaHistory[user.id][d];
+                });
+            }
+        });
+        
+        fs.writeFileSync(HISTORY_FILE, JSON.stringify(gpaHistory, null, 2), 'utf-8');
+        console.log(`💾 历史数据已保存 (${today})`);
+    } catch (err) {
+        console.error('保存历史数据失败:', err);
+    }
+}
+
+// 计算近一周绩点增长
+function calculateWeeklyGrowth() {
+    const today = new Date();
+    const oneWeekAgo = new Date(today);
+    oneWeekAgo.setDate(today.getDate() - 7);
+    
+    const todayStr = today.toISOString().split('T')[0];
+    const weekAgoStr = oneWeekAgo.toISOString().split('T')[0];
+    
+    const growthData = [];
+    
+    gpaData.forEach(user => {
+        const userHistory = gpaHistory[user.id] || {};
+        const currentGpa = user.totalGpa;
+        
+        // 找7天前的绩点（如果没有精确7天的，找最近的历史记录）
+        let weekAgoGpa = null;
+        const dates = Object.keys(userHistory).sort();
+        
+        // 找7天前的记录
+        for (const date of dates) {
+            if (date <= weekAgoStr) {
+                weekAgoGpa = userHistory[date];
+            }
+        }
+        
+        // 如果找不到7天前的记录，使用最早的历史记录
+        if (weekAgoGpa === null && dates.length > 0) {
+            weekAgoGpa = userHistory[dates[0]];
+        }
+        
+        // 如果还是没有历史记录，假设从0开始
+        if (weekAgoGpa === null) {
+            weekAgoGpa = 0;
+        }
+        
+        const growth = currentGpa - weekAgoGpa;
+        
+        if (growth > 0) {
+            growthData.push({
+                id: user.id,
+                idMasked: user.idMasked,
+                name: user.name,
+                totalGpa: currentGpa,
+                weekAgoGpa: weekAgoGpa,
+                growth: growth,
+                isGongying: user.isGongying
+            });
+        }
+    });
+    
+    // 按增长排序
+    growthData.sort((a, b) => b.growth - a.growth);
+    
+    return growthData;
+}
+
 // 初始化加载数据
 async function init() {
     try {
         console.log('🔄 开始初始化数据...');
         await loadGongyingMembers();
         await loadUpdateData();
+        loadHistoryData();
         gpaData = await loadCSVData();
+        saveHistoryData(); // 保存当前数据作为历史
         console.log('✅ 数据初始化完成');
     } catch (err) {
         console.error('❌ 初始化失败:', err);
@@ -205,6 +310,7 @@ setInterval(async () => {
     await loadGongyingMembers();
     await loadUpdateData();
     gpaData = await loadCSVData();
+    saveHistoryData(); // 保存历史数据
 }, 5 * 60 * 1000);
 
 app.use(express.json());
@@ -234,6 +340,13 @@ app.get('/api/gpa/search', (req, res) => {
 app.get('/api/gpa/top/:n', (req, res) => {
     const n = parseInt(req.params.n) || 10;
     res.json(gpaData.slice(0, n));
+});
+
+// 获取飞跃之星（近一周绩点增长最多）
+app.get('/api/gpa/rising-stars', (req, res) => {
+    const limit = parseInt(req.query.limit) || 10;
+    const growthData = calculateWeeklyGrowth();
+    res.json(growthData.slice(0, limit));
 });
 
 // 获取统计信息
