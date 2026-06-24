@@ -400,6 +400,7 @@
                 <button class="action-btn redeem" onclick="openRedeemModal()">🎁 兑换绩点</button>
                 <button class="action-btn add" onclick="openAddModal()">➕ 添加用户</button>
                 <button class="action-btn" style="background: linear-gradient(135deg, #e74c3c, #c0392b); color: white;" onclick="openWarningModal()">⚠️ 管理预警用户</button>
+                <button class="action-btn" style="background: linear-gradient(135deg, #95a5a6, #7f8c8d); color: white;" onclick="openSleepingModal()">😴 管理沉睡用户</button>
             </div>
         </div>
         
@@ -732,6 +733,36 @@
                         </tr>
                     </thead>
                     <tbody id="warningTable">
+                        <tr><td colspan="6" class="loading">加载中...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 沉睡用户管理弹窗 -->
+    <div id="sleepingModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <div class="modal-title">😴 管理沉睡用户</div>
+                <span class="modal-close" onclick="closeModal('sleepingModal')">&times;</span>
+            </div>
+            <div style="margin-bottom: 15px; color: #666; font-size: 14px;">
+                💡 沉睡用户：近一周未出现在听课记录中的用户
+            </div>
+            <div style="max-height: 500px; overflow-y: auto;">
+                <table style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>排名</th>
+                            <th>精网号</th>
+                            <th>姓名</th>
+                            <th>总绩点</th>
+                            <th>笔记数</th>
+                            <th>状态</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sleepingTable">
                         <tr><td colspan="6" class="loading">加载中...</td></tr>
                     </tbody>
                 </table>
@@ -1192,6 +1223,43 @@
         async function openWarningModal() {
             document.getElementById('warningModal').classList.add('show');
             await loadWarningUsers();
+        }
+        
+        // 沉睡用户管理
+        async function openSleepingModal() {
+            document.getElementById('sleepingModal').classList.add('show');
+            await loadSleepingTable();
+        }
+        
+        // 加载沉睡用户表格
+        async function loadSleepingTable() {
+            try {
+                const res = await fetch('/api/gpa/sleeping');
+                const data = await res.json();
+                
+                const tbody = document.getElementById('sleepingTable');
+                if (data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:#27ae60;">🎉 暂无沉睡用户，大家都来听课了！</td></tr>';
+                    return;
+                }
+                
+                tbody.innerHTML = data.map((user, index) => {
+                    return `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${user.idMasked}</td>
+                            <td>${user.name}</td>
+                            <td>${user.totalGpa}</td>
+                            <td>${user.notes || 0}</td>
+                            <td><span class="status-badge status-sleeping">😴 沉睡中</span></td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) {
+                console.error('加载沉睡用户失败:', err);
+                document.getElementById('sleepingTable').innerHTML = 
+                    '<tr><td colspan="6" style="text-align:center;padding:20px;color:#e74c3c;">加载失败</td></tr>';
+            }
         }
         
         async function loadWarningUsers() {
