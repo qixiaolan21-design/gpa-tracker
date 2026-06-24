@@ -242,10 +242,10 @@ function calculateWeeklyGrowth() {
     gpaData.forEach(user => {
         // 使用本次新增作为本周增长
         const growth = user.newGpa || 0;
+        const notesCount = user.notes || 0;
         
-        if (growth > 0) {
-            const notesCount = user.notes || 0;
-            
+        // 只要有增长或有笔记的用户都显示
+        if (growth > 0 || notesCount >= 3) {
             // 判断是笔记大王还是学习大王
             // 笔记次数 >= 3 认为是笔记大王，否则是学习大王
             let starType = 'study'; // study 或 homework
@@ -285,8 +285,14 @@ function calculateWeeklyGrowth() {
         }
     });
     
-    // 按增长排序
-    growthData.sort((a, b) => b.growth - a.growth);
+    // 按增长排序（笔记大王优先，然后按绩点增长排序）
+    growthData.sort((a, b) => {
+        // 笔记大王优先
+        if (a.starType === 'homework' && b.starType !== 'homework') return -1;
+        if (a.starType !== 'homework' && b.starType === 'homework') return 1;
+        // 然后按增长排序
+        return b.growth - a.growth;
+    });
     
     return growthData;
 }
