@@ -1031,13 +1031,12 @@
             const html = data.map((item, index) => {
                 const rankClass = index === 0 ? 'rising-star-rank-1' : index === 1 ? 'rising-star-rank-2' : index === 2 ? 'rising-star-rank-3' : 'rising-star-rank-other';
                 const rankIcon = index === 0 ? '1' : index === 1 ? '2' : index === 2 ? '3' : `${index + 1}`;
-                const starBadge = index < 3 ? '<span class="rising-star-badge">⭐</span>' : '';
                 
                 return `
                     <div class="rising-star-item">
                         <div class="rising-star-rank ${rankClass}">${rankIcon}</div>
                         <div class="rising-star-info">
-                            <div class="rising-star-name">${item.name}${starBadge}</div>
+                            <div class="rising-star-name"><span class="rising-star-badge">⭐</span>${item.name}</div>
                             <div class="rising-star-id">${item.idMasked}</div>
                         </div>
                         <div class="growth-value">+${item.growth}</div>
