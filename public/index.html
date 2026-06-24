@@ -412,11 +412,18 @@
             background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
             color: white;
             border: 2px solid #ffd700;
+            cursor: pointer;
+            position: relative;
         }
         .king-badge.study {
             background: linear-gradient(135deg, #4ecdc4, #44a08d);
             color: white;
             border: 2px solid #ffd700;
+            cursor: pointer;
+            position: relative;
+        }
+        .king-badge:active {
+            transform: scale(0.95);
         }
         
         /* 大王皇冠 */
@@ -1494,6 +1501,9 @@
                 const tooltipText = item.reason || '积极学习，绩点飙升！';
                 const kingBadgeClass = item.starType === 'homework' ? 'notes' : 'study';
                 const kingTitle = item.starType === 'homework' ? '📝 笔记大王' : '📚 学习大王';
+                const detailText = item.starType === 'homework' 
+                    ? `近期提交笔记${item.notes}次，荣获笔记大王称号！` 
+                    : `近期绩点增长${item.growth}分，荣获学习大王称号！`;
                 
                 return `
                     <div class="rising-star-item">
@@ -1502,7 +1512,7 @@
                             <div class="rising-star-name">
                                 <span class="crown-icon" title="${tooltipText}">👑</span>
                                 ${item.name}
-                                <span class="king-badge ${kingBadgeClass}" title="${tooltipText}">${kingTitle}</span>
+                                <span class="king-badge ${kingBadgeClass}" onclick="showKingDetail('${item.name}', '${item.starType}', ${item.notes}, ${item.growth}, '${item.reason}')" style="cursor: pointer;">${kingTitle}</span>
                             </div>
                             <div class="rising-star-id">${item.idMasked}</div>
                         </div>
@@ -1764,6 +1774,18 @@
             localStorage.removeItem('gpaUser');
             currentUser = null;
             location.reload();
+        }
+        
+        // 显示大王详情
+        function showKingDetail(name, starType, notes, growth, reason) {
+            const title = starType === 'homework' ? '📝 笔记大王' : '📚 学习大王';
+            let message = '';
+            if (starType === 'homework') {
+                message = `${name} 近期提交笔记${notes}次，荣获「笔记大王」称号！\n\n${reason}`;
+            } else {
+                message = `${name} 近期绩点增长${growth}分，荣获「学习大王」称号！\n\n坚持听课学习，积极参与！`;
+            }
+            alert(message);
         }
         
         // 页面加载时检查登录状态
