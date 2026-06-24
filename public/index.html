@@ -1047,12 +1047,23 @@
             list.innerHTML = `<div class="rising-stars-grid">${html}</div>`;
         }
         
+        // 预警榜单数据缓存
+        let warningDataCache = [];
+        let warningCurrentBatch = 0;
+        const WARNING_BATCH_SIZE = 20;
+        const WARNING_ROTATE_INTERVAL = 5 * 60 * 1000; // 5分钟
+        
         // 加载预警榜单
         async function loadWarningList() {
             try {
                 const res = await fetch('/api/gpa/warning');
                 const data = await res.json();
-                renderWarningList(data);
+                warningDataCache = data;
+                warningCurrentBatch = 0;
+                renderWarningBatch();
+                
+                // 启动定时轮换
+                startWarningRotation();
             } catch (err) {
                 console.error('加载预警榜单失败:', err);
                 document.getElementById('warningList').innerHTML = 
@@ -1060,19 +1071,41 @@
             }
         }
         
-        // 渲染预警榜单
-        function renderWarningList(data) {
+        // 启动预警榜单轮换
+        let warningRotationTimer = null;
+        function startWarningRotation() {
+            if (warningRotationTimer) {
+                clearInterval(warningRotationTimer);
+            }
+            warningRotationTimer = setInterval(() => {
+                warningCurrentBatch++;
+                const totalBatches = Math.ceil(warningDataCache.length / WARNING_BATCH_SIZE);
+                if (warningCurrentBatch >= totalBatches) {
+                    warningCurrentBatch = 0;
+                }
+                renderWarningBatch();
+            }, WARNING_ROTATE_INTERVAL);
+        }
+        
+        // 渲染当前批次的预警榜单
+        function renderWarningBatch() {
             const list = document.getElementById('warningList');
             
-            if (data.length === 0) {
+            if (warningDataCache.length === 0) {
                 list.innerHTML = '<div class="empty-state" style="text-align: center; padding: 20px; color: #27ae60;">🎉 暂无预警用户，大家表现都很棒！</div>';
                 return;
             }
             
-            const html = data.map((item, index) => {
+            const totalBatches = Math.ceil(warningDataCache.length / WARNING_BATCH_SIZE);
+            const startIndex = warningCurrentBatch * WARNING_BATCH_SIZE;
+            const endIndex = Math.min(startIndex + WARNING_BATCH_SIZE, warningDataCache.length);
+            const batchData = warningDataCache.slice(startIndex, endIndex);
+            
+            const html = batchData.map((item, index) => {
+                const globalIndex = startIndex + index;
                 return `
                     <div class="warning-item">
-                        <div class="warning-rank">${index + 1}</div>
+                        <div class="warning-rank">${globalIndex + 1}</div>
                         <div class="warning-info">
                             <div class="warning-name">${item.name}</div>
                             <div class="warning-id">${item.idMasked}</div>
@@ -1082,7 +1115,11 @@
                 `;
             }).join('');
             
-            list.innerHTML = `<div class="warning-grid">${html}</div>`;
+            const batchInfo = totalBatches > 1 
+                ? `<div style="text-align: center; font-size: 12px; color: #666; margin-top: 10px; padding: 8px; background: rgba(231, 76, 60, 0.05); border-radius: 6px;">第 ${warningCurrentBatch + 1}/${totalBatches} 批 | 5分钟后自动切换</div>` 
+                : '';
+            
+            list.innerHTML = `<div class="warning-grid">${html}</div>${batchInfo}`;
         }
         
         // 初始化
