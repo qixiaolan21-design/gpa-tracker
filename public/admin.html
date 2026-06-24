@@ -532,6 +532,43 @@
                 </table>
             </div>
         </div>
+        
+        <!-- 登录日志 -->
+        <div class="access-log-section">
+            <div class="access-log-header">
+                <div class="access-log-title">🔐 用户登录记录</div>
+                <button class="filter-btn all-users" onclick="loadLoginLogs()">🔄 刷新</button>
+            </div>
+            <div class="access-log-stats">
+                <div class="access-log-stat">
+                    <div class="access-log-stat-value" id="totalLogins">-</div>
+                    <div class="access-log-stat-label">总登录次数</div>
+                </div>
+                <div class="access-log-stat">
+                    <div class="access-log-stat-value" id="uniqueLoginUsers">-</div>
+                    <div class="access-log-stat-label">登录用户数</div>
+                </div>
+                <div class="access-log-stat">
+                    <div class="access-log-stat-value" id="todayLogins">-</div>
+                    <div class="access-log-stat-label">今日登录</div>
+                </div>
+            </div>
+            <div class="access-log-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>时间</th>
+                            <th>用户ID</th>
+                            <th>姓名</th>
+                            <th>IP地址</th>
+                        </tr>
+                    </thead>
+                    <tbody id="loginLogTable">
+                        <tr><td colspan="4" class="loading">加载中...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <!-- 兑换绩点弹窗 -->
@@ -1029,12 +1066,54 @@
             }
         }
         
+        // 加载登录日志
+        async function loadLoginLogs() {
+            try {
+                const res = await fetch('/api/admin/login-logs?limit=50');
+                const data = await res.json();
+                
+                // 更新统计数据
+                document.getElementById('totalLogins').textContent = data.total || 0;
+                document.getElementById('uniqueLoginUsers').textContent = data.uniqueUsers || 0;
+                document.getElementById('todayLogins').textContent = data.todayLogins || 0;
+                
+                // 渲染日志表格
+                const tbody = document.getElementById('loginLogTable');
+                if (data.logs && data.logs.length > 0) {
+                    tbody.innerHTML = data.logs.map(log => {
+                        const time = new Date(log.timestamp).toLocaleString('zh-CN');
+                        const userId = log.userId || '-';
+                        const userName = log.userName || '-';
+                        const ip = log.ip || 'unknown';
+                        return `
+                            <tr>
+                                <td class="time-cell">${time}</td>
+                                <td class="ip-cell">${userId}</td>
+                                <td>${userName}</td>
+                                <td class="ip-cell">${ip}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:#999;">暂无登录记录</td></tr>';
+                }
+            } catch (err) {
+                console.error('加载登录日志失败:', err);
+                document.getElementById('loginLogTable').innerHTML = 
+                    '<tr><td colspan="4" style="text-align:center;padding:20px;color:#e74c3c;">加载失败</td></tr>';
+            }
+        }
+        
         // 初始化
         loadData();
         loadAccessLogs();
+        loadLoginLogs();
         
-        // 每30秒自动刷新访问日志
-        setInterval(loadAccessLogs, 30000);
+        // 每30秒自动刷新日志
+        setInterval(() => {
+            loadAccessLogs();
+            loadLoginLogs();
+        }, 30000);
     </script>
 </body>
 </html>

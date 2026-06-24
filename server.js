@@ -431,6 +431,42 @@ app.get('/health', (req, res) => {
     res.json({ status: 'ok', dataLoaded: gpaData.length > 0, count: gpaData.length });
 });
 
+// 登录日志存储
+let loginLogs = [];
+const LOGIN_LOG_FILE = path.join(__dirname, 'data', 'login_logs.json');
+
+// 记录登录API
+app.post('/api/login', express.json(), (req, res) => {
+    try {
+        const { userId, userName, timestamp } = req.body;
+        const ip = req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.connection.remoteAddress || 'unknown';
+        
+        const logEntry = {
+            timestamp: timestamp || new Date().toISOString(),
+            userId: userId,
+            userName: userName,
+            ip: ip,
+            userAgent: req.headers['user-agent'] || 'unknown'
+        };
+        
+        loginLogs.push(logEntry);
+        
+        // 只保留最近500条登录记录
+        if (loginLogs.length > 500) {
+            loginLogs = loginLogs.slice(-500);
+        }
+        
+        // 保存到文件
+        fs.writeFileSync(LOGIN_LOG_FILE, JSON.stringify(loginLogs, null, 2));
+        
+        console.log(`🔐 用户登录: ${userName} (${userId}) from ${ip}`);
+        res.json({ success: true });
+    } catch (err) {
+        console.error('记录登录失败:', err);
+        res.status(500).json({ error: '记录失败' });
+    }
+});
+
 // 后台管理API - 获取访问日志
 app.get('/api/admin/access-logs', (req, res) => {
     try {
@@ -452,6 +488,29 @@ app.get('/api/admin/access-logs', (req, res) => {
         });
     } catch (err) {
         console.error('获取访问日志失败:', err);
+        res.status(500).json({ error: '获取失败' });
+    }
+});
+
+// 后台管理API - 获取登录日志
+app.get('/api/admin/login-logs', (req, res) => {
+    try {
+        const limit = parseInt(req.query.limit) || 100;
+        const logs = loginLogs.slice(-limit).reverse(); // 最新的在前
+        
+        // 统计信息
+        const uniqueUsers = new Set(loginLogs.map(l => l.userId)).size;
+        const today = new Date().toISOString().split('T')[0];
+        const todayLogs = loginLogs.filter(l => l.timestamp.startsWith(today));
+        
+        res.json({
+            total: loginLogs.length,
+            uniqueUsers: uniqueUsers,
+            todayLogins: todayLogs.length,
+            logs: logs
+        });
+    } catch (err) {
+        console.error('获取登录日志失败:', err);
         res.status(500).json({ error: '获取失败' });
     }
 });

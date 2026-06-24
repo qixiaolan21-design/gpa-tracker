@@ -996,10 +996,143 @@
                 display: none;
             }
         }
+        
+        /* 登录弹窗 */
+        .login-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .login-modal.hidden {
+            display: none;
+        }
+        .login-modal-content {
+            background: rgba(255,255,255,0.95);
+            border-radius: 24px;
+            padding: 40px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .login-header {
+            margin-bottom: 30px;
+        }
+        .login-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+            animation: wave 2s ease-in-out infinite;
+        }
+        @keyframes wave {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(20deg); }
+            75% { transform: rotate(-20deg); }
+        }
+        .login-header h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .login-header p {
+            color: #666;
+            font-size: 14px;
+        }
+        .login-form {
+            margin-bottom: 20px;
+        }
+        .login-form input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+        .login-form input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .login-form button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .login-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        .login-hint {
+            font-size: 12px;
+            color: #999;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        /* 用户信息 */
+        .user-info {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .user-welcome {
+            color: #FFD700;
+            font-size: 14px;
+        }
+        .logout-btn {
+            padding: 5px 15px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- 登录弹窗 -->
+    <div id="loginModal" class="login-modal">
+        <div class="login-modal-content">
+            <div class="login-header">
+                <div class="login-icon">👋</div>
+                <h2>欢迎查询绩点</h2>
+                <p>请输入您的HomilyLink精网号登录</p>
+            </div>
+            <div class="login-form">
+                <input type="text" id="loginId" placeholder="请输入900开头的精网号" maxlength="11">
+                <button onclick="doLogin()">🔓 登录查询</button>
+            </div>
+            <div class="login-hint">
+                💡 无需密码，输入精网号即可查看您的绩点排名
+            </div>
+        </div>
+    </div>
+    
+    <div class="container" id="mainContainer" style="display: none;">
         <header>
             <h1>🏆 赢在美股—绩点先锋排行榜</h1>
             <p>GPA Pioneer Leaderboard</p>
@@ -1010,6 +1143,10 @@
             <div class="contact-badge">
                 <span class="contact-icon">📞</span>
                 <span>绩点相关问题请联系助教 WhatsApp: <strong>+852 5577 5232</strong></span>
+            </div>
+            <div class="user-info" id="userInfo" style="display: none;">
+                <span class="user-welcome">👤 欢迎，<span id="userName"></span></span>
+                <button class="logout-btn" onclick="doLogout()">退出</button>
             </div>
         </header>
         
@@ -1420,11 +1557,10 @@
                     <div class="warning-item">
                         <div class="warning-rank">${globalIndex + 1}</div>
                         <div class="warning-info">
-                            <div class="warning-name">${item.name}</div>
+                            <div class="warning-name">${item.name} <span class="warning-danger-badge ${dangerClass}">${dangerTag}</span></div>
                             <div class="warning-id">${item.idMasked}</div>
                         </div>
                         <div class="warning-gpa">${item.totalGpa}</div>
-                        <div class="warning-danger-badge ${dangerClass}">${dangerTag}</div>
                     </div>
                 `;
             }).join('');
@@ -1513,7 +1649,92 @@
             await Promise.all([loadAll(), loadRisingStars(), loadWarningList(), loadStats()]);
         }
         
-        init();
+        // 登录功能
+        let currentUser = null;
+        
+        // 检查是否已登录
+        function checkLogin() {
+            const savedUser = localStorage.getItem('gpaUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showMainContent();
+            }
+        }
+        
+        // 执行登录
+        async function doLogin() {
+            const userId = document.getElementById('loginId').value.trim();
+            
+            if (!userId || !userId.match(/^9\d{7,}$/)) {
+                alert('请输入正确的精网号（900开头）');
+                return;
+            }
+            
+            try {
+                // 验证用户ID是否存在
+                const res = await fetch('/api/gpa');
+                const allData = await res.json();
+                const user = allData.find(u => u.id === userId);
+                
+                if (!user) {
+                    alert('未找到该精网号，请确认后重试');
+                    return;
+                }
+                
+                // 保存登录信息
+                currentUser = {
+                    id: user.id,
+                    name: user.name,
+                    loginTime: new Date().toISOString()
+                };
+                localStorage.setItem('gpaUser', JSON.stringify(currentUser));
+                
+                // 记录登录日志
+                await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: user.id,
+                        userName: user.name,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+                
+                showMainContent();
+            } catch (err) {
+                console.error('登录失败:', err);
+                alert('登录失败，请重试');
+            }
+        }
+        
+        // 显示主内容
+        function showMainContent() {
+            document.getElementById('loginModal').classList.add('hidden');
+            document.getElementById('mainContainer').style.display = 'block';
+            
+            if (currentUser) {
+                document.getElementById('userInfo').style.display = 'inline-flex';
+                document.getElementById('userName').textContent = currentUser.name;
+            }
+            
+            // 加载数据
+            init();
+        }
+        
+        // 退出登录
+        function doLogout() {
+            localStorage.removeItem('gpaUser');
+            currentUser = null;
+            location.reload();
+        }
+        
+        // 页面加载时检查登录状态
+        checkLogin();
+        
+        // 监听回车键登录
+        document.getElementById('loginId')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') doLogin();
+        });
     </script>
 </body>
 </html>
