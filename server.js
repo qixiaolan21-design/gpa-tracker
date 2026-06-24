@@ -238,12 +238,28 @@ function calculateWeeklyGrowth() {
         const growth = user.newGpa || 0;
         
         if (growth > 0) {
+            // 计算飞跃原因
+            let reason = '';
+            const notesCount = user.notes || 0;
+            
+            if (notesCount >= 5) {
+                reason = `提交作业${notesCount}次，学习超积极！`;
+            } else if (notesCount >= 2) {
+                reason = `提交作业${notesCount}次，保持学习！`;
+            } else if (notesCount > 0) {
+                reason = `提交作业${notesCount}次`;
+            } else {
+                reason = '坚持听课学习';
+            }
+            
             growthData.push({
                 id: user.id,
                 idMasked: user.idMasked,
                 name: user.name,
                 totalGpa: user.totalGpa,
                 growth: growth,
+                notes: notesCount,
+                reason: reason,
                 isGongying: user.isGongying
             });
         }
