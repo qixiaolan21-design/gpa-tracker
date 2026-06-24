@@ -348,72 +348,10 @@ app.get('/api/gpa/rising-stars', (req, res) => {
     res.json(growthData.slice(0, limit));
 });
 
-// 获取预警榜单（近一周没有出现在听课记录中的用户）
+// 获取预警榜单（暂时返回空数组，等待新的听课数据）
 app.get('/api/gpa/warning', (req, res) => {
-    const warningData = [];
-    
-    // 读取最近一周的听课记录
-    const recentUsers = new Set();
-    const today = new Date();
-    
-    // 检查最近7天的CSV文件
-    for (let i = 0; i < 7; i++) {
-        const date = new Date(today);
-        date.setDate(today.getDate() - i);
-        const month = date.getMonth() + 1;
-        const day = date.getDate();
-        
-        // 尝试不同的文件名格式
-        const possibleFiles = [
-            path.join(DATA_DIR, `${month}.${day}.csv`),
-            path.join(DATA_DIR, `${month}.${day}1.csv`),
-            path.join(DATA_DIR, `${month}.${day}2.csv`)
-        ];
-        
-        possibleFiles.forEach(file => {
-            if (fs.existsSync(file)) {
-                try {
-                    const content = fs.readFileSync(file, 'utf-8');
-                    const lines = content.split('\n');
-                    lines.forEach(line => {
-                        const parts = line.split(',');
-                        if (parts.length >= 3) {
-                            const userId = parts[2] ? parts[2].trim() : '';
-                            if (userId && userId.startsWith('9')) {
-                                recentUsers.add(userId);
-                            }
-                        }
-                    });
-                } catch (err) {
-                    console.error('读取听课记录失败:', file, err.message);
-                }
-            }
-        });
-    }
-    
-    console.log(`📊 最近一周活跃用户数: ${recentUsers.size}`);
-    
-    gpaData.forEach(user => {
-        // 如果用户最近一周没有出现在听课记录中，加入预警
-        // 排除示例用户和特定账号
-        if (!recentUsers.has(user.id) && !user.id.startsWith('900000') && user.id !== '90003692') {
-            warningData.push({
-                id: user.id,
-                idMasked: user.idMasked,
-                name: user.name,
-                totalGpa: user.totalGpa,
-                historyGpa: user.historyGpa,
-                isGongying: user.isGongying
-            });
-        }
-    });
-    
-    // 按总绩点排序（从低到高，优先显示绩点低的）
-    warningData.sort((a, b) => a.totalGpa - b.totalGpa);
-    
-    console.log(`⚠️ 预警用户数: ${warningData.length}`);
-    
-    res.json(warningData);
+    // 暂时返回空数组，等待用户提供近一周的听课数据
+    res.json([]);
 });
 
 // 获取统计信息
