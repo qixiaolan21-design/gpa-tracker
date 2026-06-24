@@ -349,11 +349,16 @@
         
         /* 预警榜单 - 双列紧凑版 */
         .warning-section {
-            background: linear-gradient(135deg, rgba(231, 76, 60, 0.08) 0%, rgba(192, 57, 43, 0.08) 100%);
-            border: 2px solid rgba(231, 76, 60, 0.4);
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.12) 0%, rgba(192, 57, 43, 0.12) 100%);
+            border: 3px solid rgba(231, 76, 60, 0.6);
             border-radius: 20px;
             padding: 20px;
             margin-bottom: 20px;
+            animation: warningSectionPulse 2s ease-in-out infinite;
+        }
+        @keyframes warningSectionPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4); }
+            50% { box-shadow: 0 0 20px 5px rgba(231, 76, 60, 0.2); }
         }
         .warning-header {
             display: flex;
@@ -374,21 +379,63 @@
         }
         .warning-icon {
             font-size: 26px;
-            animation: warningPulse 1.5s ease-in-out infinite;
+            animation: warningPulse 1s ease-in-out infinite;
         }
         @keyframes warningPulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.8; }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
         }
         .warning-alert {
             background: linear-gradient(135deg, #e74c3c, #c0392b);
             color: white;
-            padding: 10px 15px;
+            padding: 12px 15px;
             border-radius: 10px;
-            font-size: 13px;
+            font-size: 14px;
             text-align: center;
             margin-bottom: 15px;
-            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+            animation: warningAlertShake 0.5s ease-in-out infinite;
+        }
+        @keyframes warningAlertShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
+        }
+        
+        /* 成就徽章 */
+        .achievement-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        .badge-champion {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #333;
+        }
+        .badge-top10 {
+            background: linear-gradient(135deg, #C0C0C0, #A0A0A0);
+            color: #333;
+        }
+        .badge-top50 {
+            background: linear-gradient(135deg, #CD7F32, #B87333);
+            color: white;
+        }
+        .badge-active {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+        }
+        .badge-warning {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            animation: badgeWarningPulse 1s ease-in-out infinite;
+        }
+        @keyframes badgeWarningPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
         .warning-alert strong {
             font-weight: bold;
@@ -1006,6 +1053,21 @@
             }
         }
         
+        // 获取成就徽章
+        function getAchievementBadges(item, index) {
+            let badges = '';
+            // 排名徽章
+            if (index === 0) badges += '<span class="achievement-badge badge-champion">👑 冠军</span>';
+            else if (index < 3) badges += '<span class="achievement-badge badge-top10">🥉 前三</span>';
+            else if (index < 10) badges += '<span class="achievement-badge badge-top10">🔥 前十</span>';
+            else if (index < 50) badges += '<span class="achievement-badge badge-top50">💫 前五十</span>';
+            
+            // 活跃徽章
+            if (item.newGpa > 0) badges += '<span class="achievement-badge badge-active">📈 活跃</span>';
+            
+            return badges;
+        }
+        
         // 渲染排行榜
         function renderLeaderboard(data) {
             const list = document.getElementById('leaderboardList');
@@ -1018,6 +1080,7 @@
             list.innerHTML = data.map((item, index) => {
                 const rankClass = index === 0 ? 'rank-1' : index === 1 ? 'rank-2' : index === 2 ? 'rank-3' : 'rank-other';
                 const rankBadge = getRankBadge(index);
+                const achievementBadges = getAchievementBadges(item, index);
                 const gongyingBadge = item.isGongying ? '<span class="gongying-badge">👑共盈会</span>' : '';
                 const winnerFanBadge = item.id && item.id.startsWith('94') ? '<span class="winner-fan-badge">❤️赢家粉</span>' : '';
                 const usedGpa = item.usedGpa || 0;
@@ -1040,6 +1103,7 @@
                         <div class="rank ${rankClass}">${index + 1}</div>
                         <div class="user-info">
                             <div class="user-name">${item.name}${rankBadge}${gongyingBadge}${winnerFanBadge}</div>
+                            <div style="margin-top: 4px;">${achievementBadges}</div>
                             <div class="user-id">${item.idMasked}</div>
                         </div>
                         <div class="gpa-value gpa-total" style="text-align: center;">${item.totalGpa}</div>
