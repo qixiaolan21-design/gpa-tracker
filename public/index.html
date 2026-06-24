@@ -272,6 +272,116 @@
             padding: 20px;
             margin-bottom: 20px;
         }
+        
+        /* 预警榜单 - 双列紧凑版 */
+        .warning-section {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.08) 0%, rgba(192, 57, 43, 0.08) 100%);
+            border: 2px solid rgba(231, 76, 60, 0.4);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .warning-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 2px dashed rgba(231, 76, 60, 0.3);
+        }
+        .warning-title {
+            font-size: 22px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .warning-icon {
+            font-size: 26px;
+            animation: warningPulse 1.5s ease-in-out infinite;
+        }
+        @keyframes warningPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        .warning-alert {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 13px;
+            text-align: center;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+        }
+        .warning-alert strong {
+            font-weight: bold;
+        }
+        .warning-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 12px;
+        }
+        .warning-item {
+            display: grid;
+            grid-template-columns: 28px 1fr 50px;
+            gap: 6px;
+            padding: 8px 10px;
+            background: white;
+            border-radius: 8px;
+            align-items: center;
+            transition: all 0.3s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid rgba(231, 76, 60, 0.15);
+        }
+        .warning-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(231, 76, 60, 0.1);
+            border-color: rgba(231, 76, 60, 0.4);
+        }
+        .warning-rank {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 11px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        .warning-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            overflow: hidden;
+        }
+        .warning-name {
+            font-weight: 600;
+            font-size: 13px;
+            color: #212529;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .warning-id {
+            font-size: 10px;
+            color: #868e96;
+        }
+        .warning-gpa {
+            font-weight: bold;
+            font-size: 12px;
+            color: #e74c3c;
+            text-align: right;
+        }
+        @media (max-width: 600px) {
+            .warning-grid {
+                grid-template-columns: 1fr;
+            }
+        }
         .rising-stars-header {
             display: flex;
             align-items: center;
@@ -711,6 +821,20 @@
             </div>
         </div>
         
+        <!-- 预警榜单 -->
+        <div class="warning-section">
+            <div class="warning-header">
+                <span class="warning-icon">⚠️</span>
+                <span class="warning-title">预警榜单</span>
+            </div>
+            <div class="warning-alert">
+                <strong>⚠️ 警告：</strong>上榜超过1周，将有被踢出班级群的风险！
+            </div>
+            <div id="warningList">
+                <div class="loading">加载中... / Loading...</div>
+            </div>
+        </div>
+        
         <!-- 搜索 -->
         <div class="card">
             <div class="search-box">
@@ -916,10 +1040,48 @@
             list.innerHTML = `<div class="rising-stars-grid">${html}</div>`;
         }
         
+        // 加载预警榜单
+        async function loadWarningList() {
+            try {
+                const res = await fetch('/api/gpa/warning');
+                const data = await res.json();
+                renderWarningList(data);
+            } catch (err) {
+                console.error('加载预警榜单失败:', err);
+                document.getElementById('warningList').innerHTML = 
+                    '<div class="empty-state">加载失败</div>';
+            }
+        }
+        
+        // 渲染预警榜单
+        function renderWarningList(data) {
+            const list = document.getElementById('warningList');
+            
+            if (data.length === 0) {
+                list.innerHTML = '<div class="empty-state" style="text-align: center; padding: 20px; color: #27ae60;">🎉 暂无预警用户，大家表现都很棒！</div>';
+                return;
+            }
+            
+            const html = data.map((item, index) => {
+                return `
+                    <div class="warning-item">
+                        <div class="warning-rank">${index + 1}</div>
+                        <div class="warning-info">
+                            <div class="warning-name">${item.name}</div>
+                            <div class="warning-id">${item.idMasked}</div>
+                        </div>
+                        <div class="warning-gpa">${item.totalGpa}</div>
+                    </div>
+                `;
+            }).join('');
+            
+            list.innerHTML = `<div class="warning-grid">${html}</div>`;
+        }
+        
         // 初始化
         async function init() {
             checkFestival(); // 检查节日装饰
-            await Promise.all([loadAll(), loadRisingStars()]);
+            await Promise.all([loadAll(), loadRisingStars(), loadWarningList()]);
         }
         
         init();

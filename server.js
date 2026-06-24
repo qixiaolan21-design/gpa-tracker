@@ -318,6 +318,30 @@ app.get('/api/gpa/rising-stars', (req, res) => {
     res.json(growthData.slice(0, limit));
 });
 
+// 获取预警榜单（超过1周没有增加绩点的用户）
+app.get('/api/gpa/warning', (req, res) => {
+    const warningData = [];
+    
+    gpaData.forEach(user => {
+        // 如果本次新增为0，说明超过1周没有增加绩点
+        if (user.newGpa === 0) {
+            warningData.push({
+                id: user.id,
+                idMasked: user.idMasked,
+                name: user.name,
+                totalGpa: user.totalGpa,
+                lastGrowth: user.newGpa,
+                isGongying: user.isGongying
+            });
+        }
+    });
+    
+    // 按总绩点排序（从低到高，优先显示绩点低的）
+    warningData.sort((a, b) => a.totalGpa - b.totalGpa);
+    
+    res.json(warningData);
+});
+
 // 获取统计信息
 app.get('/api/gpa/stats', (req, res) => {
     if (gpaData.length === 0) {
