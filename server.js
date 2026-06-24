@@ -409,6 +409,9 @@ app.post('/api/admin/redeem', express.json(), (req, res) => {
     const newDetail = note || `兑换${points}绩点`;
     user.usedGpaDetails = usedDetails ? `${usedDetails}; ${newDetail}` : newDetail;
     
+    // 记录操作日志
+    addLog('兑换绩点', userId, user.name, `使用${points}绩点 - ${newDetail}`);
+    
     // 保存到CSV文件
     saveGpaData();
     
@@ -451,6 +454,9 @@ app.post('/api/admin/users', express.json(), (req, res) => {
     // 重新排序
     gpaData.sort((a, b) => b.totalGpa - a.totalGpa);
     
+    // 记录操作日志
+    addLog('添加用户', id, name, `总绩点:${newUser.totalGpa}`);
+    
     // 保存到CSV文件
     saveGpaData();
     
@@ -482,6 +488,9 @@ app.put('/api/admin/users/:id', express.json(), (req, res) => {
     // 重新排序
     gpaData.sort((a, b) => b.totalGpa - a.totalGpa);
     
+    // 记录操作日志
+    addLog('修改用户', userId, user.name, `总绩点:${user.totalGpa}`);
+    
     // 保存到CSV文件
     saveGpaData();
     
@@ -497,12 +506,104 @@ app.delete('/api/admin/users/:id', (req, res) => {
         return res.status(404).json({ error: '用户不存在' });
     }
     
+    const userName = gpaData[userIndex].name;
     gpaData.splice(userIndex, 1);
+    
+    // 记录操作日志
+    addLog('删除用户', userId, userName, '用户已删除');
     
     // 保存到CSV文件
     saveGpaData();
     
     res.json({ success: true, message: '删除成功' });
+});
+
+// 操作日志
+const operationLogs = [];
+const MAX_LOGS = 100;
+
+// 记录操作日志
+function addLog(operation, userId, userName, details) {
+    const log = {
+        time: new Date().toISOString(),
+        operation,
+        userId,
+        userName,
+        details
+    };
+    operationLogs.unshift(log);
+    if (operationLogs.length > MAX_LOGS) {
+        operationLogs.pop();
+    }
+    console.log(`📝 [${log.time}] ${operation}: ${userName} (${userId}) - ${details}`);
+}
+
+// 获取操作日志API
+app.get('/api/admin/logs', (req, res) => {
+    const limit = parseInt(req.query.limit) || 50;
+    res.json(operationLogs.slice(0, limit));
+});
+
+// 批量导入API
+app.post('/api/admin/import', express.json(), (req, res) => {
+    const { users } = req.body;
+    if (!users || !Array.isArray(users) || users.length === 0) {
+        return res.status(400).json({ error: '数据格式错误' });
+    }
+    
+    let added = 0;
+    let updated = 0;
+    let failed = 0;
+    
+    users.forEach(user => {
+        if (!user.id || !user.name) {
+            failed++;
+            return;
+        }
+        
+        const existingIndex = gpaData.findIndex(u => u.id === user.id);
+        
+        if (existingIndex >= 0) {
+            // 更新现有用户
+            const existing = gpaData[existingIndex];
+            existing.name = user.name || existing.name;
+            if (user.historyGpa !== undefined) existing.historyGpa = parseInt(user.historyGpa) || 0;
+            if (user.newGpa !== undefined) existing.newGpa = parseInt(user.newGpa) || 0;
+            if (user.notes !== undefined) existing.notes = parseInt(user.notes) || 0;
+            existing.totalGpa = existing.historyGpa + existing.newGpa;
+            existing.updated = true;
+            updated++;
+            addLog('批量更新', user.id, user.name, `历史:${existing.historyGpa}, 新增:${existing.newGpa}`);
+        } else {
+            // 添加新用户
+            const hGpa = parseInt(user.historyGpa) || 0;
+            const nGpa = parseInt(user.newGpa) || 0;
+            const newUser = {
+                id: user.id,
+                idMasked: user.id.substring(0, 2) + '****' + user.id.substring(user.id.length - 2),
+                name: user.name,
+                historyGpa: hGpa,
+                newGpa: nGpa,
+                totalGpa: hGpa + nGpa,
+                usedGpa: 0,
+                usedGpaDetails: '',
+                notes: parseInt(user.notes) || 0,
+                isGongying: false,
+                updated: true
+            };
+            gpaData.push(newUser);
+            added++;
+            addLog('批量导入', user.id, user.name, `总绩点:${newUser.totalGpa}`);
+        }
+    });
+    
+    // 重新排序
+    gpaData.sort((a, b) => b.totalGpa - a.totalGpa);
+    
+    // 保存到CSV
+    saveGpaData();
+    
+    res.json({ success: true, added, updated, failed });
 });
 
 // 保存数据到CSV文件
