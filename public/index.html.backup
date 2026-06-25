@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏆 赢在美股—绩点先锋排行榜</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        
+        /* 头部 */
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, rgba(255,215,0,0.1) 0%, rgba(255,140,0,0.1) 100%);
+            border-radius: 24px;
+            border: 1px solid rgba(255,215,0,0.2);
+        }
+        header h1 { 
+            font-size: 42px; 
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 2px 10px rgba(255,215,0,0.3);
+        }
+        
+        /* 统计卡片 */
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .stat-card {
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            color: white;
+            transition: transform 0.3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        .stat-card:nth-child(1) {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .stat-card:nth-child(2) {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        .stat-card:nth-child(3) {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        .stat-card:nth-child(4) {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .stat-label {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        /* 个人查询区域 */
+        .personal-section {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        .personal-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .personal-header h3 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .personal-result {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            margin-top: 15px;
+        }
+        .personal-rank {
+            font-size: 36px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .personal-gpa {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 18px;
+        }
+        
+        /* 父亲节节日装饰 */
+        .festival-banner {
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 50%, #1a365d 100%);
+            color: #e2e8f0;
+            padding: 15px 25px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+            border: 2px solid #4299e1;
+            box-shadow: 0 0 20px rgba(66, 153, 225, 0.3);
+            display: none;
+        }
+        .festival-banner.show {
+            display: block;
+            animation: festivalGlow 2s ease-in-out infinite alternate;
+        }
+        @keyframes festivalGlow {
+            from { box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
+            to { box-shadow: 0 0 30px rgba(255, 215, 0, 0.6); }
+        }
+        .festival-banner .festival-icon {
+            font-size: 28px;
+            margin: 0 10px;
+        }
+        .festival-banner .festival-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .festival-banner .festival-wish {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        /* 父亲节装饰 */
+        .father-decoration {
+            position: fixed;
+            font-size: 30px;
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 0;
+            display: none;
+        }
+        .father-decoration.show {
+            display: block;
+        }
+        .father-1 { top: 10%; left: 5%; animation: float 3s ease-in-out infinite; }
+        .father-2 { top: 20%; right: 8%; animation: float 3.5s ease-in-out infinite 0.5s; }
+        .father-3 { top: 60%; left: 3%; animation: float 4s ease-in-out infinite 1s; }
+        .father-4 { top: 70%; right: 5%; animation: float 3.2s ease-in-out infinite 1.5s; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+        
+        /* 全屏父亲节动画 */
+        .festival-animation-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            overflow: hidden;
+            display: none;
+        }
+        .festival-animation-container.show {
+            display: block;
+        }
+        
+        /* 飘落的爱心 */
+        .falling-heart {
+            position: absolute;
+            font-size: 24px;
+            animation: fall linear infinite;
+            opacity: 0.6;
+        }
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        /* 领带飘动动画 */
+        .floating-tie {
+            position: absolute;
+            font-size: 50px;
+            animation: tieFloat 8s ease-in-out infinite;
+            opacity: 0.7;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+        }
+        @keyframes tieFloat {
+            0%, 100% {
+                transform: translateY(0) rotate(-5deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+        }
+        
+        /* 闪烁的星星 */
+        .twinkle-star {
+            position: absolute;
+            font-size: 16px;
+            animation: twinkle 2s ease-in-out infinite;
+            opacity: 0;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+        
+        /* 礼物弹跳动画 */
+        .bouncing-gift {
+            position: absolute;
+            font-size: 35px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-30px) scale(1.1); }
+        }
+        
+        header p { 
+            opacity: 0.8; 
+            font-size: 18px;
+            letter-spacing: 2px;
+        }
+        
+        /* 更新时间 */
+        .update-time {
+            text-align: center;
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            display: inline-block;
+        }
+        .update-time .live-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #27ae60;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+        
+        /* 卡片样式 */
+        .card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        /* 权益说明 - 玻璃拟态 */
+        .benefits-section {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);
+            color: white;
+            padding: 35px;
+            border-radius: 24px;
+            margin-bottom: 25px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .benefits-section h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            text-align: center;
+            color: #FFD700;
+        }
+        
+        /* 搜索 */
+        .search-box {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .search-box input {
+            flex: 1;
+            padding: 16px 24px;
+            border: 2px solid #e0e0e0;
+            border-radius: 16px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+        .search-box button {
+            padding: 16px 35px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.3s;
+        }
+        .search-box button:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* 飞跃大王榜单 - 双列紧凑版 */
+        .rising-stars-section {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 140, 0, 0.15) 100%);
+            border: 3px solid rgba(255, 215, 0, 0.5);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .rising-stars-section::before {
+            content: '👑';
+            position: absolute;
+            font-size: 100px;
+            opacity: 0.05;
+            top: -20px;
+            right: -20px;
+            animation: floatCrown 3s ease-in-out infinite;
+        }
+        @keyframes floatCrown {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+        
+        /* 大王标签 */
+        .king-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            animation: kingBadgeShine 2s ease-in-out infinite;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .king-badge:hover {
+            transform: scale(1.15) rotate(-3deg);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        @keyframes kingBadgeShine {
+            0%, 100% { box-shadow: 0 0 5px rgba(255,215,0,0.5); }
+            50% { box-shadow: 0 0 20px rgba(255,215,0,0.8), 0 0 30px rgba(255,215,0,0.4); }
+        }
+        .king-badge.notes {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+            color: white;
+            border: 2px solid #ffd700;
+        }
+        .king-badge.study {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            color: white;
+            border: 2px solid #ffd700;
+        }
+        
+        /* 大王皇冠 */
+        .crown-icon {
+            font-size: 24px;
+            cursor: help;
+            transition: all 0.3s;
+            display: inline-block;
+            animation: crownBounce 1s ease-in-out infinite;
+        }
+        .crown-icon:hover {
+            transform: scale(1.4) rotate(10deg);
+        }
+        @keyframes crownBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        /* 拜见大王文字 */
+        .king-greeting {
+            text-align: center;
+            font-size: 14px;
+            color: #FFD700;
+            margin-top: 10px;
+            font-style: italic;
+            animation: greetingPulse 2s ease-in-out infinite;
+        }
+        @keyframes greetingPulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+        
+        /* 预警榜单 - 双列紧凑版 */
+        .warning-section {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.12) 0%, rgba(192, 57, 43, 0.12) 100%);
+            border: 3px solid rgba(231, 76, 60, 0.6);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            animation: warningSectionPulse 2s ease-in-out infinite;
+        }
+        @keyframes warningSectionPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4); }
+            50% { box-shadow: 0 0 20px 5px rgba(231, 76, 60, 0.2); }
+        }
+        .warning-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 2px dashed rgba(231, 76, 60, 0.3);
+        }
+        .warning-title {
+            font-size: 22px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .warning-icon {
+            font-size: 26px;
+            animation: warningPulse 1s ease-in-out infinite;
+        }
+        @keyframes warningPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        .warning-alert {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 12px 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+            animation: warningAlertShake 0.5s ease-in-out infinite;
+        }
+        @keyframes warningAlertShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
+        }
+        
+        /* 成就徽章 */
+        .achievement-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        .badge-champion {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #333;
+        }
+        .badge-top10 {
+            background: linear-gradient(135deg, #C0C0C0, #A0A0A0);
+            color: #333;
+        }
+        .badge-top50 {
+            background: linear-gradient(135deg, #CD7F32, #B87333);
+            color: white;
+        }
+        .badge-active {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+        }
+        .badge-warning {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            animation: badgeWarningPulse 1s ease-in-out infinite;
+        }
+        @keyframes badgeWarningPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .badge-sleeping {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            color: white;
+            animation: badgeSleeping 2s ease-in-out infinite;
+        }
+        @keyframes badgeSleeping {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        .warning-alert strong {
+            font-weight: bold;
+        }
+        .warning-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 12px;
+        }
+        .warning-item {
+            display: grid;
+            grid-template-columns: 28px 1fr 50px;
+            gap: 6px;
+            padding: 8px 10px;
+            background: white;
+            border-radius: 8px;
+            align-items: center;
+            transition: all 0.3s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid rgba(231, 76, 60, 0.15);
+        }
+        .warning-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(231, 76, 60, 0.1);
+            border-color: rgba(231, 76, 60, 0.4);
+        }
+        .warning-rank {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 11px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        .warning-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            overflow: hidden;
+        }
+        .warning-name {
+            font-weight: 600;
+            font-size: 13px;
+            color: #212529;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .warning-id {
+            font-size: 10px;
+            color: #868e96;
+        }
+        .warning-gpa {
+            font-weight: bold;
+            font-size: 12px;
+            color: #e74c3c;
+            text-align: right;
+        }
+        @media (max-width: 600px) {
+            .warning-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .rising-stars-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 2px dashed rgba(255, 107, 107, 0.3);
+        }
+        .rising-stars-title {
+            font-size: 22px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .rising-stars-icon {
+            font-size: 26px;
+            animation: rocketFloat 2s ease-in-out infinite;
+        }
+        @keyframes rocketFloat {
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(-6px) rotate(5deg); }
+        }
+        .rising-stars-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 12px;
+        }
+        .rising-star-item {
+            display: grid;
+            grid-template-columns: 28px 1fr 55px;
+            gap: 6px;
+            padding: 8px 10px;
+            background: white;
+            border-radius: 8px;
+            align-items: center;
+            transition: all 0.3s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255, 107, 107, 0.1);
+        }
+        .rising-star-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(255, 107, 107, 0.1);
+            border-color: rgba(255, 107, 107, 0.3);
+        }
+        .rising-star-rank {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 11px;
+        }
+        .rising-star-rank-1 { 
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a); 
+            color: white; 
+            box-shadow: 0 2px 6px rgba(255, 107, 107, 0.4);
+        }
+        .rising-star-rank-2 { 
+            background: linear-gradient(135deg, #ffa502, #ff7f50); 
+            color: white; 
+            box-shadow: 0 2px 6px rgba(255, 165, 2, 0.4);
+        }
+        .rising-star-rank-3 { 
+            background: linear-gradient(135deg, #2ed573, #7bed9f); 
+            color: white; 
+            box-shadow: 0 2px 6px rgba(46, 213, 115, 0.4);
+        }
+        .rising-star-rank-other { 
+            background: linear-gradient(135deg, #e9ecef, #dee2e6); 
+            color: #666; 
+        }
+        .rising-star-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            overflow: hidden;
+        }
+        .rising-star-name {
+            font-weight: 600;
+            font-size: 13px;
+            color: #212529;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .rising-star-badge {
+            font-size: 11px;
+            color: #ffa502;
+        }
+        .rising-star-id {
+            font-size: 10px;
+            color: #868e96;
+        }
+        .growth-value {
+            font-weight: bold;
+            font-size: 13px;
+            color: #ff6b6b;
+            text-align: right;
+        }
+        @media (max-width: 600px) {
+            .rising-stars-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* 排行榜 */
+        .leaderboard-header {
+            display: grid;
+            grid-template-columns: 70px 1fr 100px 100px 100px 100px 90px;
+            gap: 10px;
+            padding: 18px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 16px;
+            font-weight: bold;
+            color: #495057;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        
+        .leaderboard-item {
+            display: grid;
+            grid-template-columns: 70px 1fr 100px 100px 100px 100px 90px;
+            gap: 10px;
+            padding: 18px;
+            background: white;
+            border-radius: 16px;
+            margin-bottom: 10px;
+            align-items: center;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #f0f0f0;
+        }
+        .leaderboard-item:hover {
+            transform: translateX(8px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+        
+        .rank {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .rank-1 { 
+            background: linear-gradient(135deg, #FFD700, #FFA500); 
+            color: #333; 
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        }
+        .rank-2 { 
+            background: linear-gradient(135deg, #C0C0C0, #A0A0A0); 
+            color: #333; 
+            box-shadow: 0 4px 15px rgba(192, 192, 192, 0.4);
+        }
+        .rank-3 { 
+            background: linear-gradient(135deg, #CD7F32, #B87333); 
+            color: white; 
+            box-shadow: 0 4px 15px rgba(205, 127, 50, 0.4);
+        }
+        .rank-other { 
+            background: linear-gradient(135deg, #e9ecef, #dee2e6); 
+            color: #666; 
+        }
+        
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .user-name {
+            font-weight: 600;
+            color: #212529;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .user-id {
+            font-size: 13px;
+            color: #868e96;
+            margin-top: 4px;
+        }
+        
+        .gpa-value {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .gpa-total { 
+            color: #667eea; 
+            font-size: 18px;
+        }
+        .gpa-used { color: #e74c3c; }
+        .gpa-remaining { color: #27ae60; }
+        .gpa-notes { color: #f39c12; }
+        
+        /* 使用详情 tooltip */
+        .gpa-used-wrapper {
+            position: relative;
+            cursor: help;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .gpa-used-wrapper:hover .used-details-tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+        .used-details-tooltip {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: normal;
+            white-space: nowrap;
+            z-index: 100;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            transition: opacity 0.3s, visibility 0.3s;
+            margin-bottom: 8px;
+        }
+        .used-details-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 8px solid transparent;
+            border-top-color: #764ba2;
+        }
+        .used-details-icon {
+            font-size: 12px;
+            color: #e74c3c;
+        }
+        
+        .pioneer-score {
+            color: #9C27B0;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+        .pioneer-score .icon {
+            font-size: 18px;
+        }
+        
+        .rank-badge {
+            font-size: 11px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        .rank-badge-champion {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #333;
+        }
+        .rank-badge-runner {
+            background: linear-gradient(135deg, #C0C0C0, #A0A0A0);
+            color: #333;
+        }
+        .rank-badge-third {
+            background: linear-gradient(135deg, #CD7F32, #B87333);
+            color: white;
+        }
+        .rank-badge-top5 {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        .rank-badge-top10 {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: white;
+        }
+        .rank-badge-top50 {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+        }
+        .rank-badge-top100 {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            color: #333;
+        }
+        
+        .gongying-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 10px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #333;
+            font-size: 11px;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+        
+        .winner-fan-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 10px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+            color: white;
+            font-size: 11px;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #868e96;
+            font-size: 16px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            color: #868e96;
+            font-size: 16px;
+        }
+        
+        @media (max-width: 768px) {
+            header h1 { font-size: 28px; }
+            .benefits-grid { grid-template-columns: 1fr; }
+            .leaderboard-header,
+            .leaderboard-item {
+                grid-template-columns: 50px 1fr 80px 80px;
+                font-size: 13px;
+            }
+            .leaderboard-header span:nth-child(5),
+            .leaderboard-header span:nth-child(7),
+            .leaderboard-item .gpa-remaining,
+            .leaderboard-item .gpa-notes {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏆 赢在美股—绩点先锋排行榜</h1>
+            <p>GPA Pioneer Leaderboard</p>
+            <div class="update-time">
+                <span class="live-dot"></span>
+                <span id="updateTime">实时更新中...</span>
+            </div>
+        </header>
+        
+        <!-- 快速统计卡片 -->
+        <div class="stats-cards">
+            <div class="stat-card">
+                <div class="stat-value" id="totalUsers">-</div>
+                <div class="stat-label">总用户</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="avgGpa">-</div>
+                <div class="stat-label">平均绩点</div>
+            </div>
+        </div>
+        
+        <!-- 个人查询 -->
+        <div class="personal-section">
+            <div class="personal-header">
+                <h3>🔍 查询我的排名</h3>
+                <p style="font-size: 13px; color: #666;">输入精网号或姓名查看个人排名</p>
+            </div>
+            <div class="search-box" style="margin-bottom: 0;">
+                <input type="text" id="personalInput" placeholder="输入精网号或姓名..." onkeypress="if(event.key==='Enter') searchPersonal()">
+                <button onclick="searchPersonal()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">查询</button>
+            </div>
+            <div id="personalResult"></div>
+        </div>
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;background:rgba(255,255,255,0.1);padding:10px 15px;border-radius:10px;">📺 每日听课30分钟以上 → <strong style="color:#FFD700;font-size:18px;">+1绩点</strong></div>
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;background:rgba(255,255,255,0.1);padding:10px 15px;border-radius:10px;">📝 做笔记分享 → <strong style="color:#FFD700;font-size:18px;">+3绩点</strong></div>
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;background:rgba(255,255,255,0.1);padding:10px 15px;border-radius:10px;">🎁 赠送礼物（根据金额）→ <strong style="color:#FFD700;font-size:18px;">+1~10绩点</strong></div>
+                    <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.1);padding:10px 15px;border-radius:10px;">👥 介绍朋友来赢在美股 → <strong style="color:#FFD700;font-size:18px;">+5绩点</strong></div>
+                </div>
+            </div>
+            
+            <!-- 联系助教 -->
+            <div style="text-align:center;padding-top:20px;border-top:2px solid rgba(255,255,255,0.2);">
+                <p style="font-size:16px;opacity:0.9;color:white;margin-bottom:10px;">📞 兑换请联系助教老师</p>
+                <p style="font-size:22px;color:#FFD700;font-weight:600;animation:pulseText 2s ease-in-out infinite;">WhatsApp: +852 5577 5232</p>
+            </div>
+        </div>
+        
+        <!-- 快速统计卡片 -->
+        <div class="stats-cards">
+            <div class="stat-card">
+                <div class="stat-value" id="totalUsers">-</div>
+                <div class="stat-label">总用户</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="avgGpa">-</div>
+                <div class="stat-label">平均绩点</div>
+            </div>
+        </div>
+        
+        <!-- 个人查询 -->
+        <div class="personal-section">
+            <div class="personal-header">
+                <h3>🔍 查询我的排名</h3>
+                <p style="font-size: 13px; color: #666;">输入精网号或姓名查看个人排名</p>
+            </div>
+            <div class="search-box" style="margin-bottom: 0;">
+                <input type="text" id="personalInput" placeholder="输入精网号或姓名..." onkeypress="if(event.key==='Enter') searchPersonal()">
+                <button onclick="searchPersonal()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">查询</button>
+            </div>
+            <div id="personalResult"></div>
+        </div>
+            <div class="floating-tie" style="top: 65%; left: 20%; animation-delay: 1.5s; animation-duration: 10s;">👔</div>
+            
+            <!-- 闪烁的星星 -->
+            <div class="twinkle-star" style="top: 10%; left: 10%; animation-delay: 0s;">✨</div>
+            <div class="twinkle-star" style="top: 20%; left: 30%; animation-delay: 0.5s;">⭐</div>
+            <div class="twinkle-star" style="top: 15%; left: 50%; animation-delay: 1s;">✨</div>
+            <div class="twinkle-star" style="top: 25%; left: 70%; animation-delay: 1.5s;">⭐</div>
+            <div class="twinkle-star" style="top: 10%; left: 90%; animation-delay: 0.3s;">✨</div>
+            <div class="twinkle-star" style="top: 35%; left: 20%; animation-delay: 0.8s;">⭐</div>
+            <div class="twinkle-star" style="top: 40%; left: 80%; animation-delay: 1.2s;">✨</div>
+            
+            <!-- 弹跳的礼物 -->
+            <div class="bouncing-gift" style="bottom: 15%; left: 8%; animation-delay: 0s;">🎁</div>
+            <div class="bouncing-gift" style="bottom: 20%; left: 25%; animation-delay: 0.7s; animation-duration: 2.5s;">🎀</div>
+            <div class="bouncing-gift" style="bottom: 12%; left: 45%; animation-delay: 1.2s;">🎁</div>
+            <div class="bouncing-gift" style="bottom: 18%; left: 65%; animation-delay: 0.4s; animation-duration: 1.8s;">🎀</div>
+            <div class="bouncing-gift" style="bottom: 15%; left: 85%; animation-delay: 0.9s;">🎁</div>
+        </div>
+        
+        <!-- 飞跃大王 -->
+        <div class="rising-stars-section">
+            <div class="rising-stars-header">
+                <span class="rising-stars-icon">👑</span>
+                <span class="rising-stars-title">飞跃大王</span>
+                <span style="font-size: 14px; color: #666; margin-left: 10px;">近一周绩点飙升榜</span>
+            </div>
+            <div id="risingStarsList">
+                <div class="loading">加载中... / Loading...</div>
+            </div>
+            <div class="king-greeting">🎉 欢迎各位大王，各位大王万岁！👑✨</div>
+        </div>
+        
+        <!-- 预警榜单 -->
+        <div class="warning-section">
+            <div class="warning-header">
+                <span class="warning-icon">⚠️</span>
+                <span class="warning-title">预警榜单</span>
+            </div>
+            <div class="warning-alert">
+                <strong>🚨 危险危险！</strong>近一周没有增加绩点，上榜超过1周将会解除绩点与听课相关权益！
+            </div>
+            <div id="warningList">
+                <div class="loading">加载中... / Loading...</div>
+            </div>
+        </div>
+        
+        <!-- 搜索 -->
+        <div class="card">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="搜索姓名或精网号 / Search name or ID..." onkeypress="if(event.key==='Enter') search()">
+                <button onclick="search()">🔍 搜索</button>
+                <button onclick="loadAll()" style="background: linear-gradient(135deg, #27ae60, #2ecc71);">📋 显示全部</button>
+            </div>
+        </div>
+        
+        <!-- 排行榜 -->
+        <div class="card">
+            <div class="leaderboard-header">
+                <span>排名</span>
+                <span>用户 / User</span>
+                <span style="text-align: center;">总绩点</span>
+                <span style="text-align: center;">已使用</span>
+                <span style="text-align: center;">剩余</span>
+                <span style="text-align: center;">笔记</span>
+                <span style="text-align: center;">先锋值</span>
+            </div>
+            <div id="leaderboardList">
+                <div class="loading">加载中... / Loading...</div>
+            </div>
+        </div>
+        
+        <!-- 权益说明 - 优化版 -->
+        <div class="benefits-section compact">
+            <h3 style="font-size:28px;text-align:center;margin-bottom:10px;color:#FFD700;text-shadow:0 2px 4px rgba(0,0,0,0.3);animation:titleGlow 2s ease-in-out infinite;">🎁 绩点兑换权益</h3>
+            <p style="text-align:center;font-size:16px;color:rgba(255,255,255,0.9);margin-bottom:25px;">💡 听课赚绩点，绩点换好礼 💡</p>
+            
+            <!-- 5绩点权益 -->
+            <div style="background:rgba(255,255,255,0.15);padding:25px;border-radius:20px;margin-bottom:20px;transform:translateY(0);transition:transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div style="display:flex;align-items:center;gap:15px;margin-bottom:15px;">
+                    <span style="background:linear-gradient(135deg, #f39c12, #e67e22);color:white;font-size:20px;font-weight:bold;padding:10px 20px;border-radius:15px;white-space:nowrap;box-shadow:0 4px 15px rgba(243,156,18,0.4);animation:pulseBadge 2s ease-in-out infinite;">🎯 5绩点</span>
+                    <span style="font-size:20px;font-weight:600;color:#FFD700;">可兑换以下任一服务（5天使用权）</span>
+                </div>
+                <div style="padding-left:15px;">
+                    <div style="font-size:17px;line-height:2;color:white;">
+                        <div style="margin-bottom:10px;display:flex;align-items:center;gap:10px;">🤖 <strong style="font-size:18px;">AI预测大模型</strong> <span style="font-size:14px;opacity:0.8;">- 智能预测股票走势</span></div>
+                        <div style="margin-bottom:10px;display:flex;align-items:center;gap:10px;">☁️ <strong style="font-size:18px;">云脑系统</strong> <span style="font-size:14px;opacity:0.8;">- 云端智能分析工具</span></div>
+                        <div style="display:flex;align-items:center;gap:10px;">⚔️ <strong style="font-size:18px;">利剑系统</strong> <span style="font-size:14px;opacity:0.8;">- 精准买卖点提示</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 10绩点权益 -->
+            <div style="background:rgba(255,255,255,0.15);padding:25px;border-radius:20px;margin-bottom:20px;transform:translateY(0);transition:transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div style="display:flex;align-items:center;gap:15px;margin-bottom:15px;">
+                    <span style="background:linear-gradient(135deg, #e74c3c, #c0392b);color:white;font-size:20px;font-weight:bold;padding:10px 20px;border-radius:15px;white-space:nowrap;box-shadow:0 4px 15px rgba(231,76,60,0.4);animation:pulseBadge 2s ease-in-out infinite;">🔥 10绩点</span>
+                    <span style="font-size:20px;font-weight:600;color:#FFD700;">可兑换专业分析报告</span>
+                </div>
+                <div style="padding-left:15px;">
+                    <div style="font-size:17px;line-height:2;color:white;">
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">📊 <strong style="font-size:18px;">AI赢家K线复盘报告</strong> <span style="background:#FFD700;color:#333;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:bold;">× 1份</span></div>
+                        <div style="font-size:15px;color:rgba(255,255,255,0.85);margin-top:12px;padding:15px;background:rgba(0,0,0,0.2);border-radius:12px;border-left:4px solid #FFD700;">
+                            <div style="margin-bottom:8px;">📈 <strong>K线形态分析</strong></div>
+                            <div style="margin-bottom:8px;">💡 <strong>买卖建议</strong></div>
+                            <div>⚠️ <strong>风险提示</strong></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 如何获得绩点 -->
+            <div style="background:linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,140,0,0.1));padding:25px;border-radius:20px;margin:20px 0;border:2px dashed rgba(255,215,0,0.4);">
+                <div style="font-size:20px;color:#FFD700;font-weight:600;margin-bottom:15px;text-align:center;">📚 如何获得绩点？</div>
+                <div style="font-size:16px;color:white;line-height:2.2;">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;background:rgba(255,255,255,0.1);padding:10px 15px;border-radius:10px;">📺 每日听课30分钟以上 → <strong style="color:#FFD700;font-size:18px;">+1绩点</strong></div>
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;background:rgba(255,255,255,0.1);padding:10px 15px;border-radius:10px;">📝 做笔记分享 → <strong style="color:#FFD700;font-size:18px;">+3绩点</strong></div>
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;background:rgba(255,255,255,0.1);padding:10px 15px;border-radius:10px;">🎁 赠送礼物（根据金额）→ <strong style="color:#FFD700;font-size:18px;">+1~10绩点</strong></div>
+                    <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.1);padding:10px 15px;border-radius:10px;">👥 介绍朋友来赢在美股 → <strong style="color:#FFD700;font-size:18px;">+5绩点</strong></div>
+                </div>
+            </div>
+            
+            <!-- 联系助教 -->
+            <div style="text-align:center;padding-top:20px;border-top:2px solid rgba(255,255,255,0.2);">
+                <p style="font-size:16px;opacity:0.9;color:white;margin-bottom:10px;">📞 兑换请联系助教老师</p>
+                <p style="font-size:22px;color:#FFD700;font-weight:600;animation:pulseText 2s ease-in-out infinite;">WhatsApp: +852 5577 5232</p>
+            </div>
+        </div>
+        
+        <style>
+            @keyframes titleGlow {
+                0%, 100% { text-shadow: 0 2px 4px rgba(0,0,0,0.3), 0 0 20px rgba(255,215,0,0.3); }
+                50% { text-shadow: 0 2px 4px rgba(0,0,0,0.3), 0 0 40px rgba(255,215,0,0.6); }
+            }
+            @keyframes pulseBadge {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.05); }
+            }
+            @keyframes pulseText {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.02); }
+            }
+        </style>
+    </div>
+
+    <script>
+        let allData = [];
+        
+        // 获取排名头衔
+        function getRankBadge(index) {
+            if (index === 0) return '<span class="rank-badge rank-badge-champion">🏆 冠军</span>';
+            if (index === 1) return '<span class="rank-badge rank-badge-runner">🥈 亚军</span>';
+            if (index === 2) return '<span class="rank-badge rank-badge-third">🥉 季军</span>';
+            if (index < 5) return '<span class="rank-badge rank-badge-top5">⭐ 前五</span>';
+            if (index < 10) return '<span class="rank-badge rank-badge-top10">🔥 前十</span>';
+            if (index < 50) return '<span class="rank-badge rank-badge-top50">💫 前五十</span>';
+            if (index < 100) return '<span class="rank-badge rank-badge-top100">✨ 前百</span>';
+            return '';
+        }
+        
+        // 更新实时时间
+        function updateTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('updateTime').textContent = `实时更新 / Live: ${timeStr}`;
+        }
+        
+        // 每秒更新时间
+        setInterval(updateTime, 1000);
+        updateTime();
+        
+        // 加载所有数据
+        async function loadAll() {
+            document.getElementById('searchInput').value = '';
+            await loadData('/api/gpa');
+        }
+        
+        // 搜索
+        async function search() {
+            const keyword = document.getElementById('searchInput').value.trim();
+            if (!keyword) {
+                loadAll();
+                return;
+            }
+            await loadData(`/api/gpa/search?keyword=${encodeURIComponent(keyword)}`);
+        }
+        
+        // 加载数据
+        async function loadData(url) {
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+                // 普通用户20绩点以上展示，共盈会成员10绩点以上展示
+                allData = data.filter(u => {
+                    const threshold = u.isGongying ? 10 : 20;
+                    return u.totalGpa >= threshold;
+                });
+                renderLeaderboard(allData);
+            } catch (err) {
+                console.error('加载失败:', err);
+                document.getElementById('leaderboardList').innerHTML = 
+                    '<div class="empty-state">加载失败，请刷新重试<br>Loading failed, please refresh</div>';
+            }
+        }
+        
+        // 获取成就徽章（只显示活跃状态，排名徽章由getRankBadge处理）
+        function getAchievementBadges(item, index) {
+            let badges = '';
+            
+            // 活跃徽章
+            if (item.newGpa > 0) {
+                badges += '<span class="achievement-badge badge-active">📈 活跃</span>';
+            } else {
+                badges += '<span class="achievement-badge badge-sleeping">😴 沉睡中</span>';
+            }
+            
+            return badges;
+        }
+        
+        // 渲染排行榜
+        function renderLeaderboard(data) {
+            const list = document.getElementById('leaderboardList');
+            
+            if (data.length === 0) {
+                list.innerHTML = '<div class="empty-state">没有找到匹配的记录<br>No matching records found</div>';
+                return;
+            }
+            
+            list.innerHTML = data.map((item, index) => {
+                const rankClass = index === 0 ? 'rank-1' : index === 1 ? 'rank-2' : index === 2 ? 'rank-3' : 'rank-other';
+                const rankBadge = getRankBadge(index);
+                const achievementBadges = getAchievementBadges(item, index);
+                const gongyingBadge = item.isGongying ? '<span class="gongying-badge">👑共盈会</span>' : '';
+                const winnerFanBadge = item.id && item.id.startsWith('94') ? '<span class="winner-fan-badge">❤️赢家粉</span>' : '';
+                const usedGpa = item.usedGpa || 0;
+                const remainingGpa = item.totalGpa - usedGpa;
+                const pioneerScore = Math.round(item.totalGpa * 0.6 + (item.notes || 0) * 10);
+                const usedDetails = item.usedGpaDetails || '';
+                const usedDetailsHtml = usedDetails ? `
+                    <div class="gpa-used-wrapper">
+                        ${usedGpa}
+                        <span class="used-details-icon">📋</span>
+                        <div class="used-details-tooltip">
+                            <div style="font-weight: bold; margin-bottom: 4px;">📋 使用详情</div>
+                            <div>${usedDetails}</div>
+                        </div>
+                    </div>
+                ` : usedGpa;
+                
+                return `
+                    <div class="leaderboard-item">
+                        <div class="rank ${rankClass}">${index + 1}</div>
+                        <div class="user-info">
+                            <div class="user-name">${item.name}${rankBadge}${gongyingBadge}${winnerFanBadge}</div>
+                            <div style="margin-top: 4px;">${achievementBadges}</div>
+                            <div class="user-id">${item.idMasked}</div>
+                        </div>
+                        <div class="gpa-value gpa-total" style="text-align: center;">${item.totalGpa}</div>
+                        <div class="gpa-value gpa-used" style="text-align: center;">${usedDetailsHtml}</div>
+                        <div class="gpa-value gpa-remaining" style="text-align: center;">${remainingGpa}</div>
+                        <div class="gpa-value gpa-notes" style="text-align: center;">${item.notes || '-'}</div>
+                        <div class="pioneer-score" style="text-align: center;">
+                            <span class="icon">💪</span>
+                            <span>${pioneerScore}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // 检查并显示节日装饰（父亲节：6月21日）
+        function checkFestival() {
+            const now = new Date();
+            const year = now.getFullYear();
+            // 父亲节期间：2026年6月21日
+            const festivalStart = new Date(year, 5, 21); // 6月21日
+            const festivalEnd = new Date(year, 5, 21, 23, 59, 59); // 6月21日 23:59:59
+            
+            const banner = document.getElementById('festivalBanner');
+            const decorations = document.querySelectorAll('.father-decoration');
+            const animationContainer = document.getElementById('festivalAnimation');
+            
+            if (now >= festivalStart && now <= festivalEnd) {
+                // 显示节日装饰
+                if (banner) banner.classList.add('show');
+                decorations.forEach(d => d.classList.add('show'));
+                if (animationContainer) animationContainer.classList.add('show');
+                console.log('👔 父亲节全屏动画已显示');
+            } else {
+                // 隐藏节日装饰
+                if (banner) banner.classList.remove('show');
+                decorations.forEach(d => d.classList.remove('show'));
+                if (animationContainer) animationContainer.classList.remove('show');
+            }
+        }
+        
+        // 加载飞跃之星
+        async function loadRisingStars() {
+            try {
+                const res = await fetch('/api/gpa/rising-stars?limit=10');
+                const data = await res.json();
+                renderRisingStars(data);
+            } catch (err) {
+                console.error('加载飞跃之星失败:', err);
+                document.getElementById('risingStarsList').innerHTML = 
+                    '<div class="empty-state">加载失败</div>';
+            }
+        }
+        
+        // 渲染飞跃大王
+        function renderRisingStars(data) {
+            const list = document.getElementById('risingStarsList');
+            
+            if (data.length === 0) {
+                list.innerHTML = '<div class="empty-state">暂无数据</div>';
+                return;
+            }
+            
+            const html = data.map((item, index) => {
+                const rankClass = index === 0 ? 'rising-star-rank-1' : index === 1 ? 'rising-star-rank-2' : index === 2 ? 'rising-star-rank-3' : 'rising-star-rank-other';
+                const rankIcon = index === 0 ? '👑' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}`;
+                const tooltipText = item.reason || '积极学习，绩点飙升！';
+                const kingBadgeClass = item.starType === 'homework' ? 'notes' : 'study';
+                const kingTitle = item.starType === 'homework' ? '📝 笔记大王' : '📚 学习大王';
+                
+                return `
+                    <div class="rising-star-item">
+                        <div class="rising-star-rank ${rankClass}">${rankIcon}</div>
+                        <div class="rising-star-info">
+                            <div class="rising-star-name">
+                                <span class="crown-icon" title="${tooltipText}">👑</span>
+                                ${item.name}
+                                <span class="king-badge ${kingBadgeClass}" title="${tooltipText}">${kingTitle}</span>
+                            </div>
+                            <div class="rising-star-id">${item.idMasked}</div>
+                        </div>
+                        <div class="growth-value">+${item.growth}</div>
+                    </div>
+                `;
+            }).join('');
+            
+            list.innerHTML = `<div class="rising-stars-grid">${html}</div>`;
+        }
+        
+        // 预警榜单数据缓存
+        let warningDataCache = [];
+        let warningCurrentBatch = 0;
+        const WARNING_BATCH_SIZE = 20;
+        const WARNING_ROTATE_INTERVAL = 5 * 60 * 1000; // 5分钟
+        
+        // 加载预警榜单
+        async function loadWarningList() {
+            try {
+                const res = await fetch('/api/gpa/warning');
+                const data = await res.json();
+                warningDataCache = data;
+                warningCurrentBatch = 0;
+                renderWarningBatch();
+                
+                // 启动定时轮换
+                startWarningRotation();
+            } catch (err) {
+                console.error('加载预警榜单失败:', err);
+                document.getElementById('warningList').innerHTML = 
+                    '<div class="empty-state">加载失败</div>';
+            }
+        }
+        
+        // 启动预警榜单轮换
+        let warningRotationTimer = null;
+        function startWarningRotation() {
+            if (warningRotationTimer) {
+                clearInterval(warningRotationTimer);
+            }
+            warningRotationTimer = setInterval(() => {
+                warningCurrentBatch++;
+                const totalBatches = Math.ceil(warningDataCache.length / WARNING_BATCH_SIZE);
+                if (warningCurrentBatch >= totalBatches) {
+                    warningCurrentBatch = 0;
+                }
+                renderWarningBatch();
+            }, WARNING_ROTATE_INTERVAL);
+        }
+        
+        // 渲染当前批次的预警榜单
+        function renderWarningBatch() {
+            const list = document.getElementById('warningList');
+            
+            if (warningDataCache.length === 0) {
+                list.innerHTML = '<div class="empty-state" style="text-align: center; padding: 20px; color: #27ae60;">🎉 暂无预警用户，大家表现都很棒！</div>';
+                return;
+            }
+            
+            const totalBatches = Math.ceil(warningDataCache.length / WARNING_BATCH_SIZE);
+            const startIndex = warningCurrentBatch * WARNING_BATCH_SIZE;
+            const endIndex = Math.min(startIndex + WARNING_BATCH_SIZE, warningDataCache.length);
+            const batchData = warningDataCache.slice(startIndex, endIndex);
+            
+            const html = batchData.map((item, index) => {
+                const globalIndex = startIndex + index;
+                return `
+                    <div class="warning-item">
+                        <div class="warning-rank">${globalIndex + 1}</div>
+                        <div class="warning-info">
+                            <div class="warning-name">${item.name}</div>
+                            <div class="warning-id">${item.idMasked}</div>
+                        </div>
+                        <div class="warning-gpa">${item.totalGpa}</div>
+                    </div>
+                `;
+            }).join('');
+            
+            const batchInfo = totalBatches > 1 
+                ? `<div style="text-align: center; font-size: 12px; color: #666; margin-top: 10px; padding: 8px; background: rgba(231, 76, 60, 0.05); border-radius: 6px;">第 ${warningCurrentBatch + 1}/${totalBatches} 批 | 5分钟后自动切换</div>` 
+                : '';
+            
+            list.innerHTML = `<div class="warning-grid">${html}</div>${batchInfo}`;
+        }
+        
+        // 加载统计数据
+        async function loadStats() {
+            try {
+                const res = await fetch('/api/gpa/stats');
+                const data = await res.json();
+                document.getElementById('totalUsers').textContent = data.total;
+                document.getElementById('avgGpa').textContent = data.avgGpa;
+            } catch (err) {
+                console.error('加载统计数据失败:', err);
+            }
+        }
+        
+        // 个人查询
+        async function searchPersonal() {
+            const keyword = document.getElementById('personalInput').value.trim();
+            if (!keyword) {
+                document.getElementById('personalResult').innerHTML = '';
+                return;
+            }
+            
+            try {
+                const res = await fetch('/api/gpa');
+                const allData = await res.json();
+                
+                // 查找用户
+                const userIndex = allData.findIndex(item => 
+                    item.id === keyword || 
+                    item.idMasked === keyword || 
+                    item.name.toLowerCase().includes(keyword.toLowerCase())
+                );
+                
+                if (userIndex === -1) {
+                    document.getElementById('personalResult').innerHTML = 
+                        '<div style="text-align: center; padding: 20px; color: #666;">未找到该用户</div>';
+                    return;
+                }
+                
+                const user = allData[userIndex];
+                const rank = userIndex + 1;
+                const remainingGpa = user.totalGpa - (user.usedGpa || 0);
+                
+                document.getElementById('personalResult').innerHTML = `
+                    <div class="personal-result">
+                        <div style="text-align: center; margin-bottom: 15px;">
+                            <div style="font-size: 18px; opacity: 0.9;">${user.name}</div>
+                            <div style="font-size: 13px; opacity: 0.7;">${user.idMasked}</div>
+                        </div>
+                        <div class="personal-rank">#${rank}</div>
+                        <div style="text-align: center; font-size: 14px; opacity: 0.9; margin-bottom: 15px;">当前排名</div>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: center;">
+                            <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 10px;">
+                                <div style="font-size: 20px; font-weight: bold;">${user.totalGpa}</div>
+                                <div style="font-size: 11px; opacity: 0.8;">总绩点</div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 10px;">
+                                <div style="font-size: 20px; font-weight: bold;">${remainingGpa}</div>
+                                <div style="font-size: 11px; opacity: 0.8;">剩余</div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 10px;">
+                                <div style="font-size: 20px; font-weight: bold;">${user.notes || 0}</div>
+                                <div style="font-size: 11px; opacity: 0.8;">笔记</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } catch (err) {
+                console.error('查询失败:', err);
+                document.getElementById('personalResult').innerHTML = 
+                    '<div style="text-align: center; padding: 20px; color: #e74c3c;">查询失败，请重试</div>';
+            }
+        }
+        
+        // 初始化
+        async function init() {
+            await Promise.all([loadAll(), loadRisingStars(), loadWarningList(), loadStats()]);
+        }
+        
+        init();
+    </script>
+</body>
+</html>
