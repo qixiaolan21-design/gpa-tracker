@@ -237,7 +237,7 @@ function saveHistoryData() {
 
 // 读取近一周观看记录（从桌面CSV文件）
 function loadWeeklyWatchData() {
-    const weeklyData = {}; // { userId: { watchCount: 0, totalMinutes: 0 } }
+    const weeklyData = {}; // { userId: { watchCount: 0, validWatchCount: 0, totalMinutes: 0 } }
     
     // 近一周观看记录文件列表
     const watchFiles = [
@@ -277,10 +277,14 @@ function loadWeeklyWatchData() {
                     
                     if (userId && userId.startsWith('9')) {
                         if (!weeklyData[userId]) {
-                            weeklyData[userId] = { watchCount: 0, totalMinutes: 0 };
+                            weeklyData[userId] = { watchCount: 0, validWatchCount: 0, totalMinutes: 0 };
                         }
                         weeklyData[userId].watchCount++;
                         weeklyData[userId].totalMinutes += duration;
+                        // 观看时长>=30分钟算有效听课，+1绩点
+                        if (duration >= 30) {
+                            weeklyData[userId].validWatchCount++;
+                        }
                     }
                 }
             } catch (err) {
@@ -304,13 +308,11 @@ function calculateWeeklyGrowth() {
         const notesCount = user.notes || 0;
         
         // 从观看记录计算本周听课次数和时长
-        const watchData = weeklyWatchData[user.id] || { watchCount: 0, totalMinutes: 0 };
+        const watchData = weeklyWatchData[user.id] || { watchCount: 0, validWatchCount: 0, totalMinutes: 0 };
         
         // 计算本周新增绩点：每次听课>=30分钟算+1绩点
-        let weeklyGrowth = 0;
-        // 这里简化处理：如果CSV中有本次新增字段，优先使用
-        // 否则根据观看记录估算（实际应该根据时长计算）
-        weeklyGrowth = user.newGpa || 0;
+        // 使用观看记录中的有效听课次数，而不是CSV中的本次新增字段
+        const weeklyGrowth = watchData.validWatchCount;
         
         // 只要有听课记录或有笔记的用户都显示
         if (weeklyGrowth > 0 || watchData.watchCount > 0 || notesCount >= 3) {
@@ -323,14 +325,14 @@ function calculateWeeklyGrowth() {
             let reason = '';
             
             // 定义阈值
-            const hasHighGrowth = weeklyGrowth >= 5 || watchData.watchCount >= 5;  // 听课多
+            const hasHighGrowth = weeklyGrowth >= 5;  // 听课多：本周有效听课>=5次
             const hasHighNotes = notesCount >= 3;  // 笔记多
             
             if (hasHighGrowth && hasHighNotes) {
                 // 全能大王：听课多 + 笔记多
                 starType = 'allround';
                 starTitle = '👑 全能大王';
-                reason = `本周听课+${weeklyGrowth}绩点${watchData.watchCount > 0 ? `(${watchData.watchCount}次)` : ''}，提交笔记${notesCount}次，学习全能！`;
+                reason = `本周听课+${weeklyGrowth}绩点(${watchData.validWatchCount}次≥30分钟)，提交笔记${notesCount}次，学习全能！`;
             } else if (hasHighNotes) {
                 // 笔记大王：笔记多但听课不多
                 starType = 'homework';
@@ -351,7 +353,7 @@ function calculateWeeklyGrowth() {
                 // 学习大王：听课多但笔记不多
                 starType = 'study';
                 starTitle = '📚 学习大王';
-                reason = `本周听课${watchData.watchCount > 0 ? watchData.watchCount + '次' : ''}，坚持学习！`;
+                reason = `本周听课+${weeklyGrowth}绩点(${watchData.validWatchCount}次≥30分钟)，坚持学习！`;
             }
             
             growthData.push({
