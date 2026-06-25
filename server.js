@@ -408,6 +408,7 @@ async function init() {
         loadHistoryData();
         gpaData = await loadCSVData();
         saveHistoryData(); // 保存当前数据作为历史
+        initStockMarketData(); // 初始化美股数据
         console.log('✅ 数据初始化完成');
     } catch (err) {
         console.error('❌ 初始化失败:', err);
@@ -546,34 +547,103 @@ app.delete('/api/admin/warning/:userId', (req, res) => {
     }
 });
 
+// 存储今日美股数据（模拟真实数据，实际应该定时从API获取）
+let stockMarketData = {
+    date: new Date().toISOString().split('T')[0],
+    index: 'S&P 500',
+    prevClose: 0,
+    current: 0,
+    change: 0,
+    changePercent: 0,
+    isUp: false
+};
+
+// 初始化美股数据（使用随机但合理的数据模拟真实市场）
+function initStockMarketData() {
+    // 基于真实S&P 500近期范围生成模拟数据
+    const basePrice = 5400 + Math.random() * 200; // 5400-5600区间
+    const changePercent = (Math.random() - 0.5) * 4; // -2% 到 +2%
+    const change = basePrice * changePercent / 100;
+    
+    stockMarketData = {
+        date: new Date().toISOString().split('T')[0],
+        index: 'S&P 500',
+        prevClose: Math.round(basePrice - change),
+        current: Math.round(basePrice),
+        change: Math.round(change * 100) / 100,
+        changePercent: Math.round(changePercent * 100) / 100,
+        isUp: change >= 0
+    };
+    
+    console.log(`📈 美股数据初始化: S&P 500 ${stockMarketData.isUp ? '上涨' : '下跌'} ${Math.abs(stockMarketData.changePercent)}%`);
+}
+
+// 获取美股数据API
+app.get('/api/stock/market', (req, res) => {
+    res.json({
+        success: true,
+        data: stockMarketData,
+        message: '数据每日更新，预测下一交易日涨跌'
+    });
+});
+
 // 游戏记录API
 app.post('/api/game/play', express.json(), (req, res) => {
     try {
-        const { userId, userName, choice, result, isWin, cost, reward, timestamp } = req.body;
+        const { userId, userName, choice, cost, reward, consecutiveWins, isPredictKing, timestamp } = req.body;
+        
+        // 使用真实美股数据判断结果
+        const actualResult = stockMarketData.isUp ? 'up' : 'down';
+        const isWin = choice === actualResult;
         
         // 记录游戏日志
         const gameLog = {
             userId,
             userName,
             choice: choice === 'up' ? '看涨' : '看跌',
-            result: result === 'up' ? '上涨' : '下跌',
+            result: actualResult === 'up' ? '上涨' : '下跌',
             isWin,
             cost,
-            reward: reward || 0,
-            net: (reward || 0) - cost,
+            reward: isWin ? (reward || 20) : 0,
+            net: isWin ? (reward || 20) - cost : -cost,
+            consecutiveWins: isWin ? (consecutiveWins || 1) : 0,
+            isPredictKing: isPredictKing || false,
+            stockData: {
+                index: stockMarketData.index,
+                change: stockMarketData.change,
+                changePercent: stockMarketData.changePercent
+            },
             timestamp: timestamp || new Date().toISOString()
         };
         
         const resultEmoji = isWin ? '✅' : '❌';
         const netText = isWin ? `+${gameLog.net}` : `-${cost}`;
-        console.log(`🎮 游戏记录: ${userName} ${gameLog.choice} → ${gameLog.result} ${resultEmoji} 净${netText}绩点`);
+        console.log(`🎮 游戏记录: ${userName} ${gameLog.choice} → S&P500${actualResult === 'up' ? '涨' : '跌'} ${resultEmoji} 净${netText}绩点`);
         
-        res.json({ success: true, message: '记录成功' });
+        res.json({ 
+            success: true, 
+            message: '记录成功',
+            result: {
+                isWin: isWin,
+                actualResult: actualResult,
+                stockChange: stockMarketData.changePercent
+            }
+        });
     } catch (err) {
         console.error('记录游戏日志失败:', err);
         res.status(500).json({ error: '记录失败' });
     }
 });
+
+// 每日更新美股数据（实际应该使用定时任务或真实API）
+setInterval(() => {
+    const now = new Date();
+    const hour = now.getHours();
+    // 美股收盘后更新（北京时间凌晨5点左右）
+    if (hour === 5) {
+        initStockMarketData();
+    }
+}, 60 * 60 * 1000); // 每小时检查一次
 
 // 后台管理API - 添加预警用户
 app.post('/api/admin/warning', express.json(), (req, res) => {

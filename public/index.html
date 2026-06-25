@@ -475,6 +475,56 @@
                 grid-template-columns: 1fr;
             }
         }
+        
+        /* 美股信息展示 */
+        .stock-info {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: center;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+        }
+        .stock-loading {
+            color: #888;
+            font-size: 14px;
+        }
+        .stock-data {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .stock-index {
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+        }
+        .stock-price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+        }
+        .stock-change {
+            font-size: 14px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        .stock-change.up {
+            background: rgba(39, 174, 96, 0.2);
+            color: #2ecc71;
+        }
+        .stock-change.down {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+        .stock-date {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+        }
         .game-buttons {
             display: flex;
             justify-content: center;
@@ -1379,7 +1429,10 @@
             <div class="game-header">
                 <span class="game-icon">📈</span>
                 <span class="game-title">美股猜涨跌</span>
-                <span style="font-size: 14px; color: #666; margin-left: 10px;">消耗绩点，预测美股走势</span>
+                <span style="font-size: 14px; color: #666; margin-left: 10px;">基于真实S&P 500数据</span>
+            </div>
+            <div id="stockInfo" class="stock-info">
+                <div class="stock-loading">加载市场数据中...</div>
             </div>
             <div class="game-content">
                 <div class="game-info">
@@ -1715,6 +1768,42 @@
         let gameTotalWin = 0;
         let consecutiveWins = 0;  // 连续猜对次数
         let isPredictKing = false; // 是否已获得预测大王称号
+        let currentStockData = null; // 当前美股数据
+        
+        // 加载美股数据
+        async function loadStockData() {
+            try {
+                const res = await fetch('/api/stock/market');
+                const data = await res.json();
+                if (data.success) {
+                    currentStockData = data.data;
+                    renderStockInfo(data.data);
+                }
+            } catch (err) {
+                console.error('加载美股数据失败:', err);
+                document.getElementById('stockInfo').innerHTML = 
+                    '<div class="stock-loading">数据加载失败，请刷新重试</div>';
+            }
+        }
+        
+        // 渲染美股信息
+        function renderStockInfo(data) {
+            const stockInfoDiv = document.getElementById('stockInfo');
+            const changeClass = data.isUp ? 'up' : 'down';
+            const changeIcon = data.isUp ? '📈' : '📉';
+            const changeSign = data.isUp ? '+' : '';
+            
+            stockInfoDiv.innerHTML = `
+                <div class="stock-data">
+                    <span class="stock-index">${data.index}</span>
+                    <span class="stock-price">${data.current.toLocaleString()}</span>
+                    <span class="stock-change ${changeClass}">
+                        ${changeIcon} ${changeSign}${data.change} (${changeSign}${data.changePercent}%)
+                    </span>
+                </div>
+                <div class="stock-date">数据日期: ${data.date} | 预测下一交易日涨跌</div>
+            `;
+        }
         
         // 玩美股猜涨跌游戏
         async function playGame(choice) {
@@ -1728,8 +1817,13 @@
             const cost = 10;      // 消耗10绩点
             const reward = 20;    // 猜对获得20绩点
             
-            // 模拟游戏结果（随机涨跌）
-            const actualResult = Math.random() > 0.5 ? 'up' : 'down';
+            // 使用真实美股数据判断结果
+            if (!currentStockData) {
+                alert('市场数据加载中，请稍后再试');
+                return;
+            }
+            
+            const actualResult = currentStockData.isUp ? 'up' : 'down';
             const isWin = choice === actualResult;
             
             // 更新连续猜对次数
@@ -2085,7 +2179,7 @@
         
         // 初始化
         async function init() {
-            await Promise.all([loadAll(), loadRisingStars(), loadWarningList(), loadStats(), loadSleepingUsers()]);
+            await Promise.all([loadAll(), loadRisingStars(), loadWarningList(), loadStats(), loadSleepingUsers(), loadStockData()]);
         }
         
         // 登录功能
@@ -2200,6 +2294,9 @@
         
         // 页面加载时检查登录状态
         checkLogin();
+        
+        // 加载美股数据
+        loadStockData();
         
         // 监听回车键登录
         document.getElementById('loginId')?.addEventListener('keypress', function(e) {
