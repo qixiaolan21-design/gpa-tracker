@@ -354,6 +354,84 @@
             white-space: nowrap;
         }
         
+        /* 待生成报告板块 */
+        .pending-reports-section {
+            background: rgba(255,255,255,0.95);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            border-left: 4px solid #f39c12;
+        }
+        .pending-reports-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .pending-reports-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+        .pending-reports-count {
+            font-size: 14px;
+            color: #666;
+            background: #fff3cd;
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid #ffeaa7;
+        }
+        .pending-reports-count strong {
+            color: #e74c3c;
+            font-size: 18px;
+        }
+        .pending-reports-desc {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .pending-reports-section table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .pending-reports-section th {
+            background: #f39c12;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+        .pending-reports-section td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        .pending-reports-section tr:hover {
+            background: #fff9e6;
+        }
+        .report-name-cell {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        .btn-generate {
+            padding: 6px 12px;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .btn-generate:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(39, 174, 96, 0.3);
+        }
+        
         /* 预警用户危险标签 */
         .warning-danger-badge {
             font-size: 11px;
@@ -517,6 +595,37 @@
                 </table>
             </div>
             <button class="export-btn" onclick="exportData()">📥 导出数据</button>
+        </div>
+        
+        <!-- 待生成报告 -->
+        <div class="pending-reports-section">
+            <div class="pending-reports-header">
+                <div class="pending-reports-title">📋 待生成报告</div>
+                <div class="pending-reports-count">
+                    待生成: <strong id="pendingCount">0</strong> 份
+                </div>
+            </div>
+            <div class="pending-reports-desc">
+                显示已兑换绩点但尚未生成的报告列表（兑换备注中的报告名称）
+            </div>
+            <div class="table-container" style="max-height: 300px; overflow-y: auto;">
+                <table id="pendingReportsTable">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>用户姓名</th>
+                            <th>精网号</th>
+                            <th>消耗绩点</th>
+                            <th>报告名称</th>
+                            <th>兑换时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pendingReportsBody">
+                        <tr><td colspan="7" style="text-align:center;padding:20px;color:#666;">暂无待生成报告</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
         
         <!-- 访问日志 -->
@@ -1351,15 +1460,97 @@
             }
         }
         
+        // 待生成报告数据（从兑换记录中筛选）
+        let pendingReports = [];
+        
+        // 加载待生成报告
+        async function loadPendingReports() {
+            try {
+                // 从操作日志中筛选出兑换记录
+                const res = await fetch('/api/admin/logs?limit=200');
+                const logs = await res.json();
+                
+                // 筛选兑换操作，且备注中包含"报告"
+                pendingReports = logs
+                    .filter(log => 
+                        log.operation === '兑换绩点' && 
+                        log.details && 
+                        (log.details.includes('报告') || log.details.includes('复盘'))
+                    )
+                    .map((log, index) => ({
+                        id: index + 1,
+                        userId: log.userId,
+                        userName: log.userName,
+                        cost: 10, // 默认消耗10绩点
+                        reportName: log.details,
+                        time: log.time,
+                        status: 'pending'
+                    }));
+                
+                renderPendingReports();
+            } catch (err) {
+                console.error('加载待生成报告失败:', err);
+            }
+        }
+        
+        // 渲染待生成报告列表
+        function renderPendingReports() {
+            const tbody = document.getElementById('pendingReportsBody');
+            const countEl = document.getElementById('pendingCount');
+            
+            countEl.textContent = pendingReports.length;
+            
+            if (pendingReports.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:#27ae60;">🎉 暂无待生成报告</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = pendingReports.map((report, index) => {
+                const time = new Date(report.time).toLocaleString('zh-CN', {
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                return `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${report.userName}</td>
+                        <td>${report.userId}</td>
+                        <td>${report.cost}</td>
+                        <td class="report-name-cell">${report.reportName}</td>
+                        <td>${time}</td>
+                        <td>
+                            <button class="btn-generate" onclick="markReportGenerated(${index})">✅ 已生成</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        // 标记报告已生成
+        function markReportGenerated(index) {
+            if (!confirm('确定该报告已生成吗？')) return;
+            
+            // 从列表中移除
+            pendingReports.splice(index, 1);
+            renderPendingReports();
+            
+            // 可以在这里添加API调用来更新后端状态
+            alert('已标记为生成完成！');
+        }
+        
         // 初始化
         loadData().then(() => loadSleepingUsers());
         loadAccessLogs();
         loadLoginLogs();
+        loadPendingReports();
         
-        // 每30秒自动刷新日志
+        // 每30秒自动刷新
         setInterval(() => {
             loadAccessLogs();
             loadLoginLogs();
+            loadPendingReports();
         }, 30000);
     </script>
 </body>
