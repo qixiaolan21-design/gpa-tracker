@@ -1534,26 +1534,30 @@
             // 格式: "使用10绩点 - 兑换AI赢家K线复盘报告 - AAPL (额外备注)"
             // 或: "使用10绩点 - 兑换AI赢家K线复盘报告"
             const match = details.match(/使用(\d+)绩点\s+-\s+(.+)/);
-            if (!match) return { cost: 10, reportName: details };
+            if (!match) return { cost: 10, reportName: details, stockName: '', extraNote: '' };
             
             const cost = parseInt(match[1]) || 10;
-            let reportInfo = match[2];
+            let reportInfo = match[2].trim();
             
-            // 提取个股名称（如果有）
-            let stockName = '';
-            const stockMatch = reportInfo.match(/-\s*([^()]+?)(?:\s*\(|$)/);
-            if (stockMatch) {
-                stockName = stockMatch[1].trim();
-                // 移除个股名称部分，保留报告类型
-                reportInfo = reportInfo.replace(/-\s*[^()]+/, '').trim();
+            // 提取额外备注 (括号内的内容)
+            let extraNote = '';
+            const noteMatch = reportInfo.match(/\(([^)]+)\)\s*$/);
+            if (noteMatch) {
+                extraNote = noteMatch[1].trim();
+                reportInfo = reportInfo.replace(/\s*\([^)]+\)\s*$/, '').trim();
             }
             
-            // 提取额外备注
-            let extraNote = '';
-            const noteMatch = reportInfo.match(/\(([^)]+)\)/);
-            if (noteMatch) {
-                extraNote = noteMatch[1];
-                reportInfo = reportInfo.replace(/\([^)]+\)/, '').trim();
+            // 提取个股名称（格式: "报告名称 - 个股名称"）
+            let stockName = '';
+            // 查找最后一个 "-" 后面的内容，如果看起来像股票代码或名称
+            const lastDashIndex = reportInfo.lastIndexOf(' - ');
+            if (lastDashIndex > 0) {
+                const afterDash = reportInfo.substring(lastDashIndex + 3).trim();
+                // 如果后面这部分不是"兑换"开头（即不是报告类型），则认为是个股名称
+                if (!afterDash.startsWith('兑换') && afterDash.length > 0 && afterDash.length < 20) {
+                    stockName = afterDash;
+                    reportInfo = reportInfo.substring(0, lastDashIndex).trim();
+                }
             }
             
             return {
