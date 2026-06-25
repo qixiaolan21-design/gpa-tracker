@@ -1455,9 +1455,16 @@
                         </div>
                     </div>
                 </div>
-                <div class="game-buttons">
+                <div class="game-buttons" id="gameButtons">
                     <button class="game-btn up" onclick="playGame('up')">📈 看涨</button>
                     <button class="game-btn down" onclick="playGame('down')">📉 看跌</button>
+                </div>
+                <div id="gamePlayedMessage" class="game-result" style="display:none;">
+                    <div style="color: #666;">
+                        <div style="font-size: 24px; margin-bottom: 5px;">⏰</div>
+                        <div><strong>今日已参与</strong></div>
+                        <div style="font-size: 13px; margin-top: 5px;">您今天已经参与过猜涨跌游戏了<br>明天再来挑战吧！</div>
+                    </div>
                 </div>
                 <div id="gameResult" class="game-result"></div>
                 <div class="game-stats">
@@ -1805,11 +1812,30 @@
             `;
         }
         
+        // 检查用户今天是否已经玩过游戏
+        async function hasPlayedToday() {
+            if (!currentUser) return false;
+            try {
+                const res = await fetch(`/api/game/check?userId=${currentUser.id}`);
+                const data = await res.json();
+                return data.hasPlayed;
+            } catch (e) {
+                return false;
+            }
+        }
+        
         // 玩美股猜涨跌游戏
         async function playGame(choice) {
             // 检查是否登录
             if (!currentUser) {
                 alert('请先登录后再玩游戏！');
+                return;
+            }
+            
+            // 检查今天是否已经玩过
+            const alreadyPlayed = await hasPlayedToday();
+            if (alreadyPlayed) {
+                alert('您今天已经参与过猜涨跌游戏了，明天再来吧！\n\n每位用户每天只能参与一次。');
                 return;
             }
             
@@ -1891,7 +1917,7 @@
             
             // 记录游戏日志
             try {
-                await fetch('/api/game/play', {
+                const response = await fetch('/api/game/play', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -1907,6 +1933,19 @@
                         timestamp: new Date().toISOString()
                     })
                 });
+                
+                if (response.ok) {
+                    // 游戏记录成功，禁用按钮并显示已玩消息
+                    const gameButtons = document.getElementById('gameButtons');
+                    const gamePlayedMessage = document.getElementById('gamePlayedMessage');
+                    
+                    if (gameButtons) {
+                        gameButtons.style.display = 'none';
+                    }
+                    if (gamePlayedMessage) {
+                        gamePlayedMessage.style.display = 'block';
+                    }
+                }
             } catch (e) {
                 // 忽略错误
             }
@@ -2144,7 +2183,25 @@
                 
                 const user = allData[userIndex];
                 const rank = userIndex + 1;
-                const remainingGpa = user.totalGpa - (user.usedGpa || 0);
+                const usedGpa = user.usedGpa || 0;
+                const remainingGpa = user.totalGpa - usedGpa;
+                const usedDetails = user.usedGpaDetails || '';
+                
+                // 解析兑换记录
+                let redeemRecordsHtml = '';
+                if (usedDetails) {
+                    const records = usedDetails.split(';').filter(r => r.trim());
+                    if (records.length > 0) {
+                        redeemRecordsHtml = `
+                            <div style="margin-top: 15px; background: rgba(255,255,255,0.15); padding: 12px; border-radius: 10px;">
+                                <div style="font-size: 12px; font-weight: bold; margin-bottom: 8px; color: #FFD700;">📋 兑换记录</div>
+                                <div style="font-size: 11px; line-height: 1.8; text-align: left;">
+                                    ${records.map(r => `<div style="margin-bottom: 4px;">• ${r.trim()}</div>`).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
                 
                 document.getElementById('personalResult').innerHTML = `
                     <div class="personal-result">
@@ -2168,6 +2225,13 @@
                                 <div style="font-size: 11px; opacity: 0.8;">笔记</div>
                             </div>
                         </div>
+                        ${usedGpa > 0 ? `
+                        <div style="margin-top: 15px; background: rgba(231,76,60,0.2); padding: 10px; border-radius: 10px; text-align: center;">
+                            <div style="font-size: 12px; color: #ffcccc;">已使用绩点</div>
+                            <div style="font-size: 18px; font-weight: bold; color: #ff6b6b;">${usedGpa}</div>
+                        </div>
+                        ` : ''}
+                        ${redeemRecordsHtml}
                     </div>
                 `;
             } catch (err) {
@@ -2260,17 +2324,45 @@
         }
         
         // 显示主内容
-        function showMainContent() {
+        async function showMainContent() {
             document.getElementById('loginModal').classList.add('hidden');
             document.getElementById('mainContainer').style.display = 'block';
             
             if (currentUser) {
                 document.getElementById('userInfo').style.display = 'inline-flex';
                 document.getElementById('userName').textContent = currentUser.name;
+                
+                // 检查用户今天是否已经玩过游戏
+                await checkAndUpdateGameStatus();
             }
             
             // 加载数据
             init();
+        }
+        
+        // 检查并更新游戏状态
+        async function checkAndUpdateGameStatus() {
+            if (!currentUser) return;
+            
+            try {
+                const res = await fetch(`/api/game/check?userId=${currentUser.id}`);
+                const data = await res.json();
+                
+                if (data.hasPlayed) {
+                    // 禁用游戏按钮
+                    const gameButtons = document.getElementById('gameButtons');
+                    const gamePlayedMessage = document.getElementById('gamePlayedMessage');
+                    
+                    if (gameButtons) {
+                        gameButtons.style.display = 'none';
+                    }
+                    if (gamePlayedMessage) {
+                        gamePlayedMessage.style.display = 'block';
+                    }
+                }
+            } catch (e) {
+                console.error('检查游戏状态失败:', e);
+            }
         }
         
         // 退出登录

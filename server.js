@@ -659,10 +659,72 @@ app.get('/api/stock/market', (req, res) => {
     });
 });
 
+// 游戏记录存储
+const GAME_LOGS_FILE = path.join(__dirname, 'data', 'game_logs.json');
+let gameLogs = [];
+
+// 加载游戏记录
+function loadGameLogs() {
+    try {
+        if (fs.existsSync(GAME_LOGS_FILE)) {
+            const content = fs.readFileSync(GAME_LOGS_FILE, 'utf-8');
+            gameLogs = JSON.parse(content);
+            console.log(`🎮 加载了 ${gameLogs.length} 条游戏记录`);
+        }
+    } catch (err) {
+        console.error('加载游戏记录失败:', err);
+        gameLogs = [];
+    }
+}
+
+// 保存游戏记录
+function saveGameLogs() {
+    try {
+        fs.writeFileSync(GAME_LOGS_FILE, JSON.stringify(gameLogs, null, 2), 'utf-8');
+    } catch (err) {
+        console.error('保存游戏记录失败:', err);
+    }
+}
+
+// 检查用户今天是否玩过游戏
+function hasPlayedToday(userId) {
+    const today = new Date().toISOString().split('T')[0];
+    return gameLogs.some(log => {
+        const logDate = log.timestamp ? log.timestamp.split('T')[0] : '';
+        return log.userId === userId && logDate === today;
+    });
+}
+
+// 初始化加载游戏记录
+loadGameLogs();
+
+// 检查用户今天是否玩过游戏API
+app.get('/api/game/check', (req, res) => {
+    try {
+        const userId = req.query.userId;
+        if (!userId) {
+            return res.status(400).json({ error: '缺少用户ID' });
+        }
+        const hasPlayed = hasPlayedToday(userId);
+        res.json({ hasPlayed });
+    } catch (err) {
+        console.error('检查游戏记录失败:', err);
+        res.status(500).json({ error: '检查失败' });
+    }
+});
+
 // 游戏记录API
 app.post('/api/game/play', express.json(), (req, res) => {
     try {
         const { userId, userName, choice, cost, reward, consecutiveWins, isPredictKing, timestamp } = req.body;
+        
+        // 检查今天是否已经玩过
+        if (hasPlayedToday(userId)) {
+            return res.status(403).json({ 
+                error: '今天已经玩过', 
+                message: '每位用户每天只能参与一次猜涨跌游戏' 
+            });
+        }
         
         // 使用真实美股数据判断结果
         const actualResult = stockMarketData.isUp ? 'up' : 'down';
@@ -687,6 +749,10 @@ app.post('/api/game/play', express.json(), (req, res) => {
             },
             timestamp: timestamp || new Date().toISOString()
         };
+        
+        // 保存到游戏记录
+        gameLogs.push(gameLog);
+        saveGameLogs();
         
         const resultEmoji = isWin ? '✅' : '❌';
         const netText = isWin ? `+${gameLog.net}` : `-${cost}`;
