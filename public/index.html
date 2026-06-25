@@ -422,6 +422,18 @@
             cursor: pointer;
             position: relative;
         }
+        .king-badge.allround {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #333;
+            border: 2px solid #ff6b6b;
+            cursor: pointer;
+            position: relative;
+            animation: allroundShine 1.5s ease-in-out infinite;
+        }
+        @keyframes allroundShine {
+            0%, 100% { box-shadow: 0 0 5px rgba(255,215,0,0.8), 0 0 10px rgba(255,165,0,0.5); }
+            50% { box-shadow: 0 0 15px rgba(255,215,0,1), 0 0 25px rgba(255,165,0,0.8), 0 0 35px rgba(255,215,0,0.5); }
+        }
         .king-badge:active {
             transform: scale(0.95);
         }
@@ -1473,12 +1485,24 @@
             }
         }
         
+        // 飞跃大王数据缓存和轮播配置
+        let risingStarsDataCache = [];
+        let risingStarsCurrentBatch = 0;
+        const RISING_STARS_BATCH_SIZE = 10;  // 每批显示10个
+        const RISING_STARS_ROTATE_INTERVAL = 10000; // 10秒轮换
+        let risingStarsRotationTimer = null;
+        
         // 加载飞跃之星
         async function loadRisingStars() {
             try {
-                const res = await fetch('/api/gpa/rising-stars?limit=10');
+                const res = await fetch('/api/gpa/rising-stars?limit=30');  // 获取30个
                 const data = await res.json();
-                renderRisingStars(data);
+                risingStarsDataCache = data;
+                risingStarsCurrentBatch = 0;
+                renderRisingStarsBatch();
+                
+                // 启动定时轮换
+                startRisingStarsRotation();
             } catch (err) {
                 console.error('加载飞跃之星失败:', err);
                 document.getElementById('risingStarsList').innerHTML = 
@@ -1486,24 +1510,56 @@
             }
         }
         
-        // 渲染飞跃大王
-        function renderRisingStars(data) {
+        // 启动飞跃大王轮换
+        function startRisingStarsRotation() {
+            if (risingStarsRotationTimer) {
+                clearInterval(risingStarsRotationTimer);
+            }
+            
+            // 只有数据超过一批时才轮换
+            if (risingStarsDataCache.length > RISING_STARS_BATCH_SIZE) {
+                risingStarsRotationTimer = setInterval(() => {
+                    risingStarsCurrentBatch++;
+                    const totalBatches = Math.ceil(risingStarsDataCache.length / RISING_STARS_BATCH_SIZE);
+                    if (risingStarsCurrentBatch >= totalBatches) {
+                        risingStarsCurrentBatch = 0;
+                    }
+                    renderRisingStarsBatch();
+                }, RISING_STARS_ROTATE_INTERVAL);
+            }
+        }
+        
+        // 渲染当前批次的飞跃大王
+        function renderRisingStarsBatch() {
             const list = document.getElementById('risingStarsList');
             
-            if (data.length === 0) {
+            if (risingStarsDataCache.length === 0) {
                 list.innerHTML = '<div class="empty-state">暂无数据</div>';
                 return;
             }
             
-            const html = data.map((item, index) => {
-                const rankClass = index === 0 ? 'rising-star-rank-1' : index === 1 ? 'rising-star-rank-2' : index === 2 ? 'rising-star-rank-3' : 'rising-star-rank-other';
-                const rankIcon = index === 0 ? '👑' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}`;
+            // 计算当前批次的起始和结束索引
+            const startIndex = risingStarsCurrentBatch * RISING_STARS_BATCH_SIZE;
+            const endIndex = Math.min(startIndex + RISING_STARS_BATCH_SIZE, risingStarsDataCache.length);
+            const batchData = risingStarsDataCache.slice(startIndex, endIndex);
+            const totalBatches = Math.ceil(risingStarsDataCache.length / RISING_STARS_BATCH_SIZE);
+            
+            const html = batchData.map((item, index) => {
+                const globalIndex = startIndex + index;
+                const rankClass = globalIndex === 0 ? 'rising-star-rank-1' : globalIndex === 1 ? 'rising-star-rank-2' : globalIndex === 2 ? 'rising-star-rank-3' : 'rising-star-rank-other';
+                const rankIcon = globalIndex === 0 ? '👑' : globalIndex === 1 ? '🥈' : globalIndex === 2 ? '🥉' : `${globalIndex + 1}`;
                 const tooltipText = item.reason || '积极学习，绩点飙升！';
-                const kingBadgeClass = item.starType === 'homework' ? 'notes' : 'study';
-                const kingTitle = item.starType === 'homework' ? '📝 笔记大王' : '📚 学习大王';
-                const detailText = item.starType === 'homework' 
-                    ? `近期提交笔记${item.notes}次，荣获笔记大王称号！` 
-                    : `近期绩点增长${item.growth}分，荣获学习大王称号！`;
+                
+                // 根据大王类型设置不同的样式
+                let kingBadgeClass = 'study';
+                let kingTitle = '📚 学习大王';
+                if (item.starType === 'homework') {
+                    kingBadgeClass = 'notes';
+                    kingTitle = '📝 笔记大王';
+                } else if (item.starType === 'allround') {
+                    kingBadgeClass = 'allround';
+                    kingTitle = '👑 全能大王';
+                }
                 
                 return `
                     <div class="rising-star-item">
@@ -1521,7 +1577,22 @@
                 `;
             }).join('');
             
-            list.innerHTML = `<div class="rising-stars-grid">${html}</div>`;
+            // 添加批次指示器
+            const batchIndicator = totalBatches > 1 
+                ? `<div style="text-align: center; margin-bottom: 10px; font-size: 12px; color: #666;">
+                    第 ${risingStarsCurrentBatch + 1}/${totalBatches} 批 
+                    <span style="margin-left: 10px;">(${risingStarsDataCache.length}位大王)</span>
+                   </div>` 
+                : '';
+            
+            list.innerHTML = batchIndicator + `<div class="rising-stars-grid">${html}</div>`;
+        }
+        
+        // 渲染飞跃大王（兼容旧版本，现在使用 renderRisingStarsBatch）
+        function renderRisingStars(data) {
+            risingStarsDataCache = data;
+            risingStarsCurrentBatch = 0;
+            renderRisingStarsBatch();
         }
         
         // 预警榜单数据缓存
