@@ -246,13 +246,25 @@ function calculateWeeklyGrowth() {
         
         // 只要有增长或有笔记的用户都显示
         if (growth > 0 || notesCount >= 3) {
-            // 判断是笔记大王还是学习大王
-            // 笔记次数 >= 3 认为是笔记大王，否则是学习大王
-            let starType = 'study'; // study 或 homework
+            // 判断大王类型：
+            // 1. 听课多 + 笔记多 → 全能大王
+            // 2. 听课多 → 学习大王
+            // 3. 笔记多 → 笔记大王
+            let starType = 'study'; // study, homework, or allround
             let starTitle = '📚 学习大王';
             let reason = '';
             
-            if (notesCount >= 3) {
+            // 定义阈值
+            const hasHighGrowth = growth >= 5;  // 听课多：本周新增绩点 >= 5
+            const hasHighNotes = notesCount >= 3;  // 笔记多：笔记次数 >= 3
+            
+            if (hasHighGrowth && hasHighNotes) {
+                // 全能大王：听课多 + 笔记多
+                starType = 'allround';
+                starTitle = '👑 全能大王';
+                reason = `本周听课+${growth}绩点，提交笔记${notesCount}次，学习全能！`;
+            } else if (hasHighNotes) {
+                // 笔记大王：笔记多但听课不多
                 starType = 'homework';
                 starTitle = '📝 笔记大王';
                 if (notesCount >= 10) {
@@ -263,10 +275,14 @@ function calculateWeeklyGrowth() {
                     reason = `提交笔记${notesCount}次，保持学习！`;
                 }
             } else if (notesCount > 0) {
+                // 有少量笔记
                 starType = 'homework';
                 starTitle = '📝 笔记大王';
                 reason = `提交笔记${notesCount}次`;
             } else {
+                // 学习大王：听课多但笔记不多
+                starType = 'study';
+                starTitle = '📚 学习大王';
                 reason = '坚持听课学习，积极参与！';
             }
             
@@ -285,12 +301,24 @@ function calculateWeeklyGrowth() {
         }
     });
     
-    // 按增长排序（笔记大王优先，然后按绩点增长排序）
+    // 按增长排序（全能大王 > 笔记大王 > 学习大王，同类型按绩点增长排序）
     growthData.sort((a, b) => {
-        // 笔记大王优先
-        if (a.starType === 'homework' && b.starType !== 'homework') return -1;
-        if (a.starType !== 'homework' && b.starType === 'homework') return 1;
-        // 然后按增长排序
+        // 定义优先级：全能大王 > 笔记大王 > 学习大王
+        const getPriority = (type) => {
+            if (type === 'allround') return 3;
+            if (type === 'homework') return 2;
+            return 1;
+        };
+        
+        const priorityA = getPriority(a.starType);
+        const priorityB = getPriority(b.starType);
+        
+        // 优先级高的排前面
+        if (priorityA !== priorityB) {
+            return priorityB - priorityA;
+        }
+        
+        // 同优先级按增长排序
         return b.growth - a.growth;
     });
     
