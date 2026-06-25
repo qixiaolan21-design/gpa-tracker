@@ -541,6 +541,26 @@
             0%, 100% { box-shadow: 0 0 5px rgba(255,215,0,0.8), 0 0 10px rgba(255,165,0,0.5); }
             50% { box-shadow: 0 0 15px rgba(255,215,0,1), 0 0 25px rgba(255,165,0,0.8), 0 0 35px rgba(255,215,0,0.5); }
         }
+        
+        /* 预测大王标签 */
+        .predict-king-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            border: 2px solid #FFD700;
+            animation: predictKingShine 2s ease-in-out infinite;
+            box-shadow: 0 2px 8px rgba(155, 89, 182, 0.4);
+        }
+        @keyframes predictKingShine {
+            0%, 100% { box-shadow: 0 0 5px rgba(155, 89, 182, 0.5), 0 0 10px rgba(255, 215, 0, 0.3); }
+            50% { box-shadow: 0 0 15px rgba(155, 89, 182, 0.8), 0 0 20px rgba(255, 215, 0, 0.6); }
+        }
         .king-badge:active {
             transform: scale(0.95);
         }
@@ -1628,6 +1648,8 @@
         let gameCount = 0;
         let gameTotalCost = 0;
         let gameTotalWin = 0;
+        let consecutiveWins = 0;  // 连续猜对次数
+        let isPredictKing = false; // 是否已获得预测大王称号
         
         // 玩美股猜涨跌游戏
         async function playGame(choice) {
@@ -1645,6 +1667,13 @@
             const actualResult = Math.random() > 0.5 ? 'up' : 'down';
             const isWin = choice === actualResult;
             
+            // 更新连续猜对次数
+            if (isWin) {
+                consecutiveWins++;
+            } else {
+                consecutiveWins = 0;
+            }
+            
             // 更新游戏统计
             gameCount++;
             gameTotalCost += cost;
@@ -1654,9 +1683,25 @@
             document.getElementById('gameCount').textContent = gameCount;
             document.getElementById('gameTotalCost').textContent = gameTotalCost;
             
+            // 检查是否获得预测大王称号（连续猜对3次）
+            if (consecutiveWins === 3 && !isPredictKing) {
+                isPredictKing = true;
+                setTimeout(() => {
+                    alert('🎉 恭喜获得【预测大王】称号！\n\n连续猜对3次，你的投资直觉太准了！\n称号已显示在你的名字后面。');
+                    updateUserDisplay();
+                }, 500);
+            }
+            
             // 显示结果
             const resultDiv = document.getElementById('gameResult');
             if (isWin) {
+                let extraMessage = '';
+                if (consecutiveWins >= 3) {
+                    extraMessage = `<div style="font-size: 14px; color: #FFD700; margin-top: 5px;">🔥 连续猜对${consecutiveWins}次！${isPredictKing ? '【预测大王】' : ''}</div>`;
+                } else if (consecutiveWins === 2) {
+                    extraMessage = `<div style="font-size: 13px; color: #ff6b6b; margin-top: 5px;">🔥 连续猜对2次！再对1次获得【预测大王】称号！</div>`;
+                }
+                
                 resultDiv.className = 'game-result win';
                 resultDiv.innerHTML = `
                     <div>
@@ -1667,6 +1712,7 @@
                             消耗 ${cost} 绩点，获得 ${reward} 绩点！<br>
                             <strong>净赚: +${reward - cost} 绩点</strong>
                         </div>
+                        ${extraMessage}
                     </div>
                 `;
             } else {
@@ -1679,6 +1725,7 @@
                         <div style="font-size: 12px; color: #721c24; margin-top: 5px;">
                             消耗 ${cost} 绩点，未获得奖励
                         </div>
+                        ${consecutiveWins > 0 ? `<div style="font-size: 12px; color: #666; margin-top: 5px;">连续猜对次数已重置</div>` : ''}
                     </div>
                 `;
             }
@@ -1696,11 +1743,23 @@
                         isWin: isWin,
                         cost: cost,
                         reward: isWin ? reward : 0,
+                        consecutiveWins: consecutiveWins,
+                        isPredictKing: isPredictKing,
                         timestamp: new Date().toISOString()
                     })
                 });
             } catch (e) {
                 // 忽略错误
+            }
+        }
+        
+        // 更新用户显示（添加预测大王标签）
+        function updateUserDisplay() {
+            if (isPredictKing && currentUser) {
+                const userNameEl = document.getElementById('userName');
+                if (userNameEl && !userNameEl.innerHTML.includes('预测大王')) {
+                    userNameEl.innerHTML += ' <span class="predict-king-badge">🔮 预测大王</span>';
+                }
             }
         }
         
