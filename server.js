@@ -549,7 +549,7 @@ app.delete('/api/admin/warning/:userId', (req, res) => {
 // 游戏记录API
 app.post('/api/game/play', express.json(), (req, res) => {
     try {
-        const { userId, userName, choice, result, isWin, cost, timestamp } = req.body;
+        const { userId, userName, choice, result, isWin, cost, reward, timestamp } = req.body;
         
         // 记录游戏日志
         const gameLog = {
@@ -559,10 +559,14 @@ app.post('/api/game/play', express.json(), (req, res) => {
             result: result === 'up' ? '上涨' : '下跌',
             isWin,
             cost,
+            reward: reward || 0,
+            net: (reward || 0) - cost,
             timestamp: timestamp || new Date().toISOString()
         };
         
-        console.log(`🎮 游戏记录: ${userName} ${gameLog.choice} → ${gameLog.result} ${isWin ? '✅' : '❌'}`);
+        const resultEmoji = isWin ? '✅' : '❌';
+        const netText = isWin ? `+${gameLog.net}` : `-${cost}`;
+        console.log(`🎮 游戏记录: ${userName} ${gameLog.choice} → ${gameLog.result} ${resultEmoji} 净${netText}绩点`);
         
         res.json({ success: true, message: '记录成功' });
     } catch (err) {

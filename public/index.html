@@ -1313,9 +1313,9 @@
             </div>
             <div class="game-content">
                 <div class="game-info">
-                    <div class="game-rule">🎮 游戏规则：消耗 <strong>1绩点</strong> 预测下一交易日美股涨跌</div>
-                    <div class="game-rule">✅ 猜对：获得成就感（无实际奖励）</div>
-                    <div class="game-rule">❌ 猜错：绩点已消耗，再接再厉！</div>
+                    <div class="game-rule">🎮 游戏规则：消耗 <strong>10绩点</strong> 预测下一交易日美股涨跌</div>
+                    <div class="game-rule">✅ 猜对：获得 <strong>20绩点</strong> 奖励（净赚+10）</div>
+                    <div class="game-rule">❌ 猜错：消耗10绩点，再接再厉！</div>
                 </div>
                 <div class="game-buttons">
                     <button class="game-btn up" onclick="playGame('up')">📈 看涨</button>
@@ -1627,6 +1627,7 @@
         // 游戏状态
         let gameCount = 0;
         let gameTotalCost = 0;
+        let gameTotalWin = 0;
         
         // 玩美股猜涨跌游戏
         async function playGame(choice) {
@@ -1636,8 +1637,9 @@
                 return;
             }
             
-            // 消耗1绩点
-            const cost = 1;
+            // 游戏配置
+            const cost = 10;      // 消耗10绩点
+            const reward = 20;    // 猜对获得20绩点
             
             // 模拟游戏结果（随机涨跌）
             const actualResult = Math.random() > 0.5 ? 'up' : 'down';
@@ -1646,6 +1648,9 @@
             // 更新游戏统计
             gameCount++;
             gameTotalCost += cost;
+            if (isWin) {
+                gameTotalWin += reward;
+            }
             document.getElementById('gameCount').textContent = gameCount;
             document.getElementById('gameTotalCost').textContent = gameTotalCost;
             
@@ -1658,7 +1663,10 @@
                         <div style="font-size: 24px; margin-bottom: 5px;">🎉</div>
                         <div><strong>恭喜猜对！</strong></div>
                         <div style="font-size: 13px; margin-top: 5px;">美股果然${actualResult === 'up' ? '上涨📈' : '下跌📉'}，你的投资直觉很棒！</div>
-                        <div style="font-size: 12px; color: #666; margin-top: 5px;">已消耗 ${cost} 绩点</div>
+                        <div style="font-size: 12px; color: #155724; margin-top: 5px;">
+                            消耗 ${cost} 绩点，获得 ${reward} 绩点！<br>
+                            <strong>净赚: +${reward - cost} 绩点</strong>
+                        </div>
                     </div>
                 `;
             } else {
@@ -1668,12 +1676,14 @@
                         <div style="font-size: 24px; margin-bottom: 5px;">😅</div>
                         <div><strong>猜错了哦！</strong></div>
                         <div style="font-size: 13px; margin-top: 5px;">实际美股${actualResult === 'up' ? '上涨📈' : '下跌📉'}，下次再接再厉！</div>
-                        <div style="font-size: 12px; color: #666; margin-top: 5px;">已消耗 ${cost} 绩点</div>
+                        <div style="font-size: 12px; color: #721c24; margin-top: 5px;">
+                            消耗 ${cost} 绩点，未获得奖励
+                        </div>
                     </div>
                 `;
             }
             
-            // 记录游戏日志（可选）
+            // 记录游戏日志
             try {
                 await fetch('/api/game/play', {
                     method: 'POST',
@@ -1685,6 +1695,7 @@
                         result: actualResult,
                         isWin: isWin,
                         cost: cost,
+                        reward: isWin ? reward : 0,
                         timestamp: new Date().toISOString()
                     })
                 });
