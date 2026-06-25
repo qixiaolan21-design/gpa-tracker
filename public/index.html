@@ -420,10 +420,60 @@
             padding: 15px;
             margin-bottom: 20px;
         }
-        .game-rule {
-            font-size: 14px;
+        .game-title-small {
+            font-size: 16px;
+            font-weight: bold;
             color: #333;
-            margin: 8px 0;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .game-rules-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .game-rule-box {
+            background: white;
+            border-radius: 10px;
+            padding: 12px 8px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .game-rule-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .game-rule-box.cost {
+            border-color: #3498db;
+            background: linear-gradient(135deg, #ebf5fb, #d6eaf8);
+        }
+        .game-rule-box.win {
+            border-color: #27ae60;
+            background: linear-gradient(135deg, #eafaf1, #d5f5e3);
+        }
+        .game-rule-box.lose {
+            border-color: #e74c3c;
+            background: linear-gradient(135deg, #fdedec, #fadbd8);
+        }
+        .rule-icon {
+            font-size: 24px;
+            margin-bottom: 6px;
+        }
+        .rule-text {
+            font-size: 13px;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .rule-desc {
+            font-size: 11px;
+            color: #666;
+        }
+        @media (max-width: 600px) {
+            .game-rules-grid {
+                grid-template-columns: 1fr;
+            }
         }
         .game-buttons {
             display: flex;
@@ -1333,9 +1383,24 @@
             </div>
             <div class="game-content">
                 <div class="game-info">
-                    <div class="game-rule">🎮 游戏规则：消耗 <strong>10绩点</strong> 预测下一交易日美股涨跌</div>
-                    <div class="game-rule">✅ 猜对：获得 <strong>20绩点</strong> 奖励（净赚+10）</div>
-                    <div class="game-rule">❌ 猜错：消耗10绩点，再接再厉！</div>
+                    <div class="game-title-small">🎮 游戏规则</div>
+                    <div class="game-rules-grid">
+                        <div class="game-rule-box cost">
+                            <div class="rule-icon">💰</div>
+                            <div class="rule-text">消耗 <strong>10绩点</strong></div>
+                            <div class="rule-desc">预测美股涨跌</div>
+                        </div>
+                        <div class="game-rule-box win">
+                            <div class="rule-icon">✅</div>
+                            <div class="rule-text">猜对奖励 <strong>20绩点</strong></div>
+                            <div class="rule-desc">净赚 +10绩点</div>
+                        </div>
+                        <div class="game-rule-box lose">
+                            <div class="rule-icon">❌</div>
+                            <div class="rule-text">猜错无奖励</div>
+                            <div class="rule-desc">再接再厉！</div>
+                        </div>
+                    </div>
                 </div>
                 <div class="game-buttons">
                     <button class="game-btn up" onclick="playGame('up')">📈 看涨</button>
