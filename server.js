@@ -546,6 +546,31 @@ app.delete('/api/admin/warning/:userId', (req, res) => {
     }
 });
 
+// 游戏记录API
+app.post('/api/game/play', express.json(), (req, res) => {
+    try {
+        const { userId, userName, choice, result, isWin, cost, timestamp } = req.body;
+        
+        // 记录游戏日志
+        const gameLog = {
+            userId,
+            userName,
+            choice: choice === 'up' ? '看涨' : '看跌',
+            result: result === 'up' ? '上涨' : '下跌',
+            isWin,
+            cost,
+            timestamp: timestamp || new Date().toISOString()
+        };
+        
+        console.log(`🎮 游戏记录: ${userName} ${gameLog.choice} → ${gameLog.result} ${isWin ? '✅' : '❌'}`);
+        
+        res.json({ success: true, message: '记录成功' });
+    } catch (err) {
+        console.error('记录游戏日志失败:', err);
+        res.status(500).json({ error: '记录失败' });
+    }
+});
+
 // 后台管理API - 添加预警用户
 app.post('/api/admin/warning', express.json(), (req, res) => {
     try {
