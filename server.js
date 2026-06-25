@@ -327,7 +327,7 @@ function calculateWeeklyGrowth() {
             let reason = '';
             
             // 定义阈值
-            const hasHighGrowth = weeklyGrowth >= 5;  // 听课多：本周有效听课>=5次
+            const hasHighGrowth = weeklyGrowth >= 3;  // 听课多：本周有效听课>=3次
             const hasHighNotes = notesCount >= 3;  // 笔记多
             
             if (hasHighGrowth && hasHighNotes) {
