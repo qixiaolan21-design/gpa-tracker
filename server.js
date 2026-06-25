@@ -264,7 +264,8 @@ function loadWeeklyWatchData() {
                 
                 // 解析CSV头部
                 const headers = lines[0].split(',').map(h => h.trim());
-                const idIndex = headers.findIndex(h => h.includes('精网号') || h.includes('ID'));
+                // 使用"精网号"列来匹配用户（不是"ID"列）
+                const idIndex = headers.indexOf('精网号');
                 const durationIndex = headers.findIndex(h => h.includes('观看时长') || h.includes('时长'));
                 
                 if (idIndex === -1) continue;
