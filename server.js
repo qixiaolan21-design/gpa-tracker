@@ -408,7 +408,7 @@ async function init() {
         loadHistoryData();
         gpaData = await loadCSVData();
         saveHistoryData(); // 保存当前数据作为历史
-        initStockMarketData(); // 初始化美股数据
+        await initStockMarketData(); // 初始化美股数据（异步）
         console.log('✅ 数据初始化完成');
     } catch (err) {
         console.error('❌ 初始化失败:', err);
@@ -547,7 +547,7 @@ app.delete('/api/admin/warning/:userId', (req, res) => {
     }
 });
 
-// 存储今日美股数据（模拟真实数据，实际应该定时从API获取）
+// 存储今日美股数据
 let stockMarketData = {
     date: new Date().toISOString().split('T')[0],
     index: 'S&P 500',
@@ -555,27 +555,99 @@ let stockMarketData = {
     current: 0,
     change: 0,
     changePercent: 0,
-    isUp: false
+    isUp: false,
+    lastUpdate: null
 };
 
-// 初始化美股数据（使用随机但合理的数据模拟真实市场）
-function initStockMarketData() {
-    // 基于真实S&P 500近期范围生成模拟数据
-    const basePrice = 5400 + Math.random() * 200; // 5400-5600区间
-    const changePercent = (Math.random() - 0.5) * 4; // -2% 到 +2%
-    const change = basePrice * changePercent / 100;
-    
-    stockMarketData = {
-        date: new Date().toISOString().split('T')[0],
-        index: 'S&P 500',
-        prevClose: Math.round(basePrice - change),
-        current: Math.round(basePrice),
-        change: Math.round(change * 100) / 100,
-        changePercent: Math.round(changePercent * 100) / 100,
-        isUp: change >= 0
-    };
-    
-    console.log(`📈 美股数据初始化: S&P 500 ${stockMarketData.isUp ? '上涨' : '下跌'} ${Math.abs(stockMarketData.changePercent)}%`);
+// 从Yahoo Finance获取真实美股数据
+async function fetchRealStockData() {
+    try {
+        // 使用Yahoo Finance API获取S&P 500数据 (^GSPC)
+        const https = require('https');
+        
+        const options = {
+            hostname: 'query1.finance.yahoo.com',
+            path: '/v8/finance/chart/^GSPC?interval=1d&range=2d',
+            method: 'GET',
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            }
+        };
+        
+        return new Promise((resolve, reject) => {
+            const req = https.request(options, (res) => {
+                let data = '';
+                res.on('data', (chunk) => data += chunk);
+                res.on('end', () => {
+                    try {
+                        const json = JSON.parse(data);
+                        if (json.chart && json.chart.result && json.chart.result[0]) {
+                            const result = json.chart.result[0];
+                            const meta = result.meta;
+                            const timestamps = result.timestamp;
+                            const closes = result.indicators.quote[0].close;
+                            
+                            // 获取最近两个交易日的收盘价
+                            const prevClose = closes[closes.length - 2] || meta.previousClose;
+                            const currentClose = closes[closes.length - 1] || meta.regularMarketPrice;
+                            
+                            const change = currentClose - prevClose;
+                            const changePercent = (change / prevClose) * 100;
+                            
+                            stockMarketData = {
+                                date: new Date().toISOString().split('T')[0],
+                                index: 'S&P 500',
+                                prevClose: Math.round(prevClose * 100) / 100,
+                                current: Math.round(currentClose * 100) / 100,
+                                change: Math.round(change * 100) / 100,
+                                changePercent: Math.round(changePercent * 100) / 100,
+                                isUp: change >= 0,
+                                lastUpdate: new Date().toISOString()
+                            };
+                            
+                            console.log(`📈 美股数据更新: S&P 500 ${stockMarketData.current} (${stockMarketData.isUp ? '+' : ''}${stockMarketData.changePercent}%)`);
+                            resolve(stockMarketData);
+                        } else {
+                            reject(new Error('Invalid data format'));
+                        }
+                    } catch (err) {
+                        reject(err);
+                    }
+                });
+            });
+            
+            req.on('error', (err) => reject(err));
+            req.setTimeout(10000, () => {
+                req.destroy();
+                reject(new Error('Request timeout'));
+            });
+            req.end();
+        });
+    } catch (err) {
+        console.error('获取美股数据失败:', err.message);
+        throw err;
+    }
+}
+
+// 初始化美股数据
+async function initStockMarketData() {
+    try {
+        await fetchRealStockData();
+    } catch (err) {
+        console.error('❌ 无法获取真实美股数据，使用备用数据');
+        // 使用备用静态数据（最近一次已知数据）
+        stockMarketData = {
+            date: new Date().toISOString().split('T')[0],
+            index: 'S&P 500',
+            prevClose: 5450.00,
+            current: 5470.00,
+            change: 20.00,
+            changePercent: 0.37,
+            isUp: true,
+            lastUpdate: new Date().toISOString(),
+            note: '备用数据（API暂时不可用）'
+        };
+    }
 }
 
 // 获取美股数据API
@@ -635,15 +707,24 @@ app.post('/api/game/play', express.json(), (req, res) => {
     }
 });
 
-// 每日更新美股数据（实际应该使用定时任务或真实API）
-setInterval(() => {
-    const now = new Date();
-    const hour = now.getHours();
-    // 美股收盘后更新（北京时间凌晨5点左右）
-    if (hour === 5) {
-        initStockMarketData();
+// 定期更新美股数据（每30分钟）
+setInterval(async () => {
+    try {
+        await fetchRealStockData();
+    } catch (err) {
+        console.error('定时更新美股数据失败:', err.message);
     }
-}, 60 * 60 * 1000); // 每小时检查一次
+}, 30 * 60 * 1000); // 每30分钟更新一次
+
+// 手动刷新美股数据API
+app.get('/api/stock/refresh', async (req, res) => {
+    try {
+        await fetchRealStockData();
+        res.json({ success: true, data: stockMarketData });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
 
 // 后台管理API - 添加预警用户
 app.post('/api/admin/warning', express.json(), (req, res) => {
