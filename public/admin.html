@@ -501,13 +501,14 @@
                             <th>用户姓名</th>
                             <th>精网号</th>
                             <th>消耗绩点</th>
-                            <th>报告名称</th>
+                            <th>报告类型</th>
+                            <th>个股</th>
                             <th>兑换时间</th>
                             <th>操作</th>
                         </tr>
                     </thead>
                     <tbody id="pendingReportsBody">
-                        <tr><td colspan="7" style="text-align:center;padding:20px;color:#666;">暂无待生成报告</td></tr>
+                        <tr><td colspan="8" style="text-align:center;padding:20px;color:#666;">暂无待生成报告</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -758,8 +759,26 @@
                 <input type="number" id="customPoints" placeholder="输入绩点数量">
             </div>
             <div class="form-group">
-                <label>备注说明</label>
-                <input type="text" id="redeemNote" placeholder="例如：兑换AI赢家K线复盘报告">
+                <label>报告类型</label>
+                <select id="redeemReportType">
+                    <option value="AI赢家K线复盘报告">AI赢家K线复盘报告</option>
+                    <option value="AI预测大模型">AI预测大模型</option>
+                    <option value="云脑报告">云脑报告</option>
+                    <option value="利剑报告">利剑报告</option>
+                    <option value="custom">自定义</option>
+                </select>
+            </div>
+            <div class="form-group" id="customReportTypeGroup" style="display:none;">
+                <label>自定义报告名称</label>
+                <input type="text" id="customReportType" placeholder="输入报告名称">
+            </div>
+            <div class="form-group">
+                <label>个股名称（可选）</label>
+                <input type="text" id="redeemStockName" placeholder="例如：AAPL、TSLA、英伟达">
+            </div>
+            <div class="form-group">
+                <label>额外备注</label>
+                <input type="text" id="redeemNote" placeholder="其他备注信息（可选）">
             </div>
             <div class="form-actions">
                 <button class="btn-primary" onclick="redeemPoints()">确认兑换</button>
@@ -1094,12 +1113,21 @@
             openModal('redeemModal');
         }
         
+        // 监听报告类型选择
+        document.getElementById('redeemReportType').addEventListener('change', function() {
+            document.getElementById('customReportTypeGroup').style.display = 
+                this.value === 'custom' ? 'block' : 'none';
+        });
+        
         // 兑换绩点
         async function redeemPoints() {
             const userId = document.getElementById('redeemUserId').value.trim();
             const item = document.getElementById('redeemItem').value;
             const customPoints = document.getElementById('customPoints').value;
-            const note = document.getElementById('redeemNote').value.trim();
+            const reportType = document.getElementById('redeemReportType').value;
+            const customReportType = document.getElementById('customReportType').value.trim();
+            const stockName = document.getElementById('redeemStockName').value.trim();
+            const extraNote = document.getElementById('redeemNote').value.trim();
             
             if (!userId) {
                 alert('请输入用户ID');
@@ -1110,6 +1138,16 @@
             if (!points || points <= 0) {
                 alert('请输入有效的绩点数量');
                 return;
+            }
+            
+            // 组合报告名称
+            const actualReportType = reportType === 'custom' ? customReportType : reportType;
+            let note = `兑换${actualReportType}`;
+            if (stockName) {
+                note += ` - ${stockName}`;
+            }
+            if (extraNote) {
+                note += ` (${extraNote})`;
             }
             
             try {
@@ -1123,6 +1161,7 @@
                     alert('兑换成功！');
                     closeModal('redeemModal');
                     loadData();
+                    loadPendingReports(); // 刷新待生成报告列表
                 } else {
                     alert('兑换失败，请检查用户ID');
                 }
@@ -1490,6 +1529,41 @@
         // 待生成报告数据（从兑换记录中筛选）
         let pendingReports = [];
         
+        // 解析兑换详情，提取报告名称和个股信息
+        function parseRedeemDetails(details) {
+            // 格式: "使用10绩点 - 兑换AI赢家K线复盘报告 - AAPL (额外备注)"
+            // 或: "使用10绩点 - 兑换AI赢家K线复盘报告"
+            const match = details.match(/使用(\d+)绩点\s+-\s+(.+)/);
+            if (!match) return { cost: 10, reportName: details };
+            
+            const cost = parseInt(match[1]) || 10;
+            let reportInfo = match[2];
+            
+            // 提取个股名称（如果有）
+            let stockName = '';
+            const stockMatch = reportInfo.match(/-\s*([^()]+?)(?:\s*\(|$)/);
+            if (stockMatch) {
+                stockName = stockMatch[1].trim();
+                // 移除个股名称部分，保留报告类型
+                reportInfo = reportInfo.replace(/-\s*[^()]+/, '').trim();
+            }
+            
+            // 提取额外备注
+            let extraNote = '';
+            const noteMatch = reportInfo.match(/\(([^)]+)\)/);
+            if (noteMatch) {
+                extraNote = noteMatch[1];
+                reportInfo = reportInfo.replace(/\([^)]+\)/, '').trim();
+            }
+            
+            return {
+                cost,
+                reportName: reportInfo,
+                stockName,
+                extraNote
+            };
+        }
+        
         // 加载待生成报告
         async function loadPendingReports() {
             try {
@@ -1498,21 +1572,27 @@
                 const logs = await res.json();
                 
                 // 筛选兑换操作，且备注中包含"报告"或"复盘"
-                pendingReports = logs
-                    .filter(log => 
-                        log.operation === '兑换绩点' && 
-                        log.details && 
-                        (log.details.includes('报告') || log.details.includes('复盘') || log.details.includes('AI'))
-                    )
-                    .map((log, index) => ({
+                const reportLogs = logs.filter(log => 
+                    log.operation === '兑换绩点' && 
+                    log.details && 
+                    (log.details.includes('报告') || log.details.includes('复盘') || log.details.includes('AI'))
+                );
+                
+                // 解析每条记录
+                pendingReports = reportLogs.map((log, index) => {
+                    const parsed = parseRedeemDetails(log.details);
+                    return {
                         id: index + 1,
                         userId: log.userId,
                         userName: log.userName,
-                        cost: 10, // 默认消耗10绩点
-                        reportName: log.details,
+                        cost: parsed.cost,
+                        reportName: parsed.reportName,
+                        stockName: parsed.stockName,
+                        extraNote: parsed.extraNote,
                         time: log.time,
                         status: 'pending'
-                    }));
+                    };
+                });
                 
                 // 如果没有数据，显示示例数据（用于测试）
                 if (pendingReports.length === 0) {
@@ -1522,7 +1602,9 @@
                             userId: '90041991',
                             userName: 'Michelle CANADA',
                             cost: 10,
-                            reportName: '兑换1份AI赢家K线复盘报告',
+                            reportName: 'AI赢家K线复盘报告',
+                            stockName: 'AAPL',
+                            extraNote: '',
                             time: new Date().toISOString(),
                             status: 'pending'
                         },
@@ -1531,7 +1613,9 @@
                             userId: '90044233',
                             userName: '秀凤',
                             cost: 10,
-                            reportName: '兑换1份AI赢家K线复盘报告',
+                            reportName: 'AI赢家K线复盘报告',
+                            stockName: 'TSLA',
+                            extraNote: '',
                             time: new Date(Date.now() - 3600000).toISOString(),
                             status: 'pending'
                         },
@@ -1540,7 +1624,9 @@
                             userId: '90043909',
                             userName: 'Oliver',
                             cost: 10,
-                            reportName: '兑换1份AI赢家K线复盘报告',
+                            reportName: 'AI预测大模型',
+                            stockName: 'NVDA',
+                            extraNote: '加急',
                             time: new Date(Date.now() - 7200000).toISOString(),
                             status: 'pending'
                         }
@@ -1557,7 +1643,9 @@
                         userId: '90041991',
                         userName: 'Michelle CANADA',
                         cost: 10,
-                        reportName: '兑换1份AI赢家K线复盘报告',
+                        reportName: 'AI赢家K线复盘报告',
+                        stockName: 'AAPL',
+                        extraNote: '',
                         time: new Date().toISOString(),
                         status: 'pending'
                     }
@@ -1574,7 +1662,7 @@
             countEl.textContent = pendingReports.length;
             
             if (pendingReports.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:#27ae60;">🎉 暂无待生成报告</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;color:#27ae60;">🎉 暂无待生成报告</td></tr>';
                 return;
             }
             
@@ -1585,13 +1673,26 @@
                     hour: '2-digit',
                     minute: '2-digit'
                 });
+                
+                // 显示个股名称
+                const stockDisplay = report.stockName 
+                    ? `<span style="color:#3498db;font-weight:bold;">📈 ${report.stockName}</span>` 
+                    : '-';
+                
+                // 报告名称 + 备注
+                let reportDisplay = report.reportName;
+                if (report.extraNote) {
+                    reportDisplay += ` <span style="color:#e74c3c;font-size:11px;">(${report.extraNote})</span>`;
+                }
+                
                 return `
                     <tr>
                         <td>${index + 1}</td>
                         <td>${report.userName}</td>
                         <td>${report.userId}</td>
                         <td>${report.cost}</td>
-                        <td class="report-name-cell">${report.reportName}</td>
+                        <td class="report-name-cell">${reportDisplay}</td>
+                        <td>${stockDisplay}</td>
                         <td>${time}</td>
                         <td>
                             <button class="btn-generate" onclick="markReportGenerated(${index})">✅ 已生成</button>
