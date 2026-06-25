@@ -235,26 +235,27 @@ function saveHistoryData() {
     }
 }
 
-// 读取近一周观看记录（从桌面CSV文件）
+// 读取近一周观看记录（从CSV文件）
 function loadWeeklyWatchData() {
     const weeklyData = {}; // { userId: { watchCount: 0, validWatchCount: 0, totalMinutes: 0 } }
     
     // 近一周观看记录文件列表
     const watchFiles = [
-        '观看记录.csv',
-        '观看记录1.csv',
-        '观看记录2.csv',
-        '观看记录3.csv',
-        '观看记录4.csv',
-        '观看记录5.csv',
-        '观看记录6.csv',
-        '观看记录7.csv'
+        'watch_record_0.csv',
+        'watch_record_1.csv',
+        'watch_record_2.csv',
+        'watch_record_3.csv',
+        'watch_record_4.csv',
+        'watch_record_5.csv',
+        'watch_record_6.csv',
+        'watch_record_7.csv'
     ];
     
-    const desktopDir = 'C:\\Users\\嗷呜\\Desktop';
+    // 根据环境选择数据目录
+    const dataDir = isProduction ? path.join(__dirname, 'data') : 'C:\\Users\\嗷呜\\Desktop';
     
     for (const file of watchFiles) {
-        const filePath = path.join(desktopDir, file);
+        const filePath = path.join(dataDir, file);
         if (fs.existsSync(filePath)) {
             try {
                 const content = fs.readFileSync(filePath, 'utf-8');
