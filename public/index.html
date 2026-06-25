@@ -1561,6 +1561,9 @@
                     kingTitle = '👑 全能大王';
                 }
                 
+                // 构建悬停提示内容
+                const hoverDetail = item.reason || '积极学习，绩点飙升！';
+                
                 return `
                     <div class="rising-star-item">
                         <div class="rising-star-rank ${rankClass}">${rankIcon}</div>
@@ -1568,7 +1571,7 @@
                             <div class="rising-star-name">
                                 <span class="crown-icon" title="${tooltipText}">👑</span>
                                 ${item.name}
-                                <span class="king-badge ${kingBadgeClass}" onclick="showKingDetail('${item.name}', '${item.starType}', ${item.notes}, ${item.growth}, '${item.reason}')" style="cursor: pointer;">${kingTitle}</span>
+                                <span class="king-badge ${kingBadgeClass}" title="${hoverDetail}" style="cursor: help;">${kingTitle}</span>
                             </div>
                             <div class="rising-star-id">${item.idMasked}</div>
                         </div>
