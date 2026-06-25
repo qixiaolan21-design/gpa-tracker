@@ -1,0 +1,23 @@
+[
+  {
+    "time": "2026-06-25T14:30:00.000Z",
+    "operation": "兑换绩点",
+    "userId": "90041991",
+    "userName": "Michelle CANADA",
+    "details": "使用10绩点 - 兑换AI赢家K线复盘报告 - AAPL"
+  },
+  {
+    "time": "2026-06-25T14:25:00.000Z",
+    "operation": "兑换绩点",
+    "userId": "90044233",
+    "userName": "秀凤",
+    "details": "使用10绩点 - 兑换AI赢家K线复盘报告 - TSLA"
+  },
+  {
+    "time": "2026-06-25T10:15:00.000Z",
+    "operation": "兑换绩点",
+    "userId": "90043909",
+    "userName": "Oliver",
+    "details": "使用10绩点 - 兑换AI预测大模型 - NVDA (加急)"
+  }
+]

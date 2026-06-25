@@ -1049,9 +1049,36 @@ app.delete('/api/admin/users/:id', (req, res) => {
     res.json({ success: true, message: '删除成功' });
 });
 
-// 操作日志
-const operationLogs = [];
+// 操作日志文件路径
+const OPERATION_LOGS_FILE = path.join(__dirname, 'data', 'operation_logs.json');
 const MAX_LOGS = 100;
+
+// 加载操作日志
+function loadOperationLogs() {
+    try {
+        if (fs.existsSync(OPERATION_LOGS_FILE)) {
+            const content = fs.readFileSync(OPERATION_LOGS_FILE, 'utf-8');
+            const logs = JSON.parse(content);
+            console.log(`📚 加载了 ${logs.length} 条操作日志`);
+            return logs;
+        }
+    } catch (err) {
+        console.error('加载操作日志失败:', err);
+    }
+    return [];
+}
+
+// 保存操作日志
+function saveOperationLogs() {
+    try {
+        fs.writeFileSync(OPERATION_LOGS_FILE, JSON.stringify(operationLogs, null, 2), 'utf-8');
+    } catch (err) {
+        console.error('保存操作日志失败:', err);
+    }
+}
+
+// 操作日志
+const operationLogs = loadOperationLogs();
 
 // 记录操作日志
 function addLog(operation, userId, userName, details) {
@@ -1066,6 +1093,8 @@ function addLog(operation, userId, userName, details) {
     if (operationLogs.length > MAX_LOGS) {
         operationLogs.pop();
     }
+    // 保存到文件
+    saveOperationLogs();
     console.log(`📝 [${log.time}] ${operation}: ${userName} (${userId}) - ${details}`);
 }
 
@@ -1073,6 +1102,20 @@ function addLog(operation, userId, userName, details) {
 app.get('/api/admin/logs', (req, res) => {
     const limit = parseInt(req.query.limit) || 50;
     res.json(operationLogs.slice(0, limit));
+});
+
+// 获取今日兑换记录API
+app.get('/api/admin/today-redeems', (req, res) => {
+    const today = new Date().toISOString().split('T')[0];
+    const todayLogs = operationLogs.filter(log => {
+        const logDate = log.time ? log.time.split('T')[0] : '';
+        return logDate === today && log.operation === '兑换绩点';
+    });
+    res.json({
+        date: today,
+        count: todayLogs.length,
+        logs: todayLogs
+    });
 });
 
 // 批量导入API
