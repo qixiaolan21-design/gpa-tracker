@@ -60,6 +60,38 @@
             50% { box-shadow: 0 0 20px rgba(255,215,0,0.6); }
         }
         
+        /* 盲盒入口按钮 */
+        .blindbox-entry {
+            display: block;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+            color: white;
+            text-decoration: none;
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(255,107,107,0.4);
+            transition: all 0.3s;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        .blindbox-entry:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(255,107,107,0.6);
+        }
+        .blindbox-entry-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        .blindbox-entry-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .blindbox-entry-desc {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
         /* 统计卡片 */
         .stats-cards {
             display: grid;
@@ -1395,6 +1427,13 @@
                 <button class="logout-btn" onclick="doLogout()">退出</button>
             </div>
         </header>
+        
+        <!-- 盲盒抽奖入口 -->
+        <a href="/blindbox.html" class="blindbox-entry">
+            <div class="blindbox-entry-icon">🎁</div>
+            <div class="blindbox-entry-title">绩点盲盒抽奖</div>
+            <div class="blindbox-entry-desc">消耗绩点抽取AI系统使用权、K线报告等好礼！</div>
+        </a>
         
         <!-- 个人查询 -->
         <div class="personal-section">

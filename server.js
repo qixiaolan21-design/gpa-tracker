@@ -1272,6 +1272,209 @@ function saveGpaData() {
     }
 }
 
+// ==================== 盲盒抽奖系统 ====================
+
+// 盲盒奖品配置
+const BLINDBOX_PRIZES = {
+    basic: [
+        { icon: '🤖', name: 'AI预测大模型(1天)', desc: '获得AI预测大模型1天使用权', value: 'ai_1d', weight: 20 },
+        { icon: '☁️', name: '云脑系统(1天)', desc: '获得云脑系统1天使用权', value: 'cloud_1d', weight: 20 },
+        { icon: '⚔️', name: '利剑系统(1天)', desc: '获得利剑系统1天使用权', value: 'sword_1d', weight: 20 },
+        { icon: '💎', name: '+5绩点', desc: '额外获得5绩点', value: 'gpa_5', weight: 15 },
+        { icon: '🍀', name: '谢谢参与', desc: '很遗憾，这次没有中奖', value: 'none', weight: 25 }
+    ],
+    premium: [
+        { icon: '🤖', name: 'AI预测大模型(3天)', desc: '获得AI预测大模型3天使用权', value: 'ai_3d', weight: 25 },
+        { icon: '☁️', name: '云脑系统(3天)', desc: '获得云脑系统3天使用权', value: 'cloud_3d', weight: 25 },
+        { icon: '⚔️', name: '利剑系统(3天)', desc: '获得利剑系统3天使用权', value: 'sword_3d', weight: 20 },
+        { icon: '📊', name: 'K线复盘报告', desc: '获得AI赢家K线复盘报告1份', value: 'report', weight: 15 },
+        { icon: '💎', name: '+10绩点', desc: '额外获得10绩点', value: 'gpa_10', weight: 10 },
+        { icon: '🍀', name: '谢谢参与', desc: '很遗憾，这次没有中奖', value: 'none', weight: 5 }
+    ],
+    legendary: [
+        { icon: '🤖', name: 'AI预测大模型(7天)', desc: '获得AI预测大模型7天使用权', value: 'ai_7d', weight: 25 },
+        { icon: '☁️', name: '云脑系统(7天)', desc: '获得云脑系统7天使用权', value: 'cloud_7d', weight: 25 },
+        { icon: '⚔️', name: '利剑系统(7天)', desc: '获得利剑系统7天使用权', value: 'sword_7d', weight: 20 },
+        { icon: '📊', name: 'K线复盘报告×2', desc: '获得AI赢家K线复盘报告2份', value: 'report_2', weight: 15 },
+        { icon: '💎', name: '+20绩点', desc: '额外获得20绩点', value: 'gpa_20', weight: 10 },
+        { icon: '🎁', name: '神秘大奖', desc: '获得神秘大奖一份', value: 'mystery', weight: 5 }
+    ]
+};
+
+const BLINDBOX_COSTS = {
+    basic: 10,
+    premium: 30,
+    legendary: 50
+};
+
+// 盲盒抽奖记录
+let blindboxLogs = [];
+const BLINDBOX_LOGS_FILE = path.join(__dirname, 'data', 'blindbox_logs.json');
+
+// 加载盲盒记录
+function loadBlindboxLogs() {
+    try {
+        if (fs.existsSync(BLINDBOX_LOGS_FILE)) {
+            const content = fs.readFileSync(BLINDBOX_LOGS_FILE, 'utf-8');
+            blindboxLogs = JSON.parse(content);
+            console.log(`🎁 加载了 ${blindboxLogs.length} 条盲盒抽奖记录`);
+        }
+    } catch (err) {
+        console.error('加载盲盒记录失败:', err);
+        blindboxLogs = [];
+    }
+}
+
+// 保存盲盒记录
+function saveBlindboxLogs() {
+    try {
+        fs.writeFileSync(BLINDBOX_LOGS_FILE, JSON.stringify(blindboxLogs, null, 2), 'utf-8');
+    } catch (err) {
+        console.error('保存盲盒记录失败:', err);
+    }
+}
+
+// 加权随机选择奖品
+function drawPrize(boxType) {
+    const prizes = BLINDBOX_PRIZES[boxType];
+    const totalWeight = prizes.reduce((sum, p) => sum + p.weight, 0);
+    let random = Math.random() * totalWeight;
+    
+    for (const prize of prizes) {
+        random -= prize.weight;
+        if (random <= 0) {
+            return prize;
+        }
+    }
+    return prizes[prizes.length - 1];
+}
+
+// 盲盒抽奖API
+app.post('/api/blindbox/draw', express.json(), (req, res) => {
+    try {
+        const { userId, boxType, cost } = req.body;
+        
+        if (!userId || !boxType || !BLINDBOX_PRIZES[boxType]) {
+            return res.status(400).json({ success: false, message: '参数错误' });
+        }
+        
+        // 查找用户
+        const userIndex = gpaData.findIndex(u => u.id === userId);
+        if (userIndex === -1) {
+            return res.status(404).json({ success: false, message: '用户不存在' });
+        }
+        
+        const user = gpaData[userIndex];
+        const remainingGpa = user.totalGpa - (user.usedGpa || 0);
+        
+        // 检查绩点是否足够
+        if (remainingGpa < cost) {
+            return res.status(400).json({ success: false, message: '绩点不足' });
+        }
+        
+        // 扣除绩点
+        user.usedGpa = (user.usedGpa || 0) + cost;
+        
+        // 抽取奖品
+        const prize = drawPrize(boxType);
+        
+        // 如果抽到绩点奖励，增加绩点
+        if (prize.value.startsWith('gpa_')) {
+            const bonus = parseInt(prize.value.split('_')[1]);
+            user.totalGpa += bonus;
+            user.newGpa += bonus;
+        }
+        
+        // 记录抽奖日志
+        const logEntry = {
+            userId: user.id,
+            userName: user.name,
+            boxType: boxType,
+            cost: cost,
+            prizeValue: prize.value,
+            prizeName: prize.name,
+            prizeIcon: prize.icon,
+            timestamp: new Date().toISOString()
+        };
+        blindboxLogs.push(logEntry);
+        saveBlindboxLogs();
+        
+        // 记录操作日志
+        addLog('盲盒抽奖', userId, user.name, `${boxType}盲盒消耗${cost}绩点，获得${prize.name}`);
+        
+        // 保存数据
+        saveGpaData();
+        
+        console.log(`🎁 盲盒抽奖: ${user.name} 抽取${boxType}盲盒，获得 ${prize.name}`);
+        
+        res.json({
+            success: true,
+            prize: prize,
+            remainingGpa: user.totalGpa - user.usedGpa
+        });
+    } catch (err) {
+        console.error('盲盒抽奖失败:', err);
+        res.status(500).json({ success: false, message: '抽奖失败' });
+    }
+});
+
+// 获取用户盲盒历史记录API
+app.get('/api/blindbox/history', (req, res) => {
+    try {
+        const userId = req.query.userId;
+        if (!userId) {
+            return res.status(400).json({ error: '缺少用户ID' });
+        }
+        
+        const userLogs = blindboxLogs
+            .filter(log => log.userId === userId)
+            .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+            .slice(0, 50); // 最近50条
+        
+        res.json(userLogs);
+    } catch (err) {
+        console.error('获取盲盒历史失败:', err);
+        res.status(500).json({ error: '获取失败' });
+    }
+});
+
+// 获取所有盲盒统计API（管理员）
+app.get('/api/blindbox/stats', (req, res) => {
+    try {
+        const stats = {
+            totalDraws: blindboxLogs.length,
+            totalCost: blindboxLogs.reduce((sum, log) => sum + log.cost, 0),
+            byBoxType: {},
+            byPrize: {}
+        };
+        
+        blindboxLogs.forEach(log => {
+            // 按盲盒类型统计
+            if (!stats.byBoxType[log.boxType]) {
+                stats.byBoxType[log.boxType] = { count: 0, cost: 0 };
+            }
+            stats.byBoxType[log.boxType].count++;
+            stats.byBoxType[log.boxType].cost += log.cost;
+            
+            // 按奖品统计
+            if (!stats.byPrize[log.prizeName]) {
+                stats.byPrize[log.prizeName] = 0;
+            }
+            stats.byPrize[log.prizeName]++;
+        });
+        
+        res.json(stats);
+    } catch (err) {
+        console.error('获取盲盒统计失败:', err);
+        res.status(500).json({ error: '获取失败' });
+    }
+});
+
+// 初始化加载盲盒记录
+loadBlindboxLogs();
+
+// ==================== 盲盒抽奖系统结束 ====================
+
 // 错误处理中间件
 app.use((err, req, res, next) => {
     console.error('服务器错误:', err);
